@@ -87,7 +87,7 @@ class Board {
                                 && constructMatrix[i + 1][j + 1] === "C"
                                 && constructMatrix[i - 1][j + 1] !== "C"
                                 && constructMatrix[i + 1][j - 1] !== "C"
-                                && constructMatrix[i+1][j] !== "C"
+                                && (constructMatrix[i+1][j] !== "C" && constructMatrix[i][j+1] !== "C")
                             )
 
                         ) {
@@ -107,7 +107,7 @@ class Board {
                                 && constructMatrix[i + 1][j + 1] !== "C"
                                 && constructMatrix[i - 1][j + 1] !== "C"
                                 && constructMatrix[i + 1][j - 1] === "C"
-                                && constructMatrix[i+1][j] !== "C"
+                                && (constructMatrix[i+1][j] !== "C" && constructMatrix[i][j+1] !== "C")
                             )
                         ) {
                             sideToSide = "leftToBottom"
@@ -127,7 +127,7 @@ class Board {
                                 && constructMatrix[i + 1][j + 1] !== "C"
                                 && constructMatrix[i - 1][j + 1] === "C"
                                 && constructMatrix[i + 1][j - 1] !== "C"
-                                && constructMatrix[i-1][j] !== "C"
+                                && (constructMatrix[i-1][j] !== "C" && constructMatrix[i][j+1] !== "C")
                             )
                         ) {
                             sideToSide = "rightToTop"
