@@ -25,24 +25,25 @@ class Board {
     createBoard() {
         let constructMatrix: Array<string>
         constructMatrix = [
-			"W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W",
-			"W	C	C	C	C	C	C	C	C	C	C	W	W	C	C	C	C	C	W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W",
-			"W	C	W	W	W	W	C	W	W	W	C	W	C	C	W	W	W	C	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	W",
-			"W	C	W	W	W	W	C	W	W	W	C	C	C	W	W	W	W	C	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	W",
-			"W	C	C	C	C	C	C	W	W	W	W	W	W	W	W	W	C	C	C	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	C	C	C	C	C	C	C	C	W",
-			"W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	C	W	W	C	W	W	W	C	C	C	C	C	C	W	W	W	C	C	C	C	C	C	W	W	W	C	C	C	C	C	C	W	W	C	W	W	W	W	W	W",
-			"N	N	N	N	N	W	C	W	W	W	W	W	W	W	C	C	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	W	N	N	N	N	N",
-			"W	W	W	W	W	W	C	W	W	W	W	W	W	C	C	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W",
-            "W	C	C	C	C	C	C	W	W	W	W	W	W	W	C	C	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	C	C	C	C	C	W",
-			"W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	C	W	W	C	W	W	W	C	C	C	C	C	C	W	W	W	C	C	C	C	C	C	C	C	C	C	C	W	W	W	C	W	W	C	W	W	W	W	W	W",
-			"N	N	N	N	N	W	C	W	W	W	W	W	W	W	W	W	C	C	C	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	W	N	N	N	N	N",
-			"W	W	W	W	W	W	C	W	W	W	C	C	C	W	W	W	W	C	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	C	C	C	W	W	W	W	W	W",
-			"W	C	C	C	C	C	C	W	W	W	C	W	C	C	W	W	W	C	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	C	C	C	C	C	W",
-			"W	C	W	W	W	W	C	C	C	C	C	W	W	C	C	C	C	C	W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W	W	W	W	W	W	W	C	W",
-			"W	C	W	W	W	W	C	W	W	W	W	W	W	W	W	W	W	C	W	C	W	W	W	W	W	W	W	W	W	W	W	C	W	C	W	W	W	W	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	W",
-			"W	C	W	W	C	C	C	W	W	W	W	W	W	W	W	W	W	C	W	C	W	W	W	W	W	W	W	W	W	W	W	C	W	C	W	W	W	W	W	W	W	W	W	W	W	W	C	W	W	C	C	C	W	W	C	W",
-			"W	C	C	C	C	W	C	C	C	C	C	C	C	C	C	C	C	C	W	C	C	C	C	C	C	C	C	C	C	C	C	C	W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W	C	C	C	C	W",
-			"W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W",
+            "W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W",
+            "W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W	W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W",
+            "W	C	W	W	W	W	C	W	W	W	C	C	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	W",
+            "W	C	W	W	W	W	C	W	W	W	C	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	W",
+            "W	C	C	C	C	C	C	W	W	W	W	W	W	W	W	C	C	C	C	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	C	C	C	C	C	C	C	C	W",
+            "W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	C	W	W	W	C	W	W	W	C	C	C	C	C	C	W	W	W	C	C	C	C	C	C	W	W	W	C	C	C	C	C	C	W	W	C	W	W	W	W	W	W",
+            "N	N	N	N	N	W	C	W	W	W	W	W	W	W	C	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	W	N	N	N	N	N",
+            "W	W	W	W	W	W	C	W	W	W	W	W	W	C	C	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W",
+            "W	C	C	C	C	C	C	W	W	W	W	W	W	W	C	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	C	C	C	C	C	W",
+            "W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	C	W	W	W	C	W	W	W	C	C	C	C	C	C	W	W	W	C	C	C	C	C	C	C	C	C	C	C	W	W	W	C	W	W	C	W	W	W	W	W	W",
+            "N	N	N	N	N	W	C	W	W	W	W	W	W	W	W	C	C	C	C	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	W	N	N	N	N	N",
+            "W	W	W	W	W	W	C	W	W	W	C	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	C	C	C	W	W	W	W	W	W",
+            "W	C	C	C	C	C	C	W	W	W	C	C	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	C	C	C	C	C	W",
+            "W	C	W	W	W	W	C	C	C	C	C	C	C	C	C	C	C	W	W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W	W	W	C	W	W	W	C	W",
+            "W	C	W	W	W	W	C	W	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	W	W	W	C	W	W	W	C	W	W	W	C	W",
+            "W	C	W	W	W	W	C	W	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	W	W	W	C	W	W	W	C	W	W	W	C	W",
+            "W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W	W	C	C	C	C	C	C	C	C	C	C	C	C	C	W	W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W",
+            "W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W",
+
         ]
         var x = this.xPos + 50
         var y = this.yPos + 50
@@ -58,7 +59,50 @@ class Board {
             var boardArray = []
             for (let j = 0; j < constructMatrix[i].length; j++) {
                 if (constructMatrix[i][j] === "W") {
-                    if (j !== 0
+                    if (j === 0
+                        || i === 0
+                        || j === constructMatrix[i].length - 1
+                        || i === constructMatrix.length - 1) {
+
+                        if (i < constructMatrix.length - 1 && j < constructMatrix[0].length - 1
+                            && constructMatrix[i + 1][j + 1] === "C"
+                            && constructMatrix[i][j + 1] === "W"
+                            && constructMatrix[i+1][j] === "W"
+                        ) {
+                            sideToSide = "rightToBottom"
+                        }
+                        else if (j < constructMatrix[0].length - 1 && i > 0
+                            && constructMatrix[i - 1][j + 1] === "C"
+                            && constructMatrix[i][j + 1] === "W"
+                            && constructMatrix[i-1][j] === "W"
+                        ) {
+                            sideToSide = "rightToTop"
+                        }
+                        else if (i < constructMatrix.length - 1 && j > 0
+                            && constructMatrix[i + 1][j - 1] === "C"
+                            && constructMatrix[i][j - 1] === "W"
+                            && constructMatrix[i+1][j] === "W"
+                        ) {
+                            sideToSide = "leftToBottom"
+                        }
+                        else if (i >0 && j > 0
+                            && constructMatrix[i - 1][j - 1] === "C"
+                            && constructMatrix[i][j - 1] === "W"
+                            && constructMatrix[i-1][j] === "W"
+                        ) {
+                            sideToSide = "leftToTop"
+                        }
+
+
+                        else if (i === 0 || i === constructMatrix.length - 1) {
+                            sideToSide = "leftToRight"
+                        }
+                        else if (j === 0 || j === constructMatrix[0].length - 1) {
+                            sideToSide = "upToBottom"
+                        }
+                    }
+
+                    else if (j !== 0
                         && j !== constructMatrix[i].length -1
                         && i !== 0
                         && i !== constructMatrix.length-1) {
@@ -89,6 +133,13 @@ class Board {
                                 && constructMatrix[i + 1][j - 1] !== "C"
                                 && (constructMatrix[i+1][j] !== "C" && constructMatrix[i][j+1] !== "C")
                             )
+                            ||
+                            (
+                                constructMatrix[i - 1][j - 1] === "C"
+                                && constructMatrix[i - 1][j] === "C"
+                                // && constructMatrix[i - 1][j+1] === "C"
+                                && constructMatrix[i][j - 1] === "C"
+                            )
 
                         ) {
                             sideToSide = "rightToBottom"
@@ -108,6 +159,12 @@ class Board {
                                 && constructMatrix[i - 1][j + 1] !== "C"
                                 && constructMatrix[i + 1][j - 1] === "C"
                                 && (constructMatrix[i+1][j] !== "C" && constructMatrix[i][j+1] !== "C")
+                            )
+                            ||
+                            (
+                                constructMatrix[i - 1][j] === "C"
+                                && constructMatrix[i - 1][j + 1] === "C"
+                                && constructMatrix[i][j+1] === "C"
                             )
                         ) {
                             sideToSide = "leftToBottom"
@@ -129,6 +186,12 @@ class Board {
                                 && constructMatrix[i + 1][j - 1] !== "C"
                                 && (constructMatrix[i-1][j] !== "C" && constructMatrix[i][j+1] !== "C")
                             )
+                            ||
+                            (
+                                constructMatrix[i][j-1] === "C"
+                                && constructMatrix[i + 1][j - 1] === "C"
+                                && constructMatrix[i+1][j] === "C"
+                            )
                         ) {
                             sideToSide = "rightToTop"
                         }
@@ -147,6 +210,12 @@ class Board {
                                 && constructMatrix[i + 1][j - 1] !== "C"
                                 && constructMatrix[i-1][j] !== "C"
                             )
+                            ||
+                            (
+                                constructMatrix[i][j + 1] === "C"
+                                && constructMatrix[i+1][j+1] === "C"
+                                && constructMatrix[i+1][j] === "C"
+                            )
                         ){
                             sideToSide = "leftToTop"
                         }
@@ -162,9 +231,6 @@ class Board {
                             sideToSide = "upToBottom"
                         }
                             
-
-
-                        
                         else {
                             sideToSide = ""
                         }
@@ -182,6 +248,8 @@ class Board {
             x = this.xPos + 50
         }
     }
+
+    
 
 
 }

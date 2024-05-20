@@ -8,30 +8,30 @@ class Player {
     constructor() {
         this.xMovement = 0
         this.yMovement = 0
-        this.xPos = 100
-        this.yPos = 100
-        this.radius = 10
+        this.xPos = 590
+        this.yPos = 500
+        this.radius = 15
         this.direction = ""
     }
 
     move(keys: any, canvas: any) {
         if ("ArrowLeft" in keys) {
             this.direction = "left"
-            this.xPos -= 2
+            this.xPos -= 4
         }
         else if ("ArrowRight" in keys) {
             this.direction = "right"
-            this.xPos += 2
+            this.xPos += 4
 
         }
         else if ("ArrowUp" in keys) {
             this.direction = "up"
-            this.yPos -= 2
+            this.yPos -= 4
 
         }
         else if ("ArrowDown" in keys) {
             this.direction = "right"
-            this.yPos += 2
+            this.yPos += 4
 
         }
     }
