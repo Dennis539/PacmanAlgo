@@ -1,5 +1,6 @@
 import Wall from "./wall"
 import Coin from "./Coin"
+import Player from "../Player/player"
 
 class Board {
     height: number
@@ -19,12 +20,11 @@ class Board {
         this.walls = []
         this.coins = []
         this.createBoard()
-
     }
 
     createBoard() {
-        let constructMatrix: Array<string>
-        constructMatrix = [
+        let constructMatrix: Array<Array<string>>
+        var preConstructMatrix = [
             "W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W",
             "W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W	W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W",
             "W	C	W	W	W	W	C	W	W	W	C	C	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	W",
@@ -47,13 +47,15 @@ class Board {
         ]
         var x = this.xPos + 50
         var y = this.yPos + 50
-        this.width = (constructMatrix[0].split("\t").length * this.steps) + 100
-        this.height = (constructMatrix.length * this.steps) + 100
+        this.width = (preConstructMatrix[0].split("\t").length * this.steps) + 100
+        this.height = (preConstructMatrix.length * this.steps) + 100
         var sideToSide = ""
-        for (let i = 0; i < constructMatrix.length; i++) {
-            constructMatrix[i] = constructMatrix[i].split("\t")
-        }
+        constructMatrix = preConstructMatrix.map((constructArray) => constructArray.split("\t"))
 
+        let lineBeginX: number = 1
+        let lineBeginY: number = 1
+        let lineEndX: number = 1
+        let lineEndY: number = 1
 
         for (let i = 0; i < constructMatrix.length; i++) {
             var boardArray = []
@@ -70,6 +72,10 @@ class Board {
                             && constructMatrix[i+1][j] === "W"
                         ) {
                             sideToSide = "rightToBottom"
+                            lineBeginX = x+20
+                            lineBeginY = y+10
+                            lineEndX = x+10
+                            lineEndY = y+20
                         }
                         else if (j < constructMatrix[0].length - 1 && i > 0
                             && constructMatrix[i - 1][j + 1] === "C"
@@ -77,6 +83,10 @@ class Board {
                             && constructMatrix[i-1][j] === "W"
                         ) {
                             sideToSide = "rightToTop"
+                            lineBeginX = x+20
+                            lineBeginY = y+10
+                            lineEndX = x+10
+                            lineEndY = y
                         }
                         else if (i < constructMatrix.length - 1 && j > 0
                             && constructMatrix[i + 1][j - 1] === "C"
@@ -84,6 +94,10 @@ class Board {
                             && constructMatrix[i+1][j] === "W"
                         ) {
                             sideToSide = "leftToBottom"
+                            lineBeginX = x + 20
+                            lineBeginY = y+10
+                            lineEndX = x+10
+                            lineEndY = y+20
                         }
                         else if (i >0 && j > 0
                             && constructMatrix[i - 1][j - 1] === "C"
@@ -91,14 +105,26 @@ class Board {
                             && constructMatrix[i-1][j] === "W"
                         ) {
                             sideToSide = "leftToTop"
+                            lineBeginX = x
+                            lineBeginY = y
+                            lineEndX = x+10
+                            lineEndY = y+10
                         }
 
 
                         else if (i === 0 || i === constructMatrix.length - 1) {
                             sideToSide = "leftToRight"
+                            lineBeginX = x
+                            lineBeginY = y+10
+                            lineEndX = x+20
+                            lineEndY = y+10
                         }
                         else if (j === 0 || j === constructMatrix[0].length - 1) {
                             sideToSide = "upToBottom"
+                            lineBeginX = x+10
+                            lineBeginY = y
+                            lineEndX = x+10
+                            lineEndY = y+20
                         }
                     }
 
@@ -117,6 +143,10 @@ class Board {
                             && constructMatrix[i-1][j + 1] === "W"
                         ) {
                             sideToSide = "surrounded"
+                            lineBeginX = x + 10
+                            lineBeginY = y
+                            lineEndX = x+10
+                            lineEndY = y+20
                         }
                         else if (
                             (
@@ -137,12 +167,15 @@ class Board {
                             (
                                 constructMatrix[i - 1][j - 1] === "C"
                                 && constructMatrix[i - 1][j] === "C"
-                                // && constructMatrix[i - 1][j+1] === "C"
                                 && constructMatrix[i][j - 1] === "C"
                             )
 
                         ) {
                             sideToSide = "rightToBottom"
+                            lineBeginX = x+20
+                            lineBeginY = y+10
+                            lineEndX = x+10
+                            lineEndY = y+20
                         }
                             
                         else if (
@@ -168,6 +201,10 @@ class Board {
                             )
                         ) {
                             sideToSide = "leftToBottom"
+                            lineBeginX = x
+                            lineBeginY = y+10
+                            lineEndX = x+10
+                            lineEndY = y+20
                         }
                             
                         
@@ -194,6 +231,10 @@ class Board {
                             )
                         ) {
                             sideToSide = "rightToTop"
+                            lineBeginX = x+20
+                            lineBeginY = y+10
+                            lineEndX = x+10
+                            lineEndY = y
                         }
                         else if (
                             (
@@ -218,25 +259,41 @@ class Board {
                             )
                         ){
                             sideToSide = "leftToTop"
+                            lineBeginX = x + 10
+                            lineBeginY = y
+                            lineEndX = x+10
+                            lineEndY = y+20
                         }
 
                         else if (constructMatrix[i][j - 1] === "W"
                             && constructMatrix[i][j + 1] === "W"
                         ) {
                             sideToSide = "leftToRight"
+                            lineBeginX = x
+                            lineBeginY = y+10
+                            lineEndX = x+20
+                            lineEndY = y+10
                         }
                         else if (constructMatrix[i - 1][j] === "W"
                             && constructMatrix[i + 1][j] === "W"
                         ) {
                             sideToSide = "upToBottom"
+                            lineBeginX = x + 10
+                            lineBeginY = y
+                            lineEndX = x+10
+                            lineEndY = y+20
                         }
                             
                         else {
                             sideToSide = ""
+                            lineBeginX = x + 10
+                            lineBeginY = y
+                            lineEndX = x+10
+                            lineEndY = y+20
                         }
                     }
 
-                    this.walls.push(new Wall(x,y, sideToSide))
+                    this.walls.push(new Wall(x,y, sideToSide, lineBeginX, lineBeginY, lineEndX, lineEndY))
                 } else if (constructMatrix[i][j] === "C") {
                     this.coins.push(new Coin(x,y))
                 } else {
@@ -249,7 +306,26 @@ class Board {
         }
     }
 
-    
+
+    checkPlayerWallCollision(player: Player, newX: number, newY: number) {
+        for (let wall of this.walls) {
+            if (wall.wallDir === "upToBottom") {
+                let wallX = wall.xPos
+                let wallY = wall.yPos
+                for (let i = 0; i < 20; i++){
+                    const distX = wallX - newX
+                    const distY = wallY - newY
+                    const distance = ((distX * distX) + (distY * distY))
+                    if (distance < player.radius) {
+                        return false
+                    }
+                    wallY -= 1
+                }
+            }
+        }
+        return true
+    }
+
 
 
 }

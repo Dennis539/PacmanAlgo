@@ -32,71 +32,67 @@ function drawBoard() {
 
     c?.fillRect(board.xPos, board.yPos, board.width, board.height)
     for (let wall of board.walls) {
+        c?.beginPath()
         if (wall.wallDir === "leftToRight") {
-            c?.beginPath()
             c?.moveTo(wall.xPos, wall.yPos + 10)
             c?.lineTo(wall.xPos + 20, wall.yPos + 10)
         }
         else if (wall.wallDir === "upToBottom") {
-            c?.beginPath()
             c?.moveTo(wall.xPos + 10, wall.yPos)
             c?.lineTo(wall.xPos + 10, wall.yPos + 20)
         }
         else if (wall.wallDir === "rightToBottom") {
-            c?.beginPath();
-            const radius = 10; // Arc radius
-            const startAngle = Math.PI; // Starting point on circle
-            const endAngle = Math.PI*1.5;; // End point on circle
+            c?.moveTo(wall.xPos + 20, wall.yPos + 10)
+            c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos+20, 10)
 
-            c?.arc(wall.xPos + 20, wall.yPos + 20, radius, startAngle, endAngle);
         }
         else if (wall.wallDir === "leftToBottom") {
-            c?.beginPath();
-            const radius = 10; // Arc radius
-            const startAngle = Math.PI*1.5// Starting point on circle
-            const endAngle = 0 // End point on circle
+            c?.moveTo(wall.xPos, wall.yPos + 10)
+            c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos+20, 11)
 
-            c?.arc(wall.xPos, wall.yPos + 20, radius, startAngle, endAngle);
         }
         else if (wall.wallDir === "rightToTop") {
-            c?.beginPath();
-            const radius = 10; // Arc radius
-            const startAngle = Math.PI*0.5; // Starting point on circle
-            const endAngle = Math.PI;; // End point on circle
+            c?.moveTo(wall.xPos + 20, wall.yPos + 10)
+            c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos, 10)
 
-            c?.arc(wall.xPos + 20, wall.yPos, radius, startAngle, endAngle);
         }
         else if (wall.wallDir === "leftToTop") {
-            c?.beginPath();
-            const radius = 10; // Arc radius
-            const startAngle = 0// Starting point on circle
-            const endAngle = Math.PI*0.5 // End point on circle
+            c?.moveTo(wall.xPos, wall.yPos + 10)
+            c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos, 10)
 
-            c?.arc(wall.xPos, wall.yPos, radius, startAngle, endAngle);
         }
         c?.stroke()
 
     }
-            
-    // for (let j = 0; j < boardArray.length; j++) {
-    //     let boardUnit = boardArray[j]
-    //     if (boardUnit) {
-    //         if (boardUnit.type === "Wall") {
-    //             typeof boardUnit === Wall
+}
 
-    //             if (boardUnit.wallDir)
-    //             // c!.fillStyle = 'green'
-    //             // c?.fillRect(boardUnit.xPos, boardUnit.yPos, boardUnit.width, boardUnit.height)
-    //         }
-    //         else if (boardUnit.type === "Coin") {
-    //             c!.fillStyle = 'yellow'
-    //             c?.fillRect(boardUnit.xPos, boardUnit.yPos, boardUnit.width, boardUnit.height)
-    //         }
+function updatePlayer() {
+
+    // Check whether a future movement will cause a collision. 
+    if (player.direction === "right") {
+        var newX = player.xPos + player.speed
+        var newY = player.yPos
+    }
+    else if (player.direction === "left") {
+        var newX = player.xPos - player.speed
+        var newY = player.yPos
+    }
+    else if (player.direction === "up") {
+        var newX = player.xPos 
+        var newY = player.yPos - player.speed
+    }
+    else {
+        var newX = player.xPos
+        var newY = player.yPos + player.speed
+    }
+
+    // If there is no collision, move the player
+    if (!board.checkPlayerWallCollision(player, newX, newY)) {
+        player.move(keys, canvas)
+
+    }
 
 
-    //     }
-    // }
-    // console.log(board.boardMatrix)
 }
 
 function drawPlayer() {
@@ -104,7 +100,6 @@ function drawPlayer() {
     c?.beginPath()
     c?.arc(player.xPos, player.yPos, player.radius, 0, 2*Math.PI)
     c?.fill()
-    player.move(keys, canvas)
 }
 
 
@@ -118,6 +113,7 @@ function draw() {
 
 function loop() {
     draw()
+    updatePlayer()
     window.requestAnimationFrame(loop)
 
 }
