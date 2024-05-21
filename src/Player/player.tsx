@@ -11,8 +11,8 @@ class Player {
         this.yMovement = 0
         this.xPos = 590
         this.yPos = 500
-        this.radius = 18
-        this.speed = 2
+        this.radius = 17
+        this.speed = 1
         this.direction = ""
     }
 
