@@ -67,6 +67,7 @@ function drawBoard() {
 }
 
 function updatePlayer() {
+    player.updateDirection(keys)
 
     // Check whether a future movement will cause a collision. 
     if (player.direction === "right") {
@@ -88,6 +89,7 @@ function updatePlayer() {
 
     // If there is no collision, move the player
     if (!board.checkPlayerWallCollision(player, newX, newY)) {
+
         player.move(keys, canvas)
 
     }

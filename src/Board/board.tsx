@@ -310,23 +310,62 @@ class Board {
     checkPlayerWallCollision(player: Player, newX: number, newY: number) {
         for (let wall of this.walls) {
             if (wall.wallDir === "upToBottom") {
-                let wallX = wall.xPos
+                let wallX = wall.lineBeginX
                 let wallY = wall.yPos
                 for (let i = 0; i < 20; i++){
                     const distX = wallX - newX
                     const distY = wallY - newY
-                    const distance = ((distX * distX) + (distY * distY))
-                    if (distance < player.radius) {
-                        return false
+
+                    const distance = ((distX * distX) + (distY * distY)) ** 0.5
+                    if (distance < player.radius+1) {
+                        return true
                     }
-                    wallY -= 1
+                    wallY += 1
+                }
+            }
+            else if (wall.wallDir === "leftToRight") {
+                let wallX = wall.xPos
+                let wallY = wall.lineBeginY
+                for (let i = 0; i < 20; i++){
+                    const distX = wallX - newX
+                    const distY = wallY - newY
+
+                    const distance = ((distX * distX) + (distY * distY)) ** 0.5
+                    if (distance < player.radius+1) {
+                        return true
+                    }
+                    wallX += 1
+                }
+            }
+            else if (wall.wallDir === "rightToBottom") {
+                let wallX = wall.xPos + 20
+                let wallY = wall.yPos + 10
+                for (let i = 0; i < 10; i++){
+                    const distX = wallX - newX
+                    const distY = wallY - newY
+
+                    const distance = ((distX * distX) + (distY * distY)) ** 0.5
+                    if (distance < player.radius+2) {
+                        return true
+                    }
+                    wallX -= 1
+                }
+                for (let i = 0; i < 10; i++){
+                    const distX = wallX - newX
+                    const distY = wallY - newY
+
+                    const distance = ((distX * distX) + (distY * distY)) ** 0.5
+                    if (distance < player.radius+2) {
+                        return true
+                    }
+                    wallY += 1
                 }
             }
         }
-        return true
+        return false
     }
 
-
+ 
 
 }
 

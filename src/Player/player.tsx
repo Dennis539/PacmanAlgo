@@ -11,28 +11,41 @@ class Player {
         this.yMovement = 0
         this.xPos = 590
         this.yPos = 500
-        this.radius = 15
-        this.speed = 4
+        this.radius = 18
+        this.speed = 2
         this.direction = ""
     }
 
-    move(keys: any, canvas: any) {
+    updateDirection(keys: any) {
         if ("ArrowLeft" in keys) {
             this.direction = "left"
-            this.xPos -= this.speed
         }
         else if ("ArrowRight" in keys) {
             this.direction = "right"
-            this.xPos += this.speed
 
         }
         else if ("ArrowUp" in keys) {
             this.direction = "up"
+
+        }
+        else if ("ArrowDown" in keys) {
+            this.direction = "down"
+        }
+    }
+
+    move(keys: any, canvas: any) {
+        if ("ArrowLeft" in keys) {
+            this.xPos -= this.speed
+        }
+        else if ("ArrowRight" in keys) {
+            this.xPos += this.speed
+
+        }
+        else if ("ArrowUp" in keys) {
             this.yPos -= this.speed
 
         }
         else if ("ArrowDown" in keys) {
-            this.direction = "right"
             this.yPos += this.speed
 
         }
