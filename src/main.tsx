@@ -89,8 +89,8 @@ function updatePlayer() {
 
     // If there is no collision, move the player
     if (!board.checkPlayerWallCollision(player, newX, newY)) {
-
         player.move(keys, canvas)
+
 
     }
 

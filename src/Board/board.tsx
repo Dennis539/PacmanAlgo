@@ -317,7 +317,8 @@ class Board {
                     const distY = wallY - newY
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
-                    if (distance < player.radius+2) {
+                    const addRadius = newX < wallX ? +1 : +2
+                    if (distance < player.radius+addRadius) {
                         return true
                     }
                     wallY += 1
@@ -331,7 +332,9 @@ class Board {
                     const distY = wallY - newY
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
-                    if (distance < player.radius + 2) {
+                    const addRadius = newY < wallY ? +1 : +2
+
+                    if (distance < player.radius + addRadius) {
                         return true
                     }
                     wallX += 1
@@ -345,7 +348,15 @@ class Board {
                     const distY = wallY - newY
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
-                    if (distance < player.radius+2) {
+                    if (distance < player.radius + 1) {
+                        if (player.direction === "right") {
+                            console.log("Kees")
+                            player.yPos -= 1
+                            player.xPos += 1
+                            return true
+                        }
+                        console.log(player.direction)
+                        console.log("Uig")
                         return true
                     }
                     wallX -= 1
@@ -355,7 +366,7 @@ class Board {
                     const distY = wallY - newY
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
-                    if (distance < player.radius+2) {
+                    if (distance < player.radius+1) {
                         return true
                     }
                     wallY += 1
@@ -369,7 +380,7 @@ class Board {
                     const distY = wallY - newY
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
-                    if (distance < player.radius+2) {
+                    if (distance < player.radius+1) {
                         return true
                     }
                     wallX += 1
@@ -379,7 +390,7 @@ class Board {
                     const distY = wallY - newY
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
-                    if (distance < player.radius+2) {
+                    if (distance < player.radius+1) {
                         return true
                     }
                     wallY += 1
@@ -393,7 +404,7 @@ class Board {
                     const distY = wallY - newY
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
-                    if (distance < player.radius+2) {
+                    if (distance < player.radius+1) {
                         return true
                     }
                     wallX -= 1
@@ -403,7 +414,7 @@ class Board {
                     const distY = wallY - newY
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
-                    if (distance < player.radius+2) {
+                    if (distance < player.radius+1) {
                         return true
                     }
                     wallY -= 1
@@ -417,7 +428,7 @@ class Board {
                     const distY = wallY - newY
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
-                    if (distance < player.radius+2) {
+                    if (distance < player.radius+1) {
                         return true
                     }
                     wallX += 1
@@ -427,7 +438,7 @@ class Board {
                     const distY = wallY - newY
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
-                    if (distance < player.radius+2) {
+                    if (distance < player.radius+1) {
                         return true
                     }
                     wallY -= 1
