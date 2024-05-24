@@ -91,7 +91,6 @@ function updatePlayer() {
     if (!board.checkPlayerWallCollision(player, newX, newY)) {
         player.move(keys, canvas)
 
-
     }
 
 
