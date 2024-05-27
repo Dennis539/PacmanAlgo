@@ -386,13 +386,14 @@ class Board {
             else if (wall.wallDir === "leftToBottom") {
                 let wallX = wall.xPos 
                 let wallY = wall.yPos + 9
-                for (let i = 0; i < 10; i++){
+                for (let i = 0; i < 7; i++){
                     const distX = wallX - newX
                     const distY = wallY - newY
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
-                    if (distance < player.radius + 1) {
+                    if (distance < player.radius) {
                         if (player.direction === "down") {
+                            console.log("Ruig")
                             player.xPos += 1
                             return true
                         }
@@ -400,12 +401,12 @@ class Board {
                     }
                     wallX += 1
                 }
-                for (let i = 0; i < 10; i++){
+                for (let i = 0; i < 7; i++){
                     const distX = wallX - newX
                     const distY = wallY - newY
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
-                    if (distance < player.radius + 1) {
+                    if (distance < player.radius ) {
                         if (player.direction === "left") {
                             player.yPos -= 1
                             return true
@@ -437,7 +438,7 @@ class Board {
                     const distY = wallY - newY
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
-                    if (distance < player.radius + 1) {
+                    if (distance < player.radius + 2) {
                         if (player.direction === "right") {
                             player.yPos += 1
                             return true
