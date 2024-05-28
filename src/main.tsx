@@ -44,25 +44,26 @@ function drawBoard() {
         else if (wall.wallDir === "rightToBottom") {
             c?.moveTo(wall.xPos + 20, wall.yPos + 10)
             c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos+20, 10)
-
         }
         else if (wall.wallDir === "leftToBottom") {
             c?.moveTo(wall.xPos, wall.yPos + 10)
             c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos+20, 10)
-
         }
         else if (wall.wallDir === "rightToTop") {
             c?.moveTo(wall.xPos + 20, wall.yPos + 10)
             c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos, 10)
-
         }
         else if (wall.wallDir === "leftToTop") {
             c?.moveTo(wall.xPos, wall.yPos + 10)
             c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos, 10)
-
         }
         c?.stroke()
+    }
 
+    for (let coin of board.coins) {
+        const img = new Image()
+        img.src = 'coin.png'
+        c?.drawImage(img, coin.xPos, coin.yPos, coin.width, coin.height)
     }
 }
 
@@ -89,12 +90,8 @@ function updatePlayer() {
 
     // If there is no collision, move the player
     if (!board.checkPlayerWallCollision(player, newX, newY)) {
-        // console.log("Kees")
         player.move(keys, canvas)
-
     }
-
-
 }
 
 function drawPlayer() {
