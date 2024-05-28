@@ -320,7 +320,6 @@ class Board {
                     const addRadius = newX < wallX ? +1 : +2
                     if (distance < player.radius + addRadius) {
                         if (i === 19) {
-                            console.log("Kees")
                             if (wallX <= player.xPos) {
                                 player.xPos += 1
                             } else {
@@ -358,11 +357,10 @@ class Board {
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
                     if (distance < player.radius + 1) {
                         if (player.direction === "down") {
-                            console.log("rightToBottom")
                             player.xPos -= 1
                             return true
                         }
-
+                        
                         return true
                     }
                     wallX -= 1
@@ -374,10 +372,14 @@ class Board {
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
                     if (distance < player.radius + 1) {
                         if (player.direction === "right") {
-                            console.log("rightToBottom")
                             player.yPos -= 1
                             return true
                         }
+                        else if (player.direction === "down") {
+                            player.xPos -= 1
+                            return true
+                        }
+                        
                         return true
                     }
                     wallY += 1
@@ -392,8 +394,6 @@ class Board {
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
                     if (distance < player.radius + 1) {
-                        console.log("leftToBottom")
-
                         if (player.direction === "down") {
                             player.xPos += 1
                             return true
@@ -408,7 +408,6 @@ class Board {
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
                     if (distance < player.radius + 1) {
-                        // console.log("leftToBottom")
 
                         if (player.direction === "left") {
                             player.yPos -= 1
@@ -426,15 +425,13 @@ class Board {
             else if (wall.wallDir === "rightToTop") {
 
                 let wallX = wall.xPos +19
-                let wallY = wall.yPos + 9
+                let wallY = wall.yPos + 10
                 for (let i = 0; i < 10; i++){
                     const distX = wallX - newX
                     const distY = wallY - newY
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
                     if (distance < player.radius + 1) {
-                        console.log("rightToTop")
-
                         if (player.direction === "up") {
                             player.xPos -= 1
                             return true
@@ -448,11 +445,13 @@ class Board {
                     const distY = wallY - newY
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
-                    if (distance < player.radius + 2) {
-                        console.log("rightToTop")
-
+                    if (distance < player.radius + 1) {
                         if (player.direction === "right") {
                             player.yPos += 1
+                            return true
+                        }
+                        else if (player.direction === "up") {
+                            player.xPos -= 1
                             return true
                         }
                         return true
@@ -469,7 +468,6 @@ class Board {
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
                     if (distance < player.radius + 1) {
-                        console.log("leftToTop")
 
                         if (player.direction === "up") {
                             player.xPos += 1
@@ -485,9 +483,12 @@ class Board {
 
                     const distance = ((distX * distX) + (distY * distY)) ** 0.5
                     if (distance < player.radius + 1) {
-                        console.log("leftToTop")
                         if (player.direction === "left") {
                             player.yPos -= 1
+                            return true
+                        }
+                        else if (player.direction === "up") {
+                            player.xPos += 1
                             return true
                         }
                         return true

@@ -89,7 +89,7 @@ function updatePlayer() {
 
     // If there is no collision, move the player
     if (!board.checkPlayerWallCollision(player, newX, newY)) {
-        console.log("Kees")
+        // console.log("Kees")
         player.move(keys, canvas)
 
     }
