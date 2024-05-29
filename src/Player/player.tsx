@@ -6,14 +6,16 @@ class Player {
     yMovement: number
     direction: string
     speed: number
+    score: number
     constructor() {
         this.xMovement = 0
         this.yMovement = 0
         this.xPos = 590
         this.yPos = 500
-        this.radius = 17
+        this.radius = 18
         this.speed = 1
         this.direction = "right"
+        this.score = 0
     }
 
     updateDirection(keys: any) {

@@ -500,6 +500,31 @@ class Board {
         return false
     }
 
+    playerCoinCollision(player: Player, coin: Coin) {
+        let testX = 0
+        let testY = 0
+        if (player.xPos < coin.xPos) {
+            testX = coin.xPos
+        }
+        else if (player.xPos > coin.xPos + coin.width) {
+            testX = coin.xPos + coin.width + 9
+        }
+        if (player.yPos < coin.yPos) {
+            testY = coin.yPos
+        } 
+        else if (player.yPos > coin.yPos + coin.height) {
+            testY = coin.yPos + coin.height + 9
+        }
+        const distX = player.xPos - testX
+        const distY = player.yPos - testY
+        const distance = ((distX * distX) + (distY * distY)) ** 0.5
+        if (distance <= player.radius) {
+            player.score += 100
+            return false
+        }
+        return true
+    }
+
  
 
 }

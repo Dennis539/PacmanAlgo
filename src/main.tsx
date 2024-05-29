@@ -60,10 +60,9 @@ function drawBoard() {
         c?.stroke()
     }
 
+    board.coins = board.coins.filter((coin) => board.playerCoinCollision(player, coin))
     for (let coin of board.coins) {
-        const img = new Image()
-        img.src = 'coin.png'
-        c?.drawImage(img, coin.xPos, coin.yPos, coin.width, coin.height)
+        c?.drawImage(coin.image, coin.xPos , coin.yPos, coin.width, coin.height)
     }
 }
 
