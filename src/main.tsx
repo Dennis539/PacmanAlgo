@@ -62,7 +62,7 @@ function drawBoard() {
 
     board.coins = board.coins.filter((coin) => board.playerCoinCollision(player, coin))
     for (let coin of board.coins) {
-        c?.drawImage(coin.image, coin.xPos , coin.yPos, coin.width, coin.height)
+        c?.drawImage(coin.image, coin.xPos + 6, coin.yPos + 6, coin.width, coin.height)
     }
 }
 
