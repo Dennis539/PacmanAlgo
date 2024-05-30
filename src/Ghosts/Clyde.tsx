@@ -3,6 +3,12 @@
 import BaseGhost from "./baseGhost";
 
 class Clyde extends BaseGhost{
+    constructor(
+        radius: number
+    ) {
+        super(radius)
+
+    }
 
 }
 
