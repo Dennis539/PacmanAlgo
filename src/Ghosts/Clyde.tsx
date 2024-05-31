@@ -3,11 +3,11 @@
 import BaseGhost from "./baseGhost";
 
 class Clyde extends BaseGhost{
-    constructor(
-        radius: number
-    ) {
-        super(radius)
-
+    constructor() {
+        super()
+        this.xPos = 490
+        this.yPos = 350
+        this.color = "orange"
     }
 
 }

@@ -6,6 +6,7 @@ class BaseGhost {
     yMovement: number
     direction: string
     speed: number
+    color: string
     constructor() {
         this.xMovement = 0
         this.yMovement = 0
@@ -14,6 +15,7 @@ class BaseGhost {
         this.radius = 18
         this.speed = 1
         this.direction = "right"
+        this.color = ""
     }
 }
 

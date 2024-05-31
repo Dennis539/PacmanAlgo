@@ -1,5 +1,6 @@
 import Board from "./Board/board.tsx"
 import Player from "./Player/player.tsx"
+import Clyde from "./Ghosts/Clyde.tsx"
 import Wall from "./Board/wall.tsx"
 import Coin from "./Board/Coin.tsx"
 
@@ -20,10 +21,12 @@ window.addEventListener('keyup', function (e) {
 
 let player: Player
 let board: Board
+let clyde: Clyde
 
 function init() {
     player = new Player()
     board = new Board()
+    clyde = new Clyde()
     board.createBoard()
 }
 
@@ -100,6 +103,15 @@ function drawPlayer() {
     c?.fill()
 }
 
+function drawGhosts() {
+    for (let ghost of [clyde]) {
+        c!.fillStyle = ghost.color
+        c?.beginPath()
+        c?.arc(ghost.xPos, ghost.yPos, ghost.radius, 0, 2*Math.PI)
+        c?.fill()
+    }
+}
+
 
 function draw() {
     c?.clearRect(0, 0, canvas.width, canvas.height)
@@ -107,6 +119,7 @@ function draw() {
     c?.fillRect(0, 0, canvas.width, canvas.height)
     drawBoard()
     drawPlayer()
+    drawGhosts()
 }
 
 function loop() {
