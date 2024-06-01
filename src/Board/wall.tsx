@@ -9,6 +9,7 @@ class Wall {
     lineBeginY: number
     lineEndX: number
     lineEndY: number
+    neightbors: Array<any>
 
     constructor(
         xPos: number, yPos: number, wallDir: string,
@@ -25,8 +26,9 @@ class Wall {
         this.lineBeginY = lineBeginY
         this.lineEndX = lineEndX
         this.lineEndY = lineEndY
+        this.neightbors = []
     }
-
+ 
 }
 
 export default Wall

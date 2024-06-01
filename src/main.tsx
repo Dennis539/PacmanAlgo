@@ -1,8 +1,8 @@
 import Board from "./Board/board.tsx"
 import Player from "./Player/player.tsx"
-import Clyde from "./Ghosts/Clyde.tsx"
+import Chaser from "./Ghosts/Blinky.tsx"
 import Wall from "./Board/wall.tsx"
-import Coin from "./Board/Coin.tsx"
+import Tile from "./Board/tile.tsx"
 
 let canvas = document.querySelector('canvas')!
 const c = canvas?.getContext('2d')
@@ -21,52 +21,66 @@ window.addEventListener('keyup', function (e) {
 
 let player: Player
 let board: Board
-let clyde: Clyde
+let clyde: Chaser
 
 function init() {
     player = new Player()
     board = new Board()
-    clyde = new Clyde()
+    clyde = new Chaser()
     board.createBoard()
+}
+
+function drawBorder(xPos: number, yPos: number, width: number, height: number, thickness = 1)
+{
+  c!.fillStyle='#000';
+  c?.fillRect(xPos - (thickness), yPos - (thickness), width + (thickness * 2), height + (thickness * 2));
 }
 
 function drawBoard() {
     c!.fillStyle = 'white'
 
     c?.fillRect(board.xPos, board.yPos, board.width, board.height)
-    for (let wall of board.walls) {
-        c?.beginPath()
-        if (wall.wallDir === "leftToRight") {
-            c?.moveTo(wall.xPos, wall.yPos + 10)
-            c?.lineTo(wall.xPos + 20, wall.yPos + 10)
+    for (let i = 0; i < board.boardMatrix.length; i++){
+        for (let j = 0; j < board.boardMatrix[0].length; j++) {
+            if (!board.boardMatrix[i][j]) {
+                continue
+            }
+            if (board.boardMatrix[i][j].type === "Wall") {
+                c?.beginPath()
+                let wall = board.boardMatrix[i][j]
+                if (wall.wallDir === "leftToRight") {
+                    c?.moveTo(wall.xPos, wall.yPos + 10)
+                    c?.lineTo(wall.xPos + 20, wall.yPos + 10)
+                }
+                else if (wall.wallDir === "upToBottom") {
+                    c?.moveTo(wall.xPos + 10, wall.yPos)
+                    c?.lineTo(wall.xPos + 10, wall.yPos + 20)
+                }
+                else if (wall.wallDir === "rightToBottom") {
+                    c?.moveTo(wall.xPos + 20, wall.yPos + 10)
+                    c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos+20, 10)
+                }
+                else if (wall.wallDir === "leftToBottom") {
+                    c?.moveTo(wall.xPos, wall.yPos + 10)
+                    c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos+20, 10)
+                }
+                else if (wall.wallDir === "rightToTop") {
+                    c?.moveTo(wall.xPos + 20, wall.yPos + 10)
+                    c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos, 10)
+                }
+                else if (wall.wallDir === "leftToTop") {
+                    c?.moveTo(wall.xPos, wall.yPos + 10)
+                    c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos, 10)
+                }
+                c?.stroke()
+            } else if (board.boardMatrix[i][j].type === "Coin") {
+                let coin = board.boardMatrix[i][j]
+                c?.drawImage(coin.image, coin.xPos + 6, coin.yPos + 6, coin.width, coin.height)
+                board.playerCoinCollision(player, coin)
+            }
         }
-        else if (wall.wallDir === "upToBottom") {
-            c?.moveTo(wall.xPos + 10, wall.yPos)
-            c?.lineTo(wall.xPos + 10, wall.yPos + 20)
-        }
-        else if (wall.wallDir === "rightToBottom") {
-            c?.moveTo(wall.xPos + 20, wall.yPos + 10)
-            c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos+20, 10)
-        }
-        else if (wall.wallDir === "leftToBottom") {
-            c?.moveTo(wall.xPos, wall.yPos + 10)
-            c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos+20, 10)
-        }
-        else if (wall.wallDir === "rightToTop") {
-            c?.moveTo(wall.xPos + 20, wall.yPos + 10)
-            c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos, 10)
-        }
-        else if (wall.wallDir === "leftToTop") {
-            c?.moveTo(wall.xPos, wall.yPos + 10)
-            c?.arcTo(wall.xPos+10, wall.yPos+10, wall.xPos+10, wall.yPos, 10)
-        }
-        c?.stroke()
     }
 
-    board.coins = board.coins.filter((coin) => board.playerCoinCollision(player, coin))
-    for (let coin of board.coins) {
-        c?.drawImage(coin.image, coin.xPos + 6, coin.yPos + 6, coin.width, coin.height)
-    }
 }
 
 function updatePlayer() {

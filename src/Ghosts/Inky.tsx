@@ -1,8 +1,8 @@
 import BaseGhost from "./baseGhost";
 
-class Clyde extends BaseGhost {
+class Whimsical extends BaseGhost {
     constructor() {
         super()
-        this.color = "orange"
+        this.color = "blue"
     }
 }
