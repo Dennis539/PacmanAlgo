@@ -11,6 +11,7 @@ class Board {
     walls: Array<Wall>
     coins: Array<Tile>
     boardMatrix: Array<Array<any>>
+    middlePosTile: Array<Array<number>>
 
     constructor() {
         this.height = 600
@@ -22,6 +23,20 @@ class Board {
         this.coins = []
         this.boardMatrix = []
         this.createBoard()
+        this.middlePosTile = this.calculateMiddlePosTile() // All the middle points of the tiles within the boardGrid. 
+    }
+
+    calculateMiddlePosTile() {
+        let middlePosTile = []
+        for (let i = 0; i < this.boardMatrix.length; i++) {
+            for (let j = 0; j < this.boardMatrix[i].length; j++) {
+                if (this.boardMatrix[i][j]) {
+                    middlePosTile.push([this.boardMatrix[i][j].xPos+10, this.boardMatrix[i][j].yPos+10])
+
+                }
+            }
+        }
+        return middlePosTile
     }
 
     createBoard() {

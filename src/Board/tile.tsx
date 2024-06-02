@@ -3,6 +3,8 @@ class Tile {
     width: number
     xPos: number
     yPos: number
+    xMiddle: number
+    yMiddle: number
     type: string
     image: any
     neightbors: Array<any>
@@ -12,6 +14,8 @@ class Tile {
         this.width = 8
         this.xPos = xPos
         this.yPos = yPos
+        this.xMiddle = this.xPos + 10
+        this.yMiddle = this.yPos + 10
         this.type = "Coin"
         this.image = new Image()
         this.image.src = 'coin.png'

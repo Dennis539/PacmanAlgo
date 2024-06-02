@@ -1,21 +1,39 @@
+import Board from "../Board/board"
+
 class Player {
     xPos: number
     yPos: number
     radius: number
-    xMovement: number
-    yMovement: number
     direction: string
     speed: number
     score: number
+    tile: Array<number>
     constructor() {
-        this.xMovement = 0
-        this.yMovement = 0
         this.xPos = 590
-        this.yPos = 500
+        this.yPos = 490
         this.radius = 18
         this.speed = 1
         this.direction = "right"
         this.score = 0
+        this.tile = [19,9] // X and Y index of the boardGrid. 
+    }
+
+    updateTile(board: Board) {
+        let tileXPos = this.tile[0]
+        let tileYPos = this.tile[0]
+        let boardTile = board.boardMatrix[tileXPos][tileYPos]
+        if (boardTile.middlePosTile) {
+            if (boardTile.middlePosTile[0] - this.xPos < -10) {
+                this.tile[0] += 1
+            } else if (boardTile.middlePosTile[0] - this.xPos > 10) {
+                this.tile[0] -= 1
+            } else if (boardTile.middlePosTile[1] - this.yPos < -10) {
+                this.tile[1] += 1
+            } else if (boardTile.middlePosTile[1] - this.yPos > 10) {
+                this.tile[1] -= 1
+            }
+        }
+
     }
 
     updateDirection(keys: any) {
@@ -35,7 +53,7 @@ class Player {
         }
     }
 
-    move(keys: any, canvas: any) {
+    move(keys: any, board: Board) {
         if ("ArrowLeft" in keys) {
             this.xPos -= this.speed
         }
@@ -51,6 +69,7 @@ class Player {
             this.yPos += this.speed
 
         }
+        this.updateTile(board)
     }
 
 }

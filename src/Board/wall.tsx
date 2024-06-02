@@ -3,6 +3,8 @@ class Wall {
     width: number
     xPos: number
     yPos: number
+    xMiddle: number
+    yMiddle: number
     type: string
     wallDir: string
     lineBeginX: number
@@ -20,6 +22,8 @@ class Wall {
         this.width = 20
         this.xPos = xPos
         this.yPos = yPos
+        this.xMiddle = this.xPos + 10
+        this.yMiddle = this.xPos + 10
         this.type = "Wall"
         this.wallDir = wallDir
         this.lineBeginX = lineBeginX

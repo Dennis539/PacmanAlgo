@@ -26,15 +26,17 @@ let clyde: Chaser
 function init() {
     player = new Player()
     board = new Board()
+    console.log(board.middlePosTile)
+
     clyde = new Chaser()
     board.createBoard()
 }
 
-function drawBorder(xPos: number, yPos: number, width: number, height: number, thickness = 1)
-{
-  c!.fillStyle='#000';
-  c?.fillRect(xPos - (thickness), yPos - (thickness), width + (thickness * 2), height + (thickness * 2));
+function drawBorder(xPos: number, yPos: number, width: number, height: number, thickness = 1) {
+    c!.fillStyle='#000';
+    c?.fillRect(xPos - (thickness), yPos - (thickness), width + (thickness * 2), height + (thickness * 2));
 }
+
 
 function drawBoard() {
     c!.fillStyle = 'white'
@@ -78,6 +80,9 @@ function drawBoard() {
                 c?.drawImage(coin.image, coin.xPos + 6, coin.yPos + 6, coin.width, coin.height)
                 board.playerCoinCollision(player, coin)
             }
+            c!.fillStyle = 'red'
+
+            c?.fillRect(board.boardMatrix[i][j].xMiddle,board.boardMatrix[i][j].yMiddle,1,1)
         }
     }
 
@@ -106,15 +111,19 @@ function updatePlayer() {
 
     // If there is no collision, move the player
     if (!board.checkPlayerWallCollision(player, newX, newY)) {
-        player.move(keys, canvas)
+        player.move(keys, board)
     }
 }
+
+
 
 function drawPlayer() {
     c!.fillStyle = 'yellow'
     c?.beginPath()
     c?.arc(player.xPos, player.yPos, player.radius, 0, 2*Math.PI)
     c?.fill()
+    c!.fillStyle = 'purple'
+    c?.fillRect(player.xPos, player.yPos,1,1)
 }
 
 function drawGhosts() {
@@ -144,4 +153,5 @@ function loop() {
 }
 
 init()
+
 loop()
