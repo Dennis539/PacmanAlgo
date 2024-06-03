@@ -71,9 +71,9 @@ class BaseGhost {
 
     aStarAlgorithm(board: Board, start: Tile, end: Tile) {
         let count = 0
-        let openSet = new PriorityQueue()
+        let openSet = new PriorityQueue<Array<any>>()
         openSet.add([0,count,start])
-        let cameFrom = {}
+        let cameFrom = new Map()
         let gScore = new Map()
         let fScore = new Map()
         let grid = board.boardMatrix
@@ -96,13 +96,35 @@ class BaseGhost {
         openSetHash.add(start)
 
         while (!openSet.empty()) {
-            let current = openSet.poll()
-            let tempGScore = gScore.get(current)
+            let current:Tile = openSet.poll()![2]
             openSetHash.delete(current)
 
             if (current === end) {
                 // pass
             }
+
+            for (let neightbor of current.neightbors) {
+                if (neightbor) {
+                    let tempGScore = gScore.get(current) + 1
+
+                    if (tempGScore < gScore.get(neightbor)) {
+                        cameFrom.set(neightbor, current)
+                        gScore.set(neightbor, tempGScore)
+
+                        let distX: number = (neightbor.xMiddle- end.xMiddle) * -1
+                        let distY: number = (neightbor.yMiddle - end.yMiddle) * -1
+                        let distance = ((distX * distX) + (distY * distY)) ** 0.5
+                        fScore.set(neightbor, tempGScore + distance)
+                        
+                        if (!openSetHash.has(neightbor)) {
+                            
+                        }
+                    }
+                }
+
+            }
+            
+
             
         }
     }
