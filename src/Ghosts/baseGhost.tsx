@@ -117,11 +117,13 @@ class BaseGhost {
                         fScore.set(neightbor, tempGScore + distance)
                         
                         if (!openSetHash.has(neightbor)) {
-                            
+                            count += 1
+                            openSet.add([fScore.get(neightbor), count, neightbor])
+                            openSetHash.add(neightbor)
+
                         }
                     }
                 }
-
             }
             
 
