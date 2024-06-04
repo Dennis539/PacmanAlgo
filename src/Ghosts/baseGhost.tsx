@@ -20,7 +20,7 @@ class BaseGhost {
         this.xMovement = 0
         this.yMovement = 0
         this.xPos = 590
-        this.yPos = 500
+        this.yPos = 510
         this.radius = 18
         this.speed = 1
         this.direction = "right"
@@ -28,15 +28,22 @@ class BaseGhost {
         this.neightbor = []
         this.localEnd = [] //[X, Y]
         this.preVisited = []
-        this.tile = [19,9]
+        this.tile = [29,19]
     }
 
-    movement(board: Board, player: Player) {
-        if (board.middlePosTile.includes([this.xPos, this.yPos])) {
+    move(board: Board, player: Player) {
+        // aStart will only run when the ghost is on the middlepos. Otherwise, move closer to the middlepos.
+        const checkMiddlePosTile = board.middlePosTile.some((middleArray) => middleArray[0] === this.xPos && middleArray[1] === this.yPos)
+        console.log(board.boardMatrix[32][19])
+        if (checkMiddlePosTile) {
             let beginTile = board.boardMatrix[this.tile[0]][this.tile[1]]
             let endTile = board.boardMatrix[player.tile[0]][player.tile[1]]
+            this.determine_neightbors(board.boardMatrix)
             this.aStarAlgorithm(board, beginTile, endTile)
+            // throw "stop"
+            
         } else {
+            console.log("Kees on the move")
             if (this.xPos < this.localEnd[0]) {
                 this.xPos += this.speed
             } else if (this.xPos > this.localEnd[0]) {
@@ -61,10 +68,9 @@ class BaseGhost {
                         && this.yPos <= node.yPos + 19
                     ) {
                         this.neightbor = node.neightbor
-                        this.tile = node
+                        this.tile = [i+10, j+10]
                     }
                 }
-
             }
         }
     }
@@ -88,31 +94,56 @@ class BaseGhost {
             }
         }
         gScore.set(start, 0)
-        let distX: number = (start.xMiddle - end.xMiddle) * -1
-        let distY: number = (start.yMiddle - end.yMiddle) * -1
+        let distX: number = Math.abs((start.xMiddle - end.xMiddle))
+        let distY: number = Math.abs((start.yMiddle - end.yMiddle))
         
         fScore.set(start, ((distX * distX) + (distY * distY)) ** 0.5)
         let openSetHash = new Set()
         openSetHash.add(start)
 
         while (!openSet.empty()) {
-            let current:Tile = openSet.poll()![2]
+            let current: Tile = openSet.poll()![2]
             openSetHash.delete(current)
+            let curArr = []
 
             if (current === end) {
-                // pass
+                while (Array.from(cameFrom.keys()).includes(current)) {
+                    // var tempCur = current
+                    console.log(current.xMiddle, current.yMiddle)
+                    
+                    current = cameFrom.get(current)
+                    curArr.push(current)
+                }
+                console.log(curArr)
+                console.log(curArr[curArr.length - 2])
+                this.localEnd = [curArr[curArr.length - 2].xMiddle, curArr[curArr.length - 2].yMiddle]
+                console.log(this.localEnd)
+                console.log(this.xPos, this.yPos)
+                if (this.xPos < this.localEnd[0]) {
+                    this.xPos += this.speed
+                } else if (this.xPos > this.localEnd[0]) {
+                    this.xPos -= this.speed
+                } 
+                if (this.yPos < this.localEnd[1]) {
+                    this.yPos += this.speed
+                } else if (this.yPos > this.localEnd[1]) {
+                    this.yPos -= this.speed
+                }
+                // throw "Quitting Kees"
+
+                return
             }
 
             for (let neightbor of current.neightbors) {
-                if (neightbor) {
+                if (neightbor && neightbor.type !== "Wall") {
                     let tempGScore = gScore.get(current) + 1
 
                     if (tempGScore < gScore.get(neightbor)) {
                         cameFrom.set(neightbor, current)
                         gScore.set(neightbor, tempGScore)
 
-                        let distX: number = (neightbor.xMiddle- end.xMiddle) * -1
-                        let distY: number = (neightbor.yMiddle - end.yMiddle) * -1
+                        let distX: number = Math.abs((start.xMiddle - end.xMiddle))
+                        let distY: number = Math.abs((start.yMiddle - end.yMiddle))
                         let distance = ((distX * distX) + (distY * distY)) ** 0.5
                         fScore.set(neightbor, tempGScore + distance)
                         
@@ -125,9 +156,6 @@ class BaseGhost {
                     }
                 }
             }
-            
-
-            
         }
     }
 }

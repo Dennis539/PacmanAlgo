@@ -21,14 +21,14 @@ window.addEventListener('keyup', function (e) {
 
 let player: Player
 let board: Board
-let clyde: Chaser
+let chaser: Chaser
 
 function init() {
     player = new Player()
     board = new Board()
     console.log(board.middlePosTile)
 
-    clyde = new Chaser()
+    chaser = new Chaser()
     board.createBoard()
 }
 
@@ -127,11 +127,12 @@ function drawPlayer() {
 }
 
 function drawGhosts() {
-    for (let ghost of [clyde]) {
+    for (let ghost of [chaser]) {
         c!.fillStyle = ghost.color
         c?.beginPath()
         c?.arc(ghost.xPos, ghost.yPos, ghost.radius, 0, 2*Math.PI)
         c?.fill()
+        chaser.move(board, player)
     }
 }
 

@@ -8,6 +8,8 @@ class Chaser extends BaseGhost{
         this.xPos = 490
         this.yPos = 350
         this.color = "red"
+        this.tile = [25,14]
+
     }
 
 }
