@@ -14,7 +14,7 @@ class BaseGhost {
     color: string
     neightbor: Array<any>
     localEnd: Array<number>
-    preVisited: Array<number>
+    preVisited: Tile
     tile: Array<number>
     constructor() {
         this.xMovement = 0
@@ -27,20 +27,22 @@ class BaseGhost {
         this.color = ""
         this.neightbor = []
         this.localEnd = [] //[X, Y]
-        this.preVisited = []
+        this.preVisited = null
         this.tile = [29,19]
     }
 
     move(board: Board, player: Player) {
         // aStart will only run when the ghost is on the middlepos. Otherwise, move closer to the middlepos.
         const checkMiddlePosTile = board.middlePosTile.some((middleArray) => middleArray[0] === this.xPos && middleArray[1] === this.yPos)
-        console.log(board.boardMatrix[32][19])
+        console.log(this.tile)
+        // throw "Quit"
+        console.log(board.boardMatrix[this.tile[0]][this.tile[1]])
         if (checkMiddlePosTile) {
             let beginTile = board.boardMatrix[this.tile[0]][this.tile[1]]
             let endTile = board.boardMatrix[player.tile[0]][player.tile[1]]
             this.determine_neightbors(board.boardMatrix)
             this.aStarAlgorithm(board, beginTile, endTile)
-            // throw "stop"
+            // throw "stop" 
             
         } else {
             console.log("Kees on the move")
@@ -68,7 +70,7 @@ class BaseGhost {
                         && this.yPos <= node.yPos + 19
                     ) {
                         this.neightbor = node.neightbor
-                        this.tile = [i+10, j+10]
+                        this.tile = [i, j]
                     }
                 }
             }
@@ -129,13 +131,13 @@ class BaseGhost {
                 } else if (this.yPos > this.localEnd[1]) {
                     this.yPos -= this.speed
                 }
-                // throw "Quitting Kees"
+                this.preVisited = curArr[curArr.length-1]
 
                 return
             }
 
             for (let neightbor of current.neightbors) {
-                if (neightbor && neightbor.type !== "Wall") {
+                if (neightbor && neightbor.type !== "Wall" && neightbor !== this.preVisited) {
                     let tempGScore = gScore.get(current) + 1
 
                     if (tempGScore < gScore.get(neightbor)) {
