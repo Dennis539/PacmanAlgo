@@ -28,7 +28,7 @@ function init() {
     board = new Board()
     console.log(board.middlePosTile)
 
-    chaser = new Chaser()
+    chaser = new Chaser(board)
 }
 
 function drawBorder(xPos: number, yPos: number, width: number, height: number, thickness = 1) {

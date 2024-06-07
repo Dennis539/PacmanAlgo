@@ -15,25 +15,7 @@ class Player {
         this.speed = 1
         this.direction = "right"
         this.score = 0
-        this.tile = [((this.yPos-210)/20),((this.xPos-210)/20)] // Y and X index of the boardGrid. 
-    }
-
-    updateTile(board: Board) {
-        let tileXPos = this.tile[0]
-        let tileYPos = this.tile[0]
-        let boardTile = board.boardMatrix[tileXPos][tileYPos]
-        if (boardTile.middlePosTile) {
-            if (boardTile.middlePosTile[0] - this.xPos < -10) {
-                this.tile[0] += 1
-            } else if (boardTile.middlePosTile[0] - this.xPos > 10) {
-                this.tile[0] -= 1
-            } else if (boardTile.middlePosTile[1] - this.yPos < -10) {
-                this.tile[1] += 1
-            } else if (boardTile.middlePosTile[1] - this.yPos > 10) {
-                this.tile[1] -= 1
-            }
-        }
-
+        this.tile = [Math.floor((this.yPos-200)/20),Math.floor((this.xPos-200)/20)] // Y and X index of the boardGrid. 
     }
 
     updateDirection(keys: any) {
@@ -69,7 +51,7 @@ class Player {
             this.yPos += this.speed
 
         }
-        this.updateTile(board)
+        this.tile = [Math.floor((this.yPos-200)/20),Math.floor((this.xPos-200)/20)]
     }
 
 }
