@@ -8,7 +8,7 @@ class Chaser extends BaseGhost{
         this.xPos = 490
         this.yPos = 350
         this.color = "red"
-        this.tile = [25,14]
+        this.tile = [((this.yPos-210)/20),((this.xPos-210)/20)]
 
     }
 

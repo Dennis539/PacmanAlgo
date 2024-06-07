@@ -13,7 +13,7 @@ class BaseGhost {
     speed: number
     color: string
     neightbor: Array<any>
-    localEnd: Array<number>
+    newGoalTile: Array<number>
     preVisited: Tile
     tile: Array<number>
     constructor() {
@@ -26,34 +26,35 @@ class BaseGhost {
         this.direction = "right"
         this.color = ""
         this.neightbor = []
-        this.localEnd = [] //[X, Y]
+        this.newGoalTile = [] //[X, Y]
         this.preVisited = null
-        this.tile = [29,19]
+        this.tile = [((this.yPos-210)/20),((this.xPos-210)/20)]
     }
 
     move(board: Board, player: Player) {
-        // aStart will only run when the ghost is on the middlepos. Otherwise, move closer to the middlepos.
+        // aStar will only run when the ghost is on the middlepos. Otherwise, move closer to the middlepos.
         const checkMiddlePosTile = board.middlePosTile.some((middleArray) => middleArray[0] === this.xPos && middleArray[1] === this.yPos)
-        console.log(this.tile)
         // throw "Quit"
-        console.log(board.boardMatrix[this.tile[0]][this.tile[1]])
+        console.log(board.boardMatrix[player.tile[0]])
+        console.log(player.tile)
         if (checkMiddlePosTile) {
             let beginTile = board.boardMatrix[this.tile[0]][this.tile[1]]
             let endTile = board.boardMatrix[player.tile[0]][player.tile[1]]
+            console.log(beginTile)
+            console.log(endTile)
+            // throw "Quitting"
             this.determine_neightbors(board.boardMatrix)
             this.aStarAlgorithm(board, beginTile, endTile)
-            // throw "stop" 
             
         } else {
             console.log("Kees on the move")
-            if (this.xPos < this.localEnd[0]) {
+            if (this.xPos < this.newGoalTile[0]) {
                 this.xPos += this.speed
-            } else if (this.xPos > this.localEnd[0]) {
+            } else if (this.xPos > this.newGoalTile[0]) {
                 this.xPos -= this.speed
-            } 
-            if (this.yPos < this.localEnd[1]) {
+            } else if (this.yPos < this.newGoalTile[1]) {
                 this.yPos += this.speed
-            } else if (this.yPos > this.localEnd[1]) {
+            } else if (this.yPos > this.newGoalTile[1]) {
                 this.yPos -= this.speed
             }
         }
@@ -78,6 +79,7 @@ class BaseGhost {
     }
 
     aStarAlgorithm(board: Board, start: Tile, end: Tile) {
+        console.log(start)
         let count = 0
         let openSet = new PriorityQueue<Array<any>>()
         openSet.add([0,count,start])
@@ -104,48 +106,49 @@ class BaseGhost {
         openSetHash.add(start)
 
         while (!openSet.empty()) {
-            let current: Tile = openSet.poll()![2]
+            let current: Tile = openSet.poll()![2]            
             openSetHash.delete(current)
             let curArr = []
+            let tempCur
 
             if (current === end) {
+                console.log(cameFrom)
                 while (Array.from(cameFrom.keys()).includes(current)) {
-                    // var tempCur = current
-                    console.log(current.xMiddle, current.yMiddle)
+                    tempCur = current
                     
                     current = cameFrom.get(current)
                     curArr.push(current)
                 }
-                console.log(curArr)
-                console.log(curArr[curArr.length - 2])
-                this.localEnd = [curArr[curArr.length - 2].xMiddle, curArr[curArr.length - 2].yMiddle]
-                console.log(this.localEnd)
-                console.log(this.xPos, this.yPos)
-                if (this.xPos < this.localEnd[0]) {
+                this.newGoalTile = [tempCur!.xMiddle, tempCur!.yMiddle]
+                console.log(tempCur)
+                // throw "Quit"
+
+                if (this.xPos < this.newGoalTile[0]) {
                     this.xPos += this.speed
-                } else if (this.xPos > this.localEnd[0]) {
+                } else if (this.xPos > this.newGoalTile[0]) {
                     this.xPos -= this.speed
-                } 
-                if (this.yPos < this.localEnd[1]) {
+                } if (this.yPos < this.newGoalTile[1]) {
                     this.yPos += this.speed
-                } else if (this.yPos > this.localEnd[1]) {
+                } else if (this.yPos > this.newGoalTile[1]) {
                     this.yPos -= this.speed
                 }
                 this.preVisited = curArr[curArr.length-1]
 
                 return
             }
+            console.log(current)
+            console.log(current.neightbors)
 
             for (let neightbor of current.neightbors) {
-                if (neightbor && neightbor.type !== "Wall" && neightbor !== this.preVisited) {
+                if (neightbor || neightbor.type !== "Wall" || neightbor !== this.preVisited) {
                     let tempGScore = gScore.get(current) + 1
 
                     if (tempGScore < gScore.get(neightbor)) {
                         cameFrom.set(neightbor, current)
                         gScore.set(neightbor, tempGScore)
 
-                        let distX: number = Math.abs((start.xMiddle - end.xMiddle))
-                        let distY: number = Math.abs((start.yMiddle - end.yMiddle))
+                        let distX: number = Math.abs((neightbor.xMiddle - end.xMiddle))
+                        let distY: number = Math.abs((neightbor.yMiddle - end.yMiddle))
                         let distance = ((distX * distX) + (distY * distY)) ** 0.5
                         fScore.set(neightbor, tempGScore + distance)
                         
@@ -158,6 +161,7 @@ class BaseGhost {
                     }
                 }
             }
+
         }
     }
 }

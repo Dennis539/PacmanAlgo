@@ -15,7 +15,7 @@ class Player {
         this.speed = 1
         this.direction = "right"
         this.score = 0
-        this.tile = [32,19] // X and Y index of the boardGrid. 
+        this.tile = [((this.yPos-210)/20),((this.xPos-210)/20)] // Y and X index of the boardGrid. 
     }
 
     updateTile(board: Board) {

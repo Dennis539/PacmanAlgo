@@ -68,6 +68,7 @@ class Board {
         this.height = (preConstructMatrix.length * this.steps) + 100
         var sideToSide = ""
         constructMatrix = preConstructMatrix.map((constructArray) => constructArray.split("\t"))
+        console.log(constructMatrix.length)
 
         let lineBeginX: number = 1
         let lineBeginY: number = 1
