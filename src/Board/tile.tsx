@@ -7,7 +7,7 @@ class Tile {
     yMiddle: number
     type: string
     image: any
-    neightbors: Array<any>
+    neighbors: Array<any>
 
     constructor(xPos: number, yPos: number) {
         this.height = 8
@@ -19,7 +19,7 @@ class Tile {
         this.type = "Coin"
         this.image = new Image()
         this.image.src = 'coin.png'
-        this.neightbors = []
+        this.neighbors = []
     }
 }
 

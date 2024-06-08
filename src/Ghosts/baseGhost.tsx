@@ -12,7 +12,7 @@ class BaseGhost {
     direction: string
     speed: number
     color: string
-    neightbor: Array<any>
+    neighbor: Array<any>
     newGoalTile: Array<number>
     preVisited: Tile
     tile: Array<number>
@@ -25,7 +25,7 @@ class BaseGhost {
         this.speed = 1
         this.direction = "right"
         this.color = ""
-        this.neightbor = []
+        this.neighbor = []
         this.newGoalTile = [] //[X, Y]
         this.preVisited = board.boardMatrix[0][0]
         this.tile = [((this.yPos-210)/20),((this.xPos-210)/20)]
@@ -39,7 +39,7 @@ class BaseGhost {
             let beginTile = board.boardMatrix[this.tile[0]][this.tile[1]]
             let endTile = board.boardMatrix[player.tile[0]][player.tile[1]]
             // throw "Quitting"
-            this.determine_neightbors(board.boardMatrix)
+            this.determine_neighbors(board.boardMatrix)
             this.aStarAlgorithm(board, beginTile, endTile)
             
         } else {
@@ -56,7 +56,7 @@ class BaseGhost {
         }
     }
 
-    determine_neightbors(grid: Array<Array<any>>) {
+    determine_neighbors(grid: Array<Array<any>>) {
         for (let i = 0; i < grid.length; i++) {
             for (let j = 0; j < grid[i].length; j++) {
                 let node = grid[i][j]
@@ -66,7 +66,7 @@ class BaseGhost {
                         && this.yPos >= node.yPos
                         && this.yPos <= node.yPos + 19
                     ) {
-                        this.neightbor = node.neightbor
+                        this.neighbor = node.neighbor
                         this.tile = [i, j]
                     }
                 }
@@ -96,7 +96,7 @@ class BaseGhost {
         let distX: number = Math.abs((start.xMiddle - end.xMiddle))
         let distY: number = Math.abs((start.yMiddle - end.yMiddle))
         
-        fScore.set(start, ((distX * distX) + (distY * distY)) ** 0.5)
+        fScore.set(start, Math.sqrt((distX * distX) + (distY * distY)))
         let openSetHash = new Set()
         openSetHash.add(start)
 
@@ -123,32 +123,32 @@ class BaseGhost {
                     this.yPos -= this.speed
                 }
                 this.preVisited = curArr[curArr.length - 1]
-                console.log(this.preVisited)
+                console.log(cameFrom)
 
                 return
             }
 
-            for (let neightbor of current.neightbors) {
-                let sameAsPrev = neightbor.xMiddle === this.preVisited.xMiddle && neightbor.yMiddle === this.preVisited.yMiddle
-                if (neightbor && neightbor.type !== "Wall" && !sameAsPrev) {
-                    if (neightbor.xMiddle === this.preVisited.xMiddle && neightbor.yMiddle === this.preVisited.yMiddle) {
+            for (let neighbor of current.neighbors) {
+                let sameAsPrev = neighbor.xMiddle === this.preVisited.xMiddle && neighbor.yMiddle === this.preVisited.yMiddle
+                if (neighbor && neighbor.type !== "Wall" && neighbor !== this.preVisited) {
+                    if (sameAsPrev) {
                         console.log("The same")
                     }
                     let tempGScore = gScore.get(current) + 1
 
-                    if (tempGScore < gScore.get(neightbor)) {
-                        cameFrom.set(neightbor, current)
-                        gScore.set(neightbor, tempGScore)
+                    if (tempGScore < gScore.get(neighbor)) {
+                        cameFrom.set(neighbor, current)
+                        gScore.set(neighbor, tempGScore)
 
-                        let distX: number = Math.abs((neightbor.xMiddle - end.xMiddle))
-                        let distY: number = Math.abs((neightbor.yMiddle - end.yMiddle))
-                        let distance = ((distX * distX) + (distY * distY)) ** 0.5
-                        fScore.set(neightbor, tempGScore + distance)
+                        let distX: number = Math.abs((neighbor.xMiddle - end.xMiddle))
+                        let distY: number = Math.abs((neighbor.yMiddle - end.yMiddle))
+                        let distance = Math.sqrt((distX * distX) + (distY * distY))
+                        fScore.set(neighbor, tempGScore + distance)
                         
-                        if (!openSetHash.has(neightbor)) {
+                        if (!openSetHash.has(neighbor)) {
                             count += 1
-                            openSet.add([fScore.get(neightbor), count, neightbor])
-                            openSetHash.add(neightbor)
+                            openSet.add([fScore.get(neighbor), count, neighbor])
+                            openSetHash.add(neighbor)
 
                         }
                     }

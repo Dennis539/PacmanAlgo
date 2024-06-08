@@ -332,32 +332,32 @@ class Board {
                 }
                 if (i === 0) {
                     if (j === 0) {
-                        this.boardMatrix[i][j].neightbors = [null, this.boardMatrix[i+1][j], this.boardMatrix[i][j+1], null]
+                        this.boardMatrix[i][j].neighbors = [null, this.boardMatrix[i+1][j], this.boardMatrix[i][j+1], null]
                     } else if (j === this.boardMatrix[i].length - 1) {
-                        this.boardMatrix[i][j].neightbors = [null, this.boardMatrix[i+1][j], null, this.boardMatrix[i][j - 1]]
+                        this.boardMatrix[i][j].neighbors = [null, this.boardMatrix[i+1][j], null, this.boardMatrix[i][j - 1]]
                         
                     } else {
-                        this.boardMatrix[i][j].neightbors = [null, this.boardMatrix[i+1][j], this.boardMatrix[i][j + 1], this.boardMatrix[i][j - 1]]
+                        this.boardMatrix[i][j].neighbors = [null, this.boardMatrix[i+1][j], this.boardMatrix[i][j + 1], this.boardMatrix[i][j - 1]]
 
                     }
                 } else if (i === this.boardMatrix.length-1) {
                     if (j === 0) {
-                        this.boardMatrix[i][j].neightbors = [this.boardMatrix[i-1][j], null, this.boardMatrix[i][j+1], null]
+                        this.boardMatrix[i][j].neighbors = [this.boardMatrix[i-1][j], null, this.boardMatrix[i][j+1], null]
                     } else if (j === this.boardMatrix[i].length - 1) {
-                        this.boardMatrix[i][j].neightbors = [this.boardMatrix[i-1][j], null, null, this.boardMatrix[i][j - 1]]
+                        this.boardMatrix[i][j].neighbors = [this.boardMatrix[i-1][j], null, null, this.boardMatrix[i][j - 1]]
                         
                     } else {
-                        this.boardMatrix[i][j].neightbors = [this.boardMatrix[i-1][j], null, this.boardMatrix[i][j + 1], this.boardMatrix[i][j - 1]]
+                        this.boardMatrix[i][j].neighbors = [this.boardMatrix[i-1][j], null, this.boardMatrix[i][j + 1], this.boardMatrix[i][j - 1]]
 
                     }
                 } else {
                     if (j === 0) {
-                        this.boardMatrix[i][j].neightbors = [this.boardMatrix[i-1][j], this.boardMatrix[i+1][j], this.boardMatrix[i][j+1], null]
+                        this.boardMatrix[i][j].neighbors = [this.boardMatrix[i-1][j], this.boardMatrix[i+1][j], this.boardMatrix[i][j+1], null]
                     } else if (j === this.boardMatrix[i].length - 1) {
-                        this.boardMatrix[i][j].neightbors = [this.boardMatrix[i-1][j], this.boardMatrix[i+1][j], null, this.boardMatrix[i][j - 1]]
+                        this.boardMatrix[i][j].neighbors = [this.boardMatrix[i-1][j], this.boardMatrix[i+1][j], null, this.boardMatrix[i][j - 1]]
                         
                     } else {
-                        this.boardMatrix[i][j].neightbors = [this.boardMatrix[i-1][j], this.boardMatrix[i+1][j], this.boardMatrix[i][j + 1], this.boardMatrix[i][j - 1]]
+                        this.boardMatrix[i][j].neighbors = [this.boardMatrix[i-1][j], this.boardMatrix[i+1][j], this.boardMatrix[i][j + 1], this.boardMatrix[i][j - 1]]
 
                     }
                 }
