@@ -34,6 +34,7 @@ class BaseGhost {
     move(board: Board, player: Player) {
         // aStar will only run when the ghost is on the middlepos. Otherwise, move closer to the middlepos.
         const checkMiddlePosTile = board.middlePosTile.some((middleArray) => middleArray[0] === this.xPos && middleArray[1] === this.yPos)
+        console.log(checkMiddlePosTile)
 
         if (checkMiddlePosTile) {
             let beginTile = board.boardMatrix[this.tile[0]][this.tile[1]]
@@ -41,6 +42,7 @@ class BaseGhost {
             // throw "Quitting"
             this.determine_neighbors(board.boardMatrix)
             this.aStarAlgorithm(board, beginTile, endTile)
+            console.log("Kees")
             
         } else {
             console.log("Kees on the move")
@@ -117,13 +119,13 @@ class BaseGhost {
                     this.xPos += this.speed
                 } else if (this.xPos > this.newGoalTile[0]) {
                     this.xPos -= this.speed
-                } if (this.yPos < this.newGoalTile[1]) {
+                } else if (this.yPos < this.newGoalTile[1]) {
                     this.yPos += this.speed
                 } else if (this.yPos > this.newGoalTile[1]) {
                     this.yPos -= this.speed
                 }
                 this.preVisited = curArr[curArr.length - 1]
-                console.log(cameFrom)
+                console.log(curArr.length)
 
                 return
             }
