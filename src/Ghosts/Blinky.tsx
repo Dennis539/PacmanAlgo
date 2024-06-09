@@ -1,5 +1,5 @@
-// Clyde is supposed to be the simplest of the ghosts
-// reason being that he just randomly moved through the board
+// Blinky is supposed to be the simplest of the ghosts to program
+// reason being that he just always follows the player
 import BaseGhost from "./baseGhost";
 import Board from "../Board/board";
 

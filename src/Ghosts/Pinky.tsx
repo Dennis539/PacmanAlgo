@@ -1,8 +1,19 @@
+// Pinky is a little more difficult than Blinky as
+// she picks the spot 4 spots in front of Pacman. 
 import BaseGhost from "./baseGhost";
+import Board from "../Board/board";
+
 
 class Ambusher extends BaseGhost{
-    constructor() {
-        super()
+    constructor(board: Board) {
+        super(board)
+        this.xPos = 530
+        this.yPos = 350
         this.color = "pink"
+        this.tile = [((this.yPos - 210) / 20), ((this.xPos - 210) / 20)]
+        this.home = [board.boardMatrix[1][54], board.boardMatrix[3][46]]
+        this.homeTarget = board.boardMatrix[1][54]
     }
 }
+
+export default Ambusher

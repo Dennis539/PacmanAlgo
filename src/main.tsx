@@ -1,6 +1,7 @@
 import Board from "./Board/board.tsx"
 import Player from "./Player/player.tsx"
 import Chaser from "./Ghosts/Blinky.tsx"
+import Ambusher from "./Ghosts/Pinky.tsx"
 import Wall from "./Board/wall.tsx"
 import Tile from "./Board/tile.tsx"
 
@@ -22,6 +23,7 @@ window.addEventListener('keyup', function (e) {
 let player: Player
 let board: Board
 let chaser: Chaser
+let ambusher: Ambusher
 
 function init() {
     player = new Player()
@@ -29,13 +31,8 @@ function init() {
     console.log(board.middlePosTile)
 
     chaser = new Chaser(board)
+    ambusher = new Ambusher(board)
 }
-
-function drawBorder(xPos: number, yPos: number, width: number, height: number, thickness = 1) {
-    c!.fillStyle='#000';
-    c?.fillRect(xPos - (thickness), yPos - (thickness), width + (thickness * 2), height + (thickness * 2));
-}
-
 
 function drawBoard() {
     c!.fillStyle = 'white'
@@ -88,7 +85,7 @@ function drawBoard() {
 }
 
 function updatePlayer() {
-    player.updateDirection(keys)
+    player.updateDirection(keys, board)
 
     // Check whether a future movement will cause a collision. 
     if (player.direction === "right") {
@@ -122,11 +119,12 @@ function drawPlayer() {
     c?.arc(player.xPos, player.yPos, player.radius, 0, 2*Math.PI)
     c?.fill()
     c!.fillStyle = 'purple'
-    c?.fillRect(player.xPos, player.yPos,1,1)
+    c?.fillRect(player.xPos, player.yPos, 1, 1)
+    console.log(player.fourTilesAhead)
 }
 
 function drawGhosts() {
-    for (let ghost of [chaser]) {
+    for (let ghost of [chaser, ambusher]) {
         c!.fillStyle = ghost.color
         c?.beginPath()
         c?.arc(ghost.xPos, ghost.yPos, ghost.radius, 0, 2*Math.PI)
@@ -149,9 +147,18 @@ function loop() {
     draw()
     updatePlayer()
     window.requestAnimationFrame(loop)
+}
 
+function chaseToScatter() {
+  chaser.mode = "scatter"
+  setTimeout(scatterToChase, 7000); 
+}
+
+function scatterToChase() {
+    chaser.mode = "chase"
+    setTimeout(chaseToScatter, 20000)
 }
 
 init()
-
+setTimeout(chaseToScatter, 2000)
 loop()

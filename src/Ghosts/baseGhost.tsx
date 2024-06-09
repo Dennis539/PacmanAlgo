@@ -57,7 +57,6 @@ class BaseGhost {
 
             this.determine_neighbors(board.boardMatrix)
             this.aStarAlgorithm(board, beginTile, endTile)
-            this.mode = "scatter"
         } else {
             console.log("Kees on the move")
             if (this.xPos < this.nextTileCoord[0]) {
@@ -71,7 +70,6 @@ class BaseGhost {
             }
         }
         this.tile = [((this.yPos-210)/20),((this.xPos-210)/20)]
-
     }
 
     determine_neighbors(grid: Array<Array<any>>) {
