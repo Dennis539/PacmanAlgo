@@ -13,9 +13,13 @@ class BaseGhost {
     speed: number
     color: string
     neighbor: Array<any>
-    newGoalTile: Array<number>
+    nextTileCoord: Array<number>
     preVisited: Tile
     tile: Array<number>
+    mode: string
+    home: Array<Tile>
+    homeTarget: Tile
+    distanceTarget: number
     constructor(board: Board) {
         this.xMovement = 0
         this.yMovement = 0
@@ -26,9 +30,13 @@ class BaseGhost {
         this.direction = "right"
         this.color = ""
         this.neighbor = []
-        this.newGoalTile = [] //[X, Y]
+        this.nextTileCoord = [] //[X, Y]
         this.preVisited = board.boardMatrix[0][0]
-        this.tile = [((this.yPos-210)/20),((this.xPos-210)/20)]
+        this.tile = [((this.yPos - 210) / 20), ((this.xPos - 210) / 20)]
+        this.mode = "chase"
+        this.home = [board.boardMatrix[0][0], board.boardMatrix[0][0]]
+        this.homeTarget = board.boardMatrix[0][0]
+        this.distanceTarget = 999
     }
 
     move(board: Board, player: Player) {
@@ -37,18 +45,28 @@ class BaseGhost {
 
         if (checkMiddlePosTile) {
             let beginTile = board.boardMatrix[this.tile[0]][this.tile[1]]
-            let endTile = board.boardMatrix[player.tile[0]][player.tile[1]]
+            let endTile: Tile
+            if (this.mode === "chase") {
+                endTile = board.boardMatrix[player.tile[0]][player.tile[1]]
+            } else if (this.mode === "scatter") {
+                endTile = this.homeTarget
+
+            } else {
+                endTile = board.boardMatrix[player.tile[0]][player.tile[1]]
+            }
+
             this.determine_neighbors(board.boardMatrix)
             this.aStarAlgorithm(board, beginTile, endTile)
+            this.mode = "scatter"
         } else {
             console.log("Kees on the move")
-            if (this.xPos < this.newGoalTile[0]) {
+            if (this.xPos < this.nextTileCoord[0]) {
                 this.xPos += this.speed
-            } else if (this.xPos > this.newGoalTile[0]) {
+            } else if (this.xPos > this.nextTileCoord[0]) {
                 this.xPos -= this.speed
-            } else if (this.yPos < this.newGoalTile[1]) {
+            } else if (this.yPos < this.nextTileCoord[1]) {
                 this.yPos += this.speed
-            } else if (this.yPos > this.newGoalTile[1]) {
+            } else if (this.yPos > this.nextTileCoord[1]) {
                 this.yPos -= this.speed
             }
         }
@@ -109,18 +127,31 @@ class BaseGhost {
                     current = cameFrom.get(current)
                     curArr.push(current)
                 }
-                this.newGoalTile = [curArr[curArr.length-2]!.xMiddle, curArr[curArr.length-2]!.yMiddle]
+                
+                this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
+                this.distanceTarget = curArr.length
 
-                if (this.xPos < this.newGoalTile[0]) {
+                if (this.distanceTarget <= 2 && this.mode === 'scatter') {
+                    // switch locations of scatter mode depending on how close the ghost is to its target. 
+                    if (this.homeTarget === this.home[0]) {
+                        this.homeTarget = this.home[1]
+                    } else {
+                        this.homeTarget = this.home[0]
+                    }
+                }
+
+                this.nextTileCoord = [curArr[curArr.length-2]!.xMiddle, curArr[curArr.length-2]!.yMiddle]
+
+                if (this.xPos < this.nextTileCoord[0]) {
                     this.xPos += this.speed
-                } else if (this.xPos > this.newGoalTile[0]) {
+                } else if (this.xPos > this.nextTileCoord[0]) {
                     this.xPos -= this.speed
-                } else if (this.yPos < this.newGoalTile[1]) {
+                } else if (this.yPos < this.nextTileCoord[1]) {
                     this.yPos += this.speed
-                } else if (this.yPos > this.newGoalTile[1]) {
+                } else if (this.yPos > this.nextTileCoord[1]) {
                     this.yPos -= this.speed
                 }
-                this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
+
 
                 return
             }

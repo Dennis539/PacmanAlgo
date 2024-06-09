@@ -131,7 +131,7 @@ function drawGhosts() {
         c?.beginPath()
         c?.arc(ghost.xPos, ghost.yPos, ghost.radius, 0, 2*Math.PI)
         c?.fill()
-        chaser.move(board, player)
+        ghost.move(board, player)
     }
 }
 
