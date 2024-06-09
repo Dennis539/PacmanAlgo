@@ -34,16 +34,12 @@ class BaseGhost {
     move(board: Board, player: Player) {
         // aStar will only run when the ghost is on the middlepos. Otherwise, move closer to the middlepos.
         const checkMiddlePosTile = board.middlePosTile.some((middleArray) => middleArray[0] === this.xPos && middleArray[1] === this.yPos)
-        console.log(checkMiddlePosTile)
 
         if (checkMiddlePosTile) {
             let beginTile = board.boardMatrix[this.tile[0]][this.tile[1]]
             let endTile = board.boardMatrix[player.tile[0]][player.tile[1]]
-            // throw "Quitting"
             this.determine_neighbors(board.boardMatrix)
             this.aStarAlgorithm(board, beginTile, endTile)
-            console.log("Kees")
-            
         } else {
             console.log("Kees on the move")
             if (this.xPos < this.newGoalTile[0]) {
@@ -56,6 +52,8 @@ class BaseGhost {
                 this.yPos -= this.speed
             }
         }
+        this.tile = [((this.yPos-210)/20),((this.xPos-210)/20)]
+
     }
 
     determine_neighbors(grid: Array<Array<any>>) {
@@ -69,7 +67,6 @@ class BaseGhost {
                         && this.yPos <= node.yPos + 19
                     ) {
                         this.neighbor = node.neighbor
-                        this.tile = [i, j]
                     }
                 }
             }
@@ -113,7 +110,6 @@ class BaseGhost {
                     curArr.push(current)
                 }
                 this.newGoalTile = [curArr[curArr.length-2]!.xMiddle, curArr[curArr.length-2]!.yMiddle]
-                // throw "Quit"
 
                 if (this.xPos < this.newGoalTile[0]) {
                     this.xPos += this.speed
@@ -124,8 +120,7 @@ class BaseGhost {
                 } else if (this.yPos > this.newGoalTile[1]) {
                     this.yPos -= this.speed
                 }
-                this.preVisited = curArr[curArr.length - 1]
-                console.log(curArr.length)
+                this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
 
                 return
             }
@@ -151,7 +146,6 @@ class BaseGhost {
                             count += 1
                             openSet.add([fScore.get(neighbor), count, neighbor])
                             openSetHash.add(neighbor)
-
                         }
                     }
                 }
