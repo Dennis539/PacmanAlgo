@@ -50,7 +50,7 @@ class Player {
         }
         else if ("ArrowDown" in keys) {
             this.direction = "down"
-            if (board.boardMatrix.length - y <= 3) {
+            if (board.boardMatrix.length-1 - y <= 3) {
                 this.fourTilesAhead = [board.boardMatrix.length, x]
             } else if (board.boardMatrix[y+4][x] && board.boardMatrix[y+4][x].type !== "Wall") {
                 this.fourTilesAhead = [y+4, x]
