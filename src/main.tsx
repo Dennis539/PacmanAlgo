@@ -24,6 +24,7 @@ let player: Player
 let board: Board
 let chaser: Chaser
 let ambusher: Ambusher
+let ghostActive: Array<any>
 
 function init() {
     player = new Player()
@@ -32,6 +33,7 @@ function init() {
 
     chaser = new Chaser(board)
     ambusher = new Ambusher(board)
+    ghostActive = [chaser, ambusher]
 }
 
 function drawBoard() {
@@ -124,12 +126,12 @@ function drawPlayer() {
 }
 
 function drawGhosts() {
-    for (let ghost of [chaser, ambusher]) {
+    for (let ghost of ghostActive) {
         c!.fillStyle = ghost.color
         c?.beginPath()
         c?.arc(ghost.xPos, ghost.yPos, ghost.radius, 0, 2*Math.PI)
         c?.fill()
-        ghost.move(board, player)
+        ghost.move(board, player, ghost.name)
     }
 }
 
@@ -143,9 +145,15 @@ function draw() {
     drawGhosts()
 }
 
+let time = 0
 function loop() {
+    time += 1
     draw()
     updatePlayer()
+    if (time === 100) {
+        ambusher.xPos = 490
+        ambusher.yPos = 350
+    }
     window.requestAnimationFrame(loop)
 }
 

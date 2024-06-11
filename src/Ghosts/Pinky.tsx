@@ -13,6 +13,7 @@ class Ambusher extends BaseGhost{
         this.tile = [((this.yPos - 210) / 20), ((this.xPos - 210) / 20)]
         this.home = [board.boardMatrix[1][54], board.boardMatrix[3][46]]
         this.homeTarget = board.boardMatrix[1][54]
+        this.name = "Pinky"
     }
 }
 

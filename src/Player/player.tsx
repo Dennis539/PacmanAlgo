@@ -24,38 +24,65 @@ class Player {
         let posDif = 4
         let x = this.tile[1]
         let y = this.tile[0]
+        // let xRange = [...Array(board.boardMatrix[0].length).keys()]
+        // throw "Stop"
         if ("ArrowLeft" in keys) {
             this.direction = "left"
-            if (x <= 3) {
-                this.fourTilesAhead = [y, 0]
+            if (x <= 4) {
+                this.fourTilesAhead = this.updateTilesAhead(board, y, 1)!
             } else if (board.boardMatrix[y][x - 4] && board.boardMatrix[y][x - 4].type !== "Wall") {
-                this.fourTilesAhead = [y, x-4]
+                this.fourTilesAhead = this.updateTilesAhead(board, y, x-4)!
             }
-        }
-        else if ("ArrowRight" in keys) {
+        } else if ("ArrowRight" in keys) {
             this.direction = "right"
-            if (board.boardMatrix[0].length - x <= 3) {
-                this.fourTilesAhead = [y, board.boardMatrix[0].length]
+            if (board.boardMatrix[0].length - 1 - x <= 4) {
+                this.fourTilesAhead = this.updateTilesAhead(board, y, board.boardMatrix[0].length - 2)!
             } else if (board.boardMatrix[y][x + 4] && board.boardMatrix[y][x + 4].type !== "Wall") {
-                this.fourTilesAhead = [y, x+4]
+                this.fourTilesAhead = this.updateTilesAhead(board, y, x+4)!
             }
-        }
-        else if ("ArrowUp" in keys) {
+        } else if ("ArrowUp" in keys) {
             this.direction = "up"
-            if (y <= 3) {
-                this.fourTilesAhead = [board.boardMatrix.length, x]
+            if (y <= 4) {
+                this.fourTilesAhead = this.updateTilesAhead(board, 1, x)!
             } else if (board.boardMatrix[y-4][x] && board.boardMatrix[y-4][x].type !== "Wall") {
-                this.fourTilesAhead = [y-4, x]
+                this.fourTilesAhead = this.updateTilesAhead(board, y-4, x)!
             }
-        }
-        else if ("ArrowDown" in keys) {
+        } else if ("ArrowDown" in keys) {
             this.direction = "down"
-            if (board.boardMatrix.length-1 - y <= 3) {
-                this.fourTilesAhead = [board.boardMatrix.length, x]
+            if (board.boardMatrix.length - 1 - y <= 4) {
+                this.fourTilesAhead = this.updateTilesAhead(board, board.boardMatrix.length - 2, x)!
+
             } else if (board.boardMatrix[y+4][x] && board.boardMatrix[y+4][x].type !== "Wall") {
-                this.fourTilesAhead = [y+4, x]
+                this.fourTilesAhead = this.updateTilesAhead(board, y+4, x)!
             }
         }
+    }
+
+    updateTilesAhead(board: Board, y: number, x: number) {
+        let visited = [[]]
+        function dbfs(visited: Array<Array<number>>, y: number, x: number, board: Board):  Array<number> | undefined{
+            let xRange = [...Array(board.boardMatrix[0].length).keys()]
+            let yRange = [...Array(board.boardMatrix.length).keys()]
+            if (
+                !yRange.includes(y)
+                || !xRange.includes(x)
+                || visited.includes([y, x])
+            ) {
+                return
+            } else if (board.boardMatrix[y][x].type === "Wall") {
+                visited.push([y,x])
+                let newDir = [[y, x + 1], [y, x - 1], [y + 1, x], [y - 1, x]]
+                for (let newDirArr of newDir) {
+                    let res: Array<number> | undefined = dbfs(visited, newDirArr[0], newDirArr[1], board)
+                    if (res) {
+                        return [res[0],res[1]]
+                    }
+                }
+            } else {
+                return [y,x]
+            }
+        }
+        return dbfs(visited, y, x, board)
     }
 
     move(keys: any, board: Board) {

@@ -20,6 +20,7 @@ class BaseGhost {
     home: Array<Tile>
     homeTarget: Tile
     distanceTarget: number
+    name: string
     constructor(board: Board) {
         this.xMovement = 0
         this.yMovement = 0
@@ -37,23 +38,36 @@ class BaseGhost {
         this.home = [board.boardMatrix[0][0], board.boardMatrix[0][0]]
         this.homeTarget = board.boardMatrix[0][0]
         this.distanceTarget = 999
+        this.name = "Kees"
     }
 
-    move(board: Board, player: Player) {
+    determineEndtile(board: Board, endTileY: number, endTileX: number) {
+        let endTile: Tile
+        if (this.mode === "chase") {
+            endTile = board.boardMatrix[endTileY][endTileX]
+        } else if (this.mode === "scatter") {
+            endTile = this.homeTarget
+        } else {
+            endTile = board.boardMatrix[endTileY][endTileX]
+        }
+        return endTile
+    }
+
+    move(board: Board, player: Player, ghostName: string) {
         // aStar will only run when the ghost is on the middlepos. Otherwise, move closer to the middlepos.
         const checkMiddlePosTile = board.middlePosTile.some((middleArray) => middleArray[0] === this.xPos && middleArray[1] === this.yPos)
+        let endTile: Tile
 
         if (checkMiddlePosTile) {
             let beginTile = board.boardMatrix[this.tile[0]][this.tile[1]]
-            let endTile: Tile
-            if (this.mode === "chase") {
-                endTile = board.boardMatrix[player.tile[0]][player.tile[1]]
-            } else if (this.mode === "scatter") {
-                endTile = this.homeTarget
-
+            if (ghostName === "Blinky") {
+                endTile = this.determineEndtile(board, player.tile[0], player.tile[1])
+            } else if (ghostName === "Pinky") {
+                endTile = this.determineEndtile(board, player.fourTilesAhead[0], player.fourTilesAhead[1])
             } else {
-                endTile = board.boardMatrix[player.tile[0]][player.tile[1]]
+                endTile = this.determineEndtile(board, player.fourTilesAhead[0], player.fourTilesAhead[1])
             }
+
 
             this.determine_neighbors(board.boardMatrix)
             this.aStarAlgorithm(board, beginTile, endTile)
