@@ -70,7 +70,7 @@ class BaseGhost {
 
 
             this.determine_neighbors(board.boardMatrix)
-            this.aStarAlgorithm(board, beginTile, endTile)
+            this.aStarAlgorithm(board, beginTile, endTile, ghostName)
         } else {
             console.log("Kees on the move")
             if (this.xPos < this.nextTileCoord[0]) {
@@ -103,7 +103,7 @@ class BaseGhost {
         }
     }
 
-    aStarAlgorithm(board: Board, start: Tile, end: Tile) {
+    aStarAlgorithm(board: Board, start: Tile, end: Tile, ghostName: string) {
         let count = 0
         let openSet = new PriorityQueue<Array<any>>()
         openSet.add([0,count,start])
@@ -139,8 +139,6 @@ class BaseGhost {
                     current = cameFrom.get(current)
                     curArr.push(current)
                 }
-                
-                this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
                 this.distanceTarget = curArr.length
 
                 if (this.distanceTarget <= 2 && this.mode === 'scatter') {
@@ -151,9 +149,15 @@ class BaseGhost {
                         this.homeTarget = this.home[0]
                     }
                 }
+                if (ghostName === "Pinky" && curArr.length === 1) {
+                    this.aStarAlgorithm(board, curArr[curArr.length - 1], board.boardMatrix[1][1], "Pinky")
 
-                this.nextTileCoord = [curArr[curArr.length-2]!.xMiddle, curArr[curArr.length-2]!.yMiddle]
+                } else {
+                    this.nextTileCoord = [curArr[curArr.length - 2]!.xMiddle, curArr[curArr.length - 2]!.yMiddle]
+                }
+                this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
 
+                
                 if (this.xPos < this.nextTileCoord[0]) {
                     this.xPos += this.speed
                 } else if (this.xPos > this.nextTileCoord[0]) {
