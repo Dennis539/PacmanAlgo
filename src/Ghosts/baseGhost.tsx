@@ -149,12 +149,13 @@ class BaseGhost {
                         this.homeTarget = this.home[0]
                     }
                 }
-                if (ghostName === "Pinky" && curArr.length === 1) {
-                    this.aStarAlgorithm(board, curArr[curArr.length - 1], board.boardMatrix[1][1], "Pinky")
+                if (ghostName === "Pinky" && curArr.length === 2) {
+                    this.aStarAlgorithm(board, curArr[curArr.length - 2], board.boardMatrix[1][1], "Pinky")
+                    console.log(this.nextTileCoord)
 
-                } else {
-                    this.nextTileCoord = [curArr[curArr.length - 2]!.xMiddle, curArr[curArr.length - 2]!.yMiddle]
-                }
+                } 
+                this.nextTileCoord = [curArr[curArr.length - 2]!.xMiddle, curArr[curArr.length - 2]!.yMiddle]
+                
                 this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
 
                 
