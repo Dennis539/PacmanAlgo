@@ -12,7 +12,7 @@ class BaseGhost {
     direction: string
     speed: number
     color: string
-    neighbor: Array<any>
+    neighbors: Array<any>
     nextTileCoord: Array<number>
     preVisited: Tile
     tile: Array<number>
@@ -21,6 +21,7 @@ class BaseGhost {
     homeTarget: Tile
     distanceTarget: number
     name: string
+    endTile: Tile
     constructor(board: Board) {
         this.xMovement = 0
         this.yMovement = 0
@@ -30,7 +31,7 @@ class BaseGhost {
         this.speed = 1
         this.direction = "right"
         this.color = ""
-        this.neighbor = []
+        this.neighbors = []
         this.nextTileCoord = [] //[X, Y]
         this.preVisited = board.boardMatrix[0][0]
         this.tile = [((this.yPos - 210) / 20), ((this.xPos - 210) / 20)]
@@ -39,6 +40,7 @@ class BaseGhost {
         this.homeTarget = board.boardMatrix[0][0]
         this.distanceTarget = 999
         this.name = "Kees"
+        this.endTile = board.boardMatrix[0][0]
     }
 
     determineEndtile(board: Board, endTileY: number, endTileX: number) {
@@ -56,21 +58,19 @@ class BaseGhost {
     move(board: Board, player: Player, ghostName: string) {
         // aStar will only run when the ghost is on the middlepos. Otherwise, move closer to the middlepos.
         const checkMiddlePosTile = board.middlePosTile.some((middleArray) => middleArray[0] === this.xPos && middleArray[1] === this.yPos)
-        let endTile: Tile
 
         if (checkMiddlePosTile) {
             let beginTile = board.boardMatrix[this.tile[0]][this.tile[1]]
             if (ghostName === "Blinky") {
-                endTile = this.determineEndtile(board, player.tile[0], player.tile[1])
+                this.endTile = this.determineEndtile(board, player.tile[0], player.tile[1])
             } else if (ghostName === "Pinky") {
-                endTile = this.determineEndtile(board, player.fourTilesAhead[0], player.fourTilesAhead[1])
+                this.endTile = this.determineEndtile(board, player.fourTilesAhead[0], player.fourTilesAhead[1])
             } else {
-                endTile = this.determineEndtile(board, player.fourTilesAhead[0], player.fourTilesAhead[1])
+                this.endTile = this.determineEndtile(board, player.fourTilesAhead[0], player.fourTilesAhead[1])
             }
 
-
             this.determine_neighbors(board.boardMatrix)
-            this.aStarAlgorithm(board, beginTile, endTile, ghostName)
+            this.aStarAlgorithm(board, beginTile, this.endTile, ghostName)
         } else {
             console.log("Kees on the move")
             if (this.xPos < this.nextTileCoord[0]) {
@@ -96,7 +96,7 @@ class BaseGhost {
                         && this.yPos >= node.yPos
                         && this.yPos <= node.yPos + 19
                     ) {
-                        this.neighbor = node.neighbor
+                        this.neighbors = node.neighbors
                     }
                 }
             }
@@ -128,6 +128,9 @@ class BaseGhost {
         fScore.set(start, Math.sqrt((distX * distX) + (distY * distY)))
         let openSetHash = new Set()
         openSetHash.add(start)
+        if (ghostName === "Pinky") {
+            console.log("something something")
+        }
 
         while (!openSet.empty()) {
             let current: Tile = openSet.poll()![2]            
@@ -149,12 +152,31 @@ class BaseGhost {
                         this.homeTarget = this.home[0]
                     }
                 }
-                if (ghostName === "Pinky" && curArr.length === 2) {
-                    this.aStarAlgorithm(board, curArr[curArr.length - 2], board.boardMatrix[1][1], "Pinky")
-                    console.log(this.nextTileCoord)
+                if (ghostName === "Pinky") {
+                    console.log(curArr.length)
+                }
+                if (ghostName === "Pinky" && curArr.length <= 2) {
+                    console.log("Something")
+                    // this.aStarAlgorithm(board, start, board.boardMatrix[1][1], "Pinky")
+                    // for (let neighbor of this.neighbors) {
+                    //     if (neighbor.type !== "Wall" && neighbor != this.preVisited) {
+                    //         this.nextTileCoord = [neighbor.xMiddle, neighbor.yMiddle]
+                    //         console.log("Ruigie ruig")
+                    //         console.log(this.nextTileCoord)
+                    //         // break
+                    //     }
+                    // }
+                    this.nextTileCoord = [board.boardMatrix[1][1].xMiddle, board.boardMatrix[1][1].yMiddle]
 
-                } 
-                this.nextTileCoord = [curArr[curArr.length - 2]!.xMiddle, curArr[curArr.length - 2]!.yMiddle]
+                } else {
+                    if (ghostName === "Pinky") {
+                        console.log(end)
+                        console.log(curArr.length)
+                        console.log(this.distanceTarget)
+                    }
+                    
+                    this.nextTileCoord = [curArr[curArr.length - 2]!.xMiddle, curArr[curArr.length - 2]!.yMiddle]
+                }
                 
                 this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
 
@@ -168,8 +190,6 @@ class BaseGhost {
                 } else if (this.yPos > this.nextTileCoord[1]) {
                     this.yPos -= this.speed
                 }
-
-
                 return
             }
 
@@ -184,7 +204,6 @@ class BaseGhost {
                     if (tempGScore < gScore.get(neighbor)) {
                         cameFrom.set(neighbor, current)
                         gScore.set(neighbor, tempGScore)
-
                         let distX: number = Math.abs((neighbor.xMiddle - end.xMiddle))
                         let distY: number = Math.abs((neighbor.yMiddle - end.yMiddle))
                         let distance = Math.sqrt((distX * distX) + (distY * distY))
