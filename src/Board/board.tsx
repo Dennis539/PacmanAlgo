@@ -20,7 +20,7 @@ class Board {
         this.yPos = 150
         this.steps = 20
         this.walls = []
-        this.coins = []
+        this.coins = [] 
         this.boardMatrix = []
         this.createBoard()
         this.middlePosTile = this.calculateMiddlePosTile() // All the middle points of the tiles within the boardGrid. 

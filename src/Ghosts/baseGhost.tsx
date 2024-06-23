@@ -58,7 +58,6 @@ class BaseGhost {
     move(board: Board, player: Player, ghostName: string) {
         // aStar will only run when the ghost is on the middlepos. Otherwise, move closer to the middlepos.
         const checkMiddlePosTile = board.middlePosTile.some((middleArray) => middleArray[0] === this.xPos && middleArray[1] === this.yPos)
-
         if (checkMiddlePosTile) {
             let beginTile = board.boardMatrix[this.tile[0]][this.tile[1]]
             if (ghostName === "Blinky") {
@@ -70,9 +69,10 @@ class BaseGhost {
             }
 
             this.determine_neighbors(board.boardMatrix)
+            console.log(beginTile, this.endTile, ghostName)
             this.aStarAlgorithm(board, beginTile, this.endTile, ghostName)
         } else {
-            console.log("Kees on the move")
+            console.log("Kees on the move " + ghostName)
             if (this.xPos < this.nextTileCoord[0]) {
                 this.xPos += this.speed
             } else if (this.xPos > this.nextTileCoord[0]) {
@@ -128,9 +128,6 @@ class BaseGhost {
         fScore.set(start, Math.sqrt((distX * distX) + (distY * distY)))
         let openSetHash = new Set()
         openSetHash.add(start)
-        if (ghostName === "Pinky") {
-            console.log("something something")
-        }
 
         while (!openSet.empty()) {
             let current: Tile = openSet.poll()![2]            
@@ -138,6 +135,9 @@ class BaseGhost {
             let curArr = []
 
             if (current === end) {
+                if (ghostName === "Pinky") {
+                    console.log("Ruige Pinky")
+                }
                 while (Array.from(cameFrom.keys()).includes(current)) {
                     current = cameFrom.get(current)
                     curArr.push(current)
@@ -156,31 +156,18 @@ class BaseGhost {
                     console.log(curArr.length)
                 }
                 if (ghostName === "Pinky" && curArr.length <= 2) {
-                    console.log("Something")
-                    // this.aStarAlgorithm(board, start, board.boardMatrix[1][1], "Pinky")
-                    // for (let neighbor of this.neighbors) {
-                    //     if (neighbor.type !== "Wall" && neighbor != this.preVisited) {
-                    //         this.nextTileCoord = [neighbor.xMiddle, neighbor.yMiddle]
-                    //         console.log("Ruigie ruig")
-                    //         console.log(this.nextTileCoord)
-                    //         // break
-                    //     }
-                    // }
-                    this.nextTileCoord = [board.boardMatrix[1][1].xMiddle, board.boardMatrix[1][1].yMiddle]
-
-                } else {
-                    if (ghostName === "Pinky") {
-                        console.log(end)
-                        console.log(curArr.length)
-                        console.log(this.distanceTarget)
+                    for (let neighbor of this.neighbors) {
+                        if (neighbor.type !== "Wall" && neighbor != this.preVisited) {
+                            this.nextTileCoord = [neighbor.xMiddle, neighbor.yMiddle]
+                            break
+                        }
                     }
-                    
+                } else {
                     this.nextTileCoord = [curArr[curArr.length - 2]!.xMiddle, curArr[curArr.length - 2]!.yMiddle]
                 }
                 
                 this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
 
-                
                 if (this.xPos < this.nextTileCoord[0]) {
                     this.xPos += this.speed
                 } else if (this.xPos > this.nextTileCoord[0]) {
@@ -190,6 +177,7 @@ class BaseGhost {
                 } else if (this.yPos > this.nextTileCoord[1]) {
                     this.yPos -= this.speed
                 }
+
                 return
             }
 
@@ -217,7 +205,31 @@ class BaseGhost {
                     }
                 }
             }
+        }
+        // There is apparently a situation when Pinky has been randomly assigned a tile that it
+        // will not be able to find. It will randomly assign a new tile in that case.
+        if (ghostName === "Pinky") {
+            for (let neighbor of this.neighbors) {
+                console.log(neighbor)
+                if (neighbor.type !== "Wall" && neighbor != this.preVisited) {
+                    this.nextTileCoord = [neighbor.xMiddle, neighbor.yMiddle]
+                    console.log("Ruigie ruig")
+                    console.log(this.nextTileCoord)
+                    console.log(this.xPos, this.yPos)
+                    break
+                }
+            }
+        }
+        this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
 
+        if (this.xPos < this.nextTileCoord[0]) {
+            this.xPos += this.speed
+        } else if (this.xPos > this.nextTileCoord[0]) {
+            this.xPos -= this.speed
+        } else if (this.yPos < this.nextTileCoord[1]) {
+            this.yPos += this.speed
+        } else if (this.yPos > this.nextTileCoord[1]) {
+            this.yPos -= this.speed
         }
     }
 }
