@@ -4,6 +4,7 @@ import Chaser from "./Ghosts/Blinky.tsx"
 import Ambusher from "./Ghosts/Pinky.tsx"
 import Wall from "./Board/wall.tsx"
 import Tile from "./Board/tile.tsx"
+import Clyde from "./Ghosts/Clyde.tsx"
 
 let canvas = document.querySelector('canvas')!
 const c = canvas?.getContext('2d')
@@ -24,6 +25,7 @@ let player: Player
 let board: Board
 let chaser: Chaser
 let ambusher: Ambusher
+let clyde: Clyde
 let ghostActive: Array<any>
 
 function init() {
@@ -33,7 +35,8 @@ function init() {
 
     chaser = new Chaser(board)
     ambusher = new Ambusher(board)
-    ghostActive = [chaser, ambusher]
+    clyde = new Clyde(board)
+    ghostActive = [chaser, ambusher, clyde]
 }
 
 function drawBoard() {
@@ -153,6 +156,10 @@ function loop() {
     if (time === 100) {
         ambusher.xPos = 490
         ambusher.yPos = 350
+    }
+    if (player.score === 500) {
+        clyde.xPos = 490
+        clyde.yPos = 350
     }
     window.requestAnimationFrame(loop)
 }
