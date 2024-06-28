@@ -149,6 +149,7 @@ function draw() {
 }
 
 let time = 0
+let setClyde = false
 function loop() {
     time += 1
     draw()
@@ -157,9 +158,10 @@ function loop() {
         ambusher.xPos = 490
         ambusher.yPos = 350
     }
-    if (player.score === 500) {
+    if (player.score === 500 && !setClyde) {
         clyde.xPos = 490
         clyde.yPos = 350
+        setClyde = true
     }
     window.requestAnimationFrame(loop)
 }
