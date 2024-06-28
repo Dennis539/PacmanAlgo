@@ -155,13 +155,14 @@ class BaseGhost {
                 if (ghostName === "Pinky") {
                     console.log(curArr.length)
                 }
-                if (ghostName === "Pinky" && curArr.length <= 2) {
+                if ((ghostName === "Pinky" && curArr.length <= 2) || (ghostName === "Clyde" && curArr.length <= 8)) {
                     for (let neighbor of this.neighbors) {
                         if (neighbor.type !== "Wall" && neighbor != this.preVisited) {
                             this.nextTileCoord = [neighbor.xMiddle, neighbor.yMiddle]
                             break
                         }
                     }
+
                 } else {
                     this.nextTileCoord = [curArr[curArr.length - 2]!.xMiddle, curArr[curArr.length - 2]!.yMiddle]
                 }
