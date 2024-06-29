@@ -3,6 +3,7 @@
 import BaseGhost from "./baseGhost";
 import Board from "../Board/board";
 
+
 class Chaser extends BaseGhost{
     constructor(board: Board) {
         super(board)
@@ -10,8 +11,10 @@ class Chaser extends BaseGhost{
         this.yPos = 350
         this.color = "red"
         this.tile = [((this.yPos - 210) / 20), ((this.xPos - 210) / 20)]
-        this.home = [board.boardMatrix[1][54], board.boardMatrix[3][46]]
-        this.homeTarget = board.boardMatrix[1][54]
+        let x1 = board.boardMatrix[1].length -2
+        let x2 = board.boardMatrix[1].length -8
+        this.home = [board.boardMatrix[1][x1], board.boardMatrix[1][x2]]
+        this.homeTarget = board.boardMatrix[1][x1]
         this.name = "Blinky"
     }
 

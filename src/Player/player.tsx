@@ -10,7 +10,7 @@ class Player {
     tile: Array<number>
     fourTilesAhead: Array<number>
     constructor() {
-        this.xPos = 590
+        this.xPos = 610
         this.yPos = 490
         this.radius = 18
         this.speed = 1
@@ -21,10 +21,8 @@ class Player {
     }
 
     updateDirection(keys: any, board: Board) {
-        let posDif = 4
         let x = this.tile[1]
         let y = this.tile[0]
-        // let xRange = [...Array(board.boardMatrix[0].length).keys()]
         // throw "Stop"
         if ("ArrowLeft" in keys) {
             this.direction = "left"

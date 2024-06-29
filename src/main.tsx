@@ -2,8 +2,7 @@ import Board from "./Board/board.tsx"
 import Player from "./Player/player.tsx"
 import Chaser from "./Ghosts/Blinky.tsx"
 import Ambusher from "./Ghosts/Pinky.tsx"
-import Wall from "./Board/wall.tsx"
-import Tile from "./Board/tile.tsx"
+import Whimsical from "./Ghosts/Inky.tsx"
 import Clyde from "./Ghosts/Clyde.tsx"
 
 let canvas = document.querySelector('canvas')!
@@ -23,20 +22,27 @@ window.addEventListener('keyup', function (e) {
 
 let player: Player
 let board: Board
-let chaser: Chaser
-let ambusher: Ambusher
+let Blinky: Chaser
+let Pinky: Ambusher
+let Inky: Whimsical
 let clyde: Clyde
 let ghostActive: Array<any>
+let time: number
+let setClyde: boolean
+let setInky: boolean
 
 function init() {
     player = new Player()
     board = new Board()
-    console.log(board.middlePosTile)
-
-    chaser = new Chaser(board)
-    ambusher = new Ambusher(board)
+    console.log(board.boardMatrix)
+    Blinky = new Chaser(board)
+    Pinky = new Ambusher(board)
+    Inky = new Whimsical(board)
     clyde = new Clyde(board)
-    ghostActive = [chaser, ambusher, clyde]
+    ghostActive = [Blinky, Pinky, clyde, Inky]
+    time = 0
+    setClyde = false
+    setInky = false
 }
 
 function drawBoard() {
@@ -117,7 +123,6 @@ function updatePlayer() {
 }
 
 
-
 function drawPlayer() {
     c!.fillStyle = 'yellow'
     c?.beginPath()
@@ -128,13 +133,14 @@ function drawPlayer() {
     console.log(player.fourTilesAhead)
 }
 
+
 function drawGhosts() {
     for (let ghost of ghostActive) {
         c!.fillStyle = ghost.color
         c?.beginPath()
         c?.arc(ghost.xPos, ghost.yPos, ghost.radius, 0, 2*Math.PI)
         c?.fill()
-        ghost.move(board, player, ghost.name)
+        ghost.move(board, player, ghost.name, ghost.mode)
     }
 }
 
@@ -148,31 +154,51 @@ function draw() {
     drawGhosts()
 }
 
-let time = 0
-let setClyde = false
+
 function loop() {
     time += 1
     draw()
     updatePlayer()
     if (time === 100) {
-        ambusher.xPos = 490
-        ambusher.yPos = 350
+        Pinky.xPos = 490
+        Pinky.yPos = 350
+        Pinky.tile = [((Pinky.yPos - 210) / 20), ((Pinky.xPos - 210) / 20)]
     }
     if (player.score === 500 && !setClyde) {
         clyde.xPos = 490
         clyde.yPos = 350
+        clyde.tile = [((clyde.yPos - 210) / 20), ((clyde.xPos - 210) / 20)]
         setClyde = true
     }
+
+    if (player.score === 500 && !setInky) {
+        Inky.xPos = 490
+        Inky.yPos = 350
+        Inky.tile = [((Inky.yPos - 210) / 20), ((Inky.xPos - 210) / 20)]
+        setInky = true
+    }
+
     window.requestAnimationFrame(loop)
 }
 
 function chaseToScatter() {
-  chaser.mode = "scatter"
-  setTimeout(scatterToChase, 7000); 
+    Blinky.mode = "scatter"
+    Pinky.mode = "scatter"
+    clyde.mode = "scatter"
+    Inky.mode = "scatter"
+    
+    setTimeout(scatterToChase, 7000); 
 }
 
 function scatterToChase() {
-    chaser.mode = "chase"
+    Blinky.mode = "chase"
+    Pinky.mode = "chase"
+    Inky.mode = "chase"
+    if (clyde.distanceTarget > 8) {
+        clyde.mode = "chase"
+    }
+    
+
     setTimeout(chaseToScatter, 20000)
 }
 

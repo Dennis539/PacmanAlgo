@@ -42,26 +42,27 @@ class Board {
     createBoard() {
         let constructMatrix: Array<Array<string>>
         var preConstructMatrix = [
-            "W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W",
-            "W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W	W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W",
-            "W	C	W	W	W	W	C	W	W	W	C	C	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	W",
-            "W	C	W	W	W	W	C	W	W	W	C	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	W",
-            "W	C	C	C	C	C	C	W	W	W	W	W	W	W	W	C	C	C	C	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	C	C	C	C	C	C	C	C	W",
-            "W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	C	W	W	W	C	W	W	W	C	C	C	C	C	C	W	W	W	C	C	C	C	C	C	W	W	W	C	C	C	C	C	C	W	W	C	W	W	W	W	W	W",
-            "N	N	N	N	N	W	C	W	W	W	W	W	W	W	C	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	W	N	N	N	N	N",
-            "W	W	W	W	W	W	C	W	W	W	W	W	W	C	C	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W",
-            "W	C	C	C	C	C	C	W	W	W	W	W	W	W	C	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	C	C	C	C	C	W",
-            "W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	C	W	W	W	C	W	W	W	C	C	C	C	C	C	W	W	W	C	C	C	C	C	C	C	C	C	C	C	W	W	W	C	W	W	C	W	W	W	W	W	W",
-            "N	N	N	N	N	W	C	W	W	W	W	W	W	W	W	C	C	C	C	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	W	N	N	N	N	N",
-            "W	W	W	W	W	W	C	W	W	W	C	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	C	C	C	W	W	W	W	W	W",
-            "W	C	C	C	C	C	C	W	W	W	C	C	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	C	C	C	C	C	W",
-            "W	C	W	W	W	W	C	C	C	C	C	C	C	C	C	C	C	W	W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W	W	W	C	W	W	W	C	W",
-            "W	C	W	W	W	W	C	W	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	W	W	W	C	W	W	W	C	W	W	W	C	W",
-            "W	C	W	W	W	W	C	W	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	W	W	W	C	W	W	W	C	W	W	W	C	W",
-            "W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W	W	C	C	C	C	C	C	C	C	C	C	C	C	C	W	W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W",
-            "W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W",
+            "W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	N\tW\tW	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W",
+            "W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W	N\tW\tC	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W",
+            "W	C	W	W	W	W	C	W	W	W	C	C	W	W	W	W	C	W	N\tW\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	W",
+            "W	C	W	W	W	W	C	W	W	W	C	W	W	W	W	W	C	W	W\tW\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	W",
+            "W	C	C	C	C	C	C	W	W	W	W	W	W	W	W	C	C	C	C\tC\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	C	C	C	C	C	C	C	C	W",
+            "W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	C	W	W	W\tW\tC	W	W	W	C	C	C	C	C	C	W	W	W	C	C	C	C	C	C	W	W	W	C	C	C	C	C	C	W	W	C	W	W	W	W	W	W",
+            "N	N	N	N	N	W	C	W	W	W	W	W	W	W	C	W	W	N	N\tW\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	W	N	N	N	N	N",
+            "W	W	W	W	W	W	C	W	W	W	W	W	W	C	C	W	N	N	N\tW\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W",
+            "W	C	C	C	C	C	C	W	W	W	W	W	W	W	C	W	W	N	N\tW\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	C	C	C	C	C	W",
+            "W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	C	W	W	W\tW\tC	W	W	W	C	C	C	C	C	C	W	W	W	C	C	C	C	C	C	C	C	C	C	C	W	W	W	C	W	W	C	W	W	W	W	W	W",
+            "N	N	N	N	N	W	C	W	W	W	W	W	W	W	W	C	C	C	C\tC\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	W	N	N	N	N	N",
+            "W	W	W	W	W	W	C	W	W	W	C	W	W	W	W	W	C	W	W\tW\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	C	C	C	W	W	W	W	W	W",
+            "W	C	C	C	C	C	C	W	W	W	C	C	W	W	W	W	C	W	N\tW\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	C	C	C	C	C	W",
+            "W	C	W	W	W	W	C	C	C	C	C	C	C	C	C	C	C	W	N\tW\tC	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W	W	W	C	W	W	W	C	W",
+            "W	C	W	W	W	W	C	W	W	W	W	W	W	W	W	W	C	W	N\tW\tC	W	W	W	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	W	W	W	C	W	W	W	C	W	W	W	C	W",
+            "W	C	W	W	W	W	C	W	W	W	W	W	W	W	W	W	C	W	N\tW\tC	W	W	W	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	W	W	W	C	W	W	W	C	W	W	W	C	W",
+            "W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W	N\tW\tC	C	C	C	C	C	C	C	C	C	C	C	C	W	W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W",
+            "W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	N\tW\tW	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W",
 
         ]
+        console.log(preConstructMatrix)
         var x = this.xPos + 50
         var y = this.yPos + 50
         this.width = (preConstructMatrix[0].split("\t").length * this.steps) + 100
@@ -589,11 +590,6 @@ class Board {
             coin.type = "Tile"
         }
     }
-
-    
-
- 
-
 }
 
 export default Board

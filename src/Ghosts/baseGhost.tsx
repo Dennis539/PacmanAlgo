@@ -55,7 +55,7 @@ class BaseGhost {
         return endTile
     }
 
-    move(board: Board, player: Player, ghostName: string) {
+    move(board: Board, player: Player, ghostName: string, ghostMode: string) {
         // aStar will only run when the ghost is on the middlepos. Otherwise, move closer to the middlepos.
         const checkMiddlePosTile = board.middlePosTile.some((middleArray) => middleArray[0] === this.xPos && middleArray[1] === this.yPos)
         if (checkMiddlePosTile) {
@@ -70,7 +70,7 @@ class BaseGhost {
 
             this.determine_neighbors(board.boardMatrix)
             console.log(beginTile, this.endTile, ghostName)
-            this.aStarAlgorithm(board, beginTile, this.endTile, ghostName)
+            this.aStarAlgorithm(board, beginTile, this.endTile, ghostName, ghostMode)
         } else {
             console.log("Kees on the move " + ghostName)
             if (this.xPos < this.nextTileCoord[0]) {
@@ -103,7 +103,7 @@ class BaseGhost {
         }
     }
 
-    aStarAlgorithm(board: Board, start: Tile, end: Tile, ghostName: string) {
+    aStarAlgorithm(board: Board, start: Tile, end: Tile, ghostName: string, ghostMode: string) {
         let count = 0
         let openSet = new PriorityQueue<Array<any>>()
         openSet.add([0,count,start])
@@ -152,15 +152,16 @@ class BaseGhost {
                         this.homeTarget = this.home[0]
                     }
                 }
-                if (ghostName === "Pinky") {
-                    console.log(curArr.length)
-                }
-                if ((ghostName === "Pinky" && curArr.length <= 2) || (ghostName === "Clyde" && curArr.length <= 8)) {
+
+                if ((ghostName === "Pinky" && curArr.length <= 2 && ghostMode !== "scatter") || (ghostName === "Clyde" && curArr.length <= 8 && ghostMode !== "scatter")) {
                     for (let neighbor of this.neighbors) {
                         if (neighbor.type !== "Wall" && neighbor != this.preVisited) {
                             this.nextTileCoord = [neighbor.xMiddle, neighbor.yMiddle]
                             break
                         }
+                    }
+                    if (ghostName === "Clyde") {
+                        this.mode = "scatter"
                     }
 
                 } else {
