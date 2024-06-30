@@ -77,7 +77,6 @@ class Player {
         function dbfs(visited: Array<string>, y: number, x: number, board: Board):  Array<number> | undefined{
             let xRange = [...Array(board.boardMatrix[0].length).keys()]
             let yRange = [...Array(board.boardMatrix.length).keys()]
-            console.log(y,x)
             if (
                 !yRange.includes(y)
                 || !xRange.includes(x)

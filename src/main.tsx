@@ -124,9 +124,11 @@ function updatePlayer() {
 
 
 function drawPlayer() {
-    c!.fillStyle = 'yellow'
+    c!.fillStyle = 'black'
     c?.beginPath()
-    c?.arc(player.xPos, player.yPos, player.radius, 0, 2*Math.PI)
+    c?.arc(player.xPos, player.yPos, player.radius, 0, 3*Math.PI / 2)
+    // c?.arc(player.xPos, player.yPos, player.radius, -Math.PI / 2, Math.PI / 2) Half circle to the right
+    // c?.arc(player.xPos, player.yPos, player.radius,  0, Math.PI)
     c?.fill()
     c!.fillStyle = 'purple'
     c?.fillRect(player.xPos, player.yPos, 1, 1)
