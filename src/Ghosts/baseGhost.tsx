@@ -2,6 +2,8 @@ import PriorityQueue from "priority-queue-typescript"
 import Board from "../Board/board"
 import Player from "../Player/player"
 import Tile from "../Board/tile"
+import Whimsical from "./Inky"
+import Chaser from "./Blinky"
 
 class BaseGhost {
     xPos: number
@@ -55,7 +57,7 @@ class BaseGhost {
         return endTile
     }
 
-    move(board: Board, player: Player, ghostName: string, ghostMode: string) {
+    move(board: Board, player: Player, ghostName: string, ghostMode: string, Inky: Whimsical, Blinky: Chaser) {
         // aStar will only run when the ghost is on the middlepos. Otherwise, move closer to the middlepos.
         const checkMiddlePosTile = board.middlePosTile.some((middleArray) => middleArray[0] === this.xPos && middleArray[1] === this.yPos)
         if (checkMiddlePosTile) {
@@ -64,6 +66,10 @@ class BaseGhost {
                 this.endTile = this.determineEndtile(board, player.tile[0], player.tile[1])
             } else if (ghostName === "Pinky") {
                 this.endTile = this.determineEndtile(board, player.fourTilesAhead[0], player.fourTilesAhead[1])
+            } else if (ghostName === "Inky") {
+                let inkyTargetCoord = Inky.determineTarget(Blinky, player, board)
+                console.log(inkyTargetCoord)
+                this.endTile = this.determineEndtile(board, inkyTargetCoord[0], inkyTargetCoord[1])
             } else {
                 this.endTile = this.determineEndtile(board, player.fourTilesAhead[0], player.fourTilesAhead[1])
             }
@@ -113,7 +119,7 @@ class BaseGhost {
         let grid = board.boardMatrix
         for (let i = 0; i < grid.length; i++) {
             for (let j = 0; j < grid[i].length; j++) {
-                if (!grid[i][j] || grid[i][j].type === "Wall") {
+                if (!grid[i][j] || grid[i][j].type === "Wall" || grid[i][j].type === "None") {
                     continue
                 }
                 let spot: Tile = grid[i][j]
@@ -153,9 +159,13 @@ class BaseGhost {
                     }
                 }
 
-                if ((ghostName === "Pinky" && curArr.length <= 2 && ghostMode !== "scatter") || (ghostName === "Clyde" && curArr.length <= 8 && ghostMode !== "scatter")) {
+                if (
+                    (ghostName === "Pinky" && curArr.length <= 2 && ghostMode !== "scatter")
+                    || (ghostName === "Inky" && curArr.length <= 2 && ghostMode !== "scatter")
+                    || (ghostName === "Clyde" && curArr.length <= 8 && ghostMode !== "scatter")
+                ) {
                     for (let neighbor of this.neighbors) {
-                        if (neighbor.type !== "Wall" && neighbor != this.preVisited) {
+                        if ((neighbor.type !== "Wall" && neighbor.type !== "None") && neighbor != this.preVisited) {
                             this.nextTileCoord = [neighbor.xMiddle, neighbor.yMiddle]
                             break
                         }
@@ -185,7 +195,7 @@ class BaseGhost {
 
             for (let neighbor of current.neighbors) {
                 let sameAsPrev = neighbor.xMiddle === this.preVisited.xMiddle && neighbor.yMiddle === this.preVisited.yMiddle
-                if (neighbor && neighbor.type !== "Wall" && neighbor !== this.preVisited) {
+                if (neighbor && neighbor.type !== "Wall" && neighbor.type !== "None" && neighbor !== this.preVisited) {
                     if (sameAsPrev) {
                         console.log("The same")
                     }
@@ -213,7 +223,7 @@ class BaseGhost {
         if (ghostName === "Pinky") {
             for (let neighbor of this.neighbors) {
                 console.log(neighbor)
-                if (neighbor.type !== "Wall" && neighbor != this.preVisited) {
+                if (neighbor.type !== "Wall"  && neighbor.type !== "None" && neighbor != this.preVisited) {
                     this.nextTileCoord = [neighbor.xMiddle, neighbor.yMiddle]
                     console.log("Ruigie ruig")
                     console.log(this.nextTileCoord)

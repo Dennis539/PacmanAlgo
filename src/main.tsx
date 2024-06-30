@@ -130,7 +130,6 @@ function drawPlayer() {
     c?.fill()
     c!.fillStyle = 'purple'
     c?.fillRect(player.xPos, player.yPos, 1, 1)
-    console.log(player.fourTilesAhead)
 }
 
 
@@ -140,7 +139,7 @@ function drawGhosts() {
         c?.beginPath()
         c?.arc(ghost.xPos, ghost.yPos, ghost.radius, 0, 2*Math.PI)
         c?.fill()
-        ghost.move(board, player, ghost.name, ghost.mode)
+        ghost.move(board, player, ghost.name, ghost.mode, Inky, Blinky)
     }
 }
 

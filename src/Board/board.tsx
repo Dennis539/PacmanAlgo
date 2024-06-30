@@ -314,7 +314,9 @@ class Board {
 
                     boardArray.push(new Wall(x, y, sideToSide, lineBeginX, lineBeginY, lineEndX, lineEndY))
                 } else if (constructMatrix[i][j] === "C") {
-                    boardArray.push(new Tile(x,y))
+                    boardArray.push(new Tile(x,y, "Coin"))
+                } else if (constructMatrix[i][j] === "N") {
+                    boardArray.push(new Tile(x,y, "None"))
                 } else {
                     boardArray.push(null)
                 }
