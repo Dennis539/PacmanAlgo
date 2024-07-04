@@ -122,46 +122,33 @@ function updatePlayer() {
     }
 }
 
-let startAngle = 0; // Starting angle of the slice
-let endAngle = 0;   // Ending angle of the slice
 let direction = "Open"
 function drawPlayer() {
-    // c!.fillStyle = 'black'
-    // c?.beginPath()
-    // // c?.arc(player.xPos, player.yPos, player.radius, 0, 3*Math.PI / 2)
-    // c?.arc(player.xPos, player.yPos, player.radius, -Math.PI / 2, Math.PI / 2) //Half circle to the right
-    // c?.fill()
-    // c!.fillStyle = 'black'
-    // c?.beginPath()
-    // c?.arc(player.xPos, player.yPos, player.radius,  0, Math.PI)
-    // c?.fill()
-    // c!.fillStyle = 'purple'
-    // c?.fillRect(player.xPos, player.yPos, 1, 1)
+
 
     // Draw the circle
     c!.beginPath();
     c!.moveTo(player.xPos, player.yPos);
-    c!.arc(player.xPos, player.yPos, player.radius, startAngle, endAngle, false);
+    c!.arc(player.xPos, player.yPos, player.radius, player.startAngle, player.endAngle, false);
     c!.lineTo(player.xPos, player.yPos);
-    c!.fillStyle = '#3498db'; // Blue color for the circle
+    c!.fillStyle = 'yellow'
     c!.fill();
     if (direction === "Open") {
-        endAngle -= 0.04; // Increment the end angle to animate
-        startAngle += 0.04
+        player.endAngle -= 0.04
+        player.startAngle += 0.04
     }
     else {
-        console.log("I have met Kees")
-        endAngle += 0.04; // Increment the end angle to animate
-        startAngle -= 0.04
+        player.endAngle += 0.04
+        player.startAngle -= 0.04
     }
 
-    console.log(Math.abs(startAngle - endAngle))
-    if (Math.abs(startAngle - endAngle) > 2.5) {
-        console.log("Have you met Kees")
+    if (Math.abs(player.startAngle - player.endAngle) > 2.5) {
         direction = "Close"
-    } else if (Math.abs(startAngle - endAngle) < 0) {
+    } else if (Math.abs(player.startAngle - player.endAngle) < 0.10) {
         direction = "Open"
     }
+    c!.fill();
+
 
 }
 

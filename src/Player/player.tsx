@@ -7,6 +7,9 @@ class Player {
     direction: string
     speed: number
     score: number
+    startAngle: number
+    endAngle: number
+    eat: boolean
     tile: Array<number>
     fourTilesAhead: Array<number>
     constructor() {
@@ -16,6 +19,9 @@ class Player {
         this.speed = 1
         this.direction = "up"
         this.score = 0
+        this.startAngle = 0
+        this.endAngle = 0
+        this.eat = false
         this.tile = [Math.floor((this.yPos - 200) / 20), Math.floor((this.xPos - 200) / 20)] // Y and X index of the boardGrid. 
         this.fourTilesAhead = [Math.floor((this.yPos - 200) / 20)-4, Math.floor((this.xPos - 200) / 20)]
     }
@@ -35,6 +41,8 @@ class Player {
             ) {
                 this.fourTilesAhead = this.findEligibleTile(board, y, x-4)!
             }
+            this.startAngle = Math.PI
+            this.endAngle = Math.PI
         } else if ("ArrowRight" in keys) {
             this.direction = "right"
             if (board.boardMatrix[0].length - 1 - x <= 4) {
@@ -46,6 +54,8 @@ class Player {
             ) {
                 this.fourTilesAhead = this.findEligibleTile(board, y, x+4)!
             }
+            this.startAngle = 0
+            this.endAngle = 0
         } else if ("ArrowUp" in keys) {
             this.direction = "up"
             if (y <= 4) {
@@ -57,6 +67,8 @@ class Player {
             ) {
                 this.fourTilesAhead = this.findEligibleTile(board, y-4, x)!
             }
+            this.startAngle = Math.PI * 1.5
+            this.endAngle = Math.PI * 1.5
         } else if ("ArrowDown" in keys) {
             this.direction = "down"
             if (board.boardMatrix.length - 1 - y <= 4) {
@@ -69,6 +81,8 @@ class Player {
             ) {
                 this.fourTilesAhead = this.findEligibleTile(board, y+4, x)!
             }
+            this.startAngle = Math.PI/2
+            this.endAngle = Math.PI/2
         }
     }
 
