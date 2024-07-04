@@ -75,7 +75,6 @@ class BaseGhost {
             }
 
             this.determine_neighbors(board.boardMatrix)
-            console.log(beginTile, this.endTile, ghostName)
             this.aStarAlgorithm(board, beginTile, this.endTile, ghostName, ghostMode)
         } else {
             console.log("Kees on the move " + ghostName)

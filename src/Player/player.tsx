@@ -91,7 +91,6 @@ class Player {
                 if (!visited.includes([y, x].toString())) {
                     visited.push([y, x].toString())
                 }
-                console.log(visited)
                 let newDir = [[y, x + 1], [y, x - 1], [y + 1, x], [y - 1, x]]
                 for (let newDirArr of newDir) {
                     let res: Array<number> | undefined = dbfs(visited, newDirArr[0], newDirArr[1], board)

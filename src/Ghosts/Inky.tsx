@@ -24,7 +24,6 @@ class Whimsical extends BaseGhost {
         // Should be two tiles ahead but didn't bother creating another function for that
         let xDiff = player.fourTilesAhead[1] - Math.floor(blinky.tile[1]) 
         let yDiff = player.fourTilesAhead[0] - Math.floor(blinky.tile[0])
-        console.log(blinky.tile, player.fourTilesAhead)
         let boardLen = board.boardMatrix.length
         let boardWidth = board.boardMatrix[0].length
 
@@ -58,9 +57,6 @@ class Whimsical extends BaseGhost {
                 xTarget = player.fourTilesAhead[1] + xDiff
             }
         }
-
-        console.log(yTarget, xTarget)
-        console.log(xDiff, yDiff)
 
         // After that, check whether the tile coordinates actually give a valid Tile
         return player.findEligibleTile(board, yTarget, xTarget)
