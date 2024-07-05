@@ -96,7 +96,7 @@ function drawBoard() {
 }
 
 function updatePlayer() {
-    player.updateDirection(keys, board)
+    player.updateDirection(c, keys, board)
 
     // Check whether a future movement will cause a collision. 
     if (player.direction === "right") {
@@ -118,7 +118,7 @@ function updatePlayer() {
 
     // If there is no collision, move the player
     if (!board.checkPlayerWallCollision(player, newX, newY)) {
-        player.move(keys, board)
+        player.move(keys, board, c)
     }
 }
 
@@ -133,6 +133,7 @@ function drawPlayer() {
     c!.lineTo(player.xPos, player.yPos);
     c!.fillStyle = 'yellow'
     c!.fill();
+
     if (direction === "Open") {
         player.endAngle -= 0.04
         player.startAngle += 0.04
@@ -147,7 +148,6 @@ function drawPlayer() {
     } else if (Math.abs(player.startAngle - player.endAngle) < 0.10) {
         direction = "Open"
     }
-    c!.fill();
 
 
 }

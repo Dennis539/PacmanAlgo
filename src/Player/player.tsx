@@ -26,12 +26,11 @@ class Player {
         this.fourTilesAhead = [Math.floor((this.yPos - 200) / 20)-4, Math.floor((this.xPos - 200) / 20)]
     }
 
-    updateDirection(keys: any, board: Board) {
+    updateDirection(c:any, keys: any, board: Board) {
         let x = this.tile[1]
         let y = this.tile[0]
         // throw "Stop"
         if ("ArrowLeft" in keys) {
-            this.direction = "left"
             if (x <= 4) {
                 this.fourTilesAhead = this.findEligibleTile(board, y, 1)!
             } else if (
@@ -41,10 +40,14 @@ class Player {
             ) {
                 this.fourTilesAhead = this.findEligibleTile(board, y, x-4)!
             }
-            this.startAngle = Math.PI
-            this.endAngle = Math.PI
+
+            if (this.direction !== "left") {
+                this.direction = "left"
+                this.startAngle = Math.PI
+                this.endAngle = Math.PI - 0.05
+            }
+
         } else if ("ArrowRight" in keys) {
-            this.direction = "right"
             if (board.boardMatrix[0].length - 1 - x <= 4) {
                 this.fourTilesAhead = this.findEligibleTile(board, y, board.boardMatrix[0].length - 2)!
             } else if (
@@ -54,10 +57,14 @@ class Player {
             ) {
                 this.fourTilesAhead = this.findEligibleTile(board, y, x+4)!
             }
-            this.startAngle = 0
-            this.endAngle = 0
+
+            if (this.direction !== "right") {
+                this.direction = "right"
+                this.startAngle = 0
+                this.endAngle = -0.05
+            }
+
         } else if ("ArrowUp" in keys) {
-            this.direction = "up"
             if (y <= 4) {
                 this.fourTilesAhead = this.findEligibleTile(board, 1, x)!
             } else if (
@@ -67,10 +74,13 @@ class Player {
             ) {
                 this.fourTilesAhead = this.findEligibleTile(board, y-4, x)!
             }
-            this.startAngle = Math.PI * 1.5
-            this.endAngle = Math.PI * 1.5
+            if (this.direction !== "up") {
+                this.direction = "up"
+                this.startAngle = Math.PI * 1.5
+                this.endAngle = (Math.PI * 1.5) - 0.05
+            }
+
         } else if ("ArrowDown" in keys) {
-            this.direction = "down"
             if (board.boardMatrix.length - 1 - y <= 4) {
                 this.fourTilesAhead = this.findEligibleTile(board, board.boardMatrix.length - 2, x)!
 
@@ -81,8 +91,13 @@ class Player {
             ) {
                 this.fourTilesAhead = this.findEligibleTile(board, y+4, x)!
             }
-            this.startAngle = Math.PI/2
-            this.endAngle = Math.PI/2
+
+            if (this.direction !== "down") {
+                this.direction = "down"
+                this.startAngle = Math.PI/2
+                this.endAngle = (Math.PI/2) - 0.05
+            }
+
         }
     }
 
@@ -119,7 +134,7 @@ class Player {
         return dbfs(visited, y, x, board)!
     }
 
-    move(keys: any, board: Board) {
+    move(keys: any, board: Board, c:any) {
         if ("ArrowLeft" in keys) {
             this.xPos -= this.speed
         }
@@ -136,7 +151,7 @@ class Player {
 
         }
         this.tile = [Math.floor((this.yPos - 200) / 20), Math.floor((this.xPos - 200) / 20)]
-        this.updateDirection(keys, board)
+        this.updateDirection(c, keys, board)
     }
 
 }
