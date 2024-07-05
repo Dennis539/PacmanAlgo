@@ -133,23 +133,23 @@ function drawPlayer() {
     c!.lineTo(player.xPos, player.yPos);
     c!.fillStyle = 'yellow'
     c!.fill();
+    if (Object.keys(keys).length !== 0) {
+        if (direction === "Open") {
+            player.endAngle -= 0.04
+            player.startAngle += 0.04
+        }
+        else {
+            player.endAngle += 0.04
+            player.startAngle -= 0.04
+        }
+    }
 
-    if (direction === "Open") {
-        player.endAngle -= 0.04
-        player.startAngle += 0.04
-    }
-    else {
-        player.endAngle += 0.04
-        player.startAngle -= 0.04
-    }
 
     if (Math.abs(player.startAngle - player.endAngle) > 2.5) {
         direction = "Close"
     } else if (Math.abs(player.startAngle - player.endAngle) < 0.10) {
         direction = "Open"
     }
-
-
 }
 
 

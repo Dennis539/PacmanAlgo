@@ -17,7 +17,7 @@ class Player {
         this.yPos = 490
         this.radius = 18
         this.speed = 1
-        this.direction = "up"
+        this.direction = "right"
         this.score = 0
         this.startAngle = 0
         this.endAngle = 0
