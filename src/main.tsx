@@ -30,6 +30,7 @@ let ghostActive: Array<any>
 let time: number
 let setClyde: boolean
 let setInky: boolean
+let durationFrightened: number
 
 function init() {
     player = new Player()
@@ -43,6 +44,8 @@ function init() {
     time = 0
     setClyde = false
     setInky = false
+    durationFrightened = 19
+    
 }
 
 function drawBoard() {
@@ -86,6 +89,23 @@ function drawBoard() {
                 let coin = board.boardMatrix[i][j]
                 c?.drawImage(coin.image, coin.xPos + 6, coin.yPos + 6, coin.width, coin.height)
                 board.playerCoinCollision(player, coin)
+            } else if (board.boardMatrix[i][j].type === "PowerUpCoin") {
+                let powerUpCoin = board.boardMatrix[i][j]
+                powerUpCoin.updateLightness()
+                c!.fillStyle = `hsl(62,100%,${powerUpCoin.lightness}%)`;  // saturation at 100%
+
+                c!.beginPath();
+                c!.moveTo(player.xPos, player.yPos);
+                c!.arc(powerUpCoin.xPos + 10, powerUpCoin.yPos+10, 10, 0, 90, false);
+                c!.lineTo(player.xPos, player.yPos);
+                c!.fill();
+                let collisionType = board.playerCoinCollision(player, powerUpCoin)
+                if (collisionType && collisionType === "PowerUpCoin") {
+                    for (let ghost of ghostActive) {
+                        ghost.becomeFrightened()
+                        let startTimeFrightened = Date.now()
+                    }
+                }
             }
             c!.fillStyle = 'red'
 
@@ -205,8 +225,9 @@ function chaseToScatter() {
     Pinky.mode = "scatter"
     clyde.mode = "scatter"
     Inky.mode = "scatter"
+    console.log("scatterKees")
     
-    setTimeout(scatterToChase, 7000); 
+    setTimeout(scatterToChase, 700); 
 }
 
 function scatterToChase() {
@@ -216,11 +237,11 @@ function scatterToChase() {
     if (clyde.distanceTarget > 8) {
         clyde.mode = "chase"
     }
-    
-
-    setTimeout(chaseToScatter, 20000)
+    console.log("chaseKees")
+    setTimeout(chaseToScatter, 2000)
 }
 
 init()
-setTimeout(chaseToScatter, 2000)
+let startTime = Math.floor(Date.now()/1000)
+let chaseScatterTimeout = setTimeout(chaseToScatter, 2000)
 loop()

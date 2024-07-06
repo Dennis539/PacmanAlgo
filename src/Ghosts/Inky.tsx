@@ -9,7 +9,7 @@ class Whimsical extends BaseGhost {
         super(board)
         this.xPos = 570
         this.yPos = 370
-        this.color = "blue"
+        this.color = "lightblue"
         this.tile = [((this.yPos - 210) / 20), ((this.xPos - 210) / 20)]
         let y1 = board.boardMatrix.length-2
         let y2 = board.boardMatrix.length - 2

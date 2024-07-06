@@ -24,13 +24,14 @@ class BaseGhost {
     distanceTarget: number
     name: string
     endTile: Tile
+    frightened: boolean
     constructor(board: Board) {
         this.xMovement = 0
         this.yMovement = 0
         this.xPos = 590
         this.yPos = 510
         this.radius = 18
-        this.speed = 1
+        this.speed = 2
         this.direction = "right"
         this.color = ""
         this.neighbors = []
@@ -43,6 +44,7 @@ class BaseGhost {
         this.distanceTarget = 999
         this.name = "Kees"
         this.endTile = board.boardMatrix[0][0]
+        this.frightened = false
     }
 
     determineEndtile(board: Board, endTileY: number, endTileX: number) {
@@ -106,6 +108,12 @@ class BaseGhost {
                 }
             }
         }
+    }
+
+    becomeFrightened() {
+        this.frightened = true
+        this.speed = 1
+
     }
 
     aStarAlgorithm(board: Board, start: Tile, end: Tile, ghostName: string, ghostMode: string) {
@@ -224,9 +232,6 @@ class BaseGhost {
                 console.log(neighbor)
                 if (neighbor.type !== "Wall"  && neighbor.type !== "None" && neighbor != this.preVisited) {
                     this.nextTileCoord = [neighbor.xMiddle, neighbor.yMiddle]
-                    console.log("Ruigie ruig")
-                    console.log(this.nextTileCoord)
-                    console.log(this.xPos, this.yPos)
                     break
                 }
             }

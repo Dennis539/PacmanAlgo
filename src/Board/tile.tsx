@@ -8,6 +8,9 @@ class Tile {
     type: string
     image: any
     neighbors: Array<any>
+    lighter: boolean
+    darker: boolean
+    lightness: number
 
     constructor(xPos: number, yPos: number, type: string) {
         this.height = 8
@@ -20,7 +23,37 @@ class Tile {
         this.image = new Image()
         this.image.src = 'coin.png'
         this.neighbors = []
+        this.lighter = true
+        this.darker = false
+        this.lightness = 50
     }
+
+    updateLightness () {
+        // lighter
+        if(this.lighter && this.lightness < 100){
+            this.lightness += 1
+        } 
+        
+        // ligher stop
+        else if(this.lightness >= 100) {
+            this.lighter = false
+            this.darker = true
+            this.lightness -= 1
+        }
+        
+
+        // fade out
+        else if(this.darker && this.lightness > 50) {
+            this.lightness -= 1
+        }        
+
+        // fade out stop
+        else if (this.darker && this.lightness <= 50) {
+            this.lighter = true
+            this.darker = false
+            this.lightness += 1
+        }
+	}
 }
 
 export default Tile
