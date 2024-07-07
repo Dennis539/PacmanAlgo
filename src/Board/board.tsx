@@ -12,8 +12,12 @@ class Board {
     coins: Array<Tile>
     boardMatrix: Array<Array<any>>
     middlePosTile: Array<Array<number>>
+    boardState: "chase" | "scatter"
+    chaseTimeOut: number
+    scatterTimeOut: number
+    frightenedTimeOut: number
 
-    constructor() {
+    constructor(chaseTimeOut: number, scatterTimeOut: number, frightenedTimeOut: number) {
         this.height = 600
         this.width = 0
         this.xPos = 150
@@ -24,6 +28,10 @@ class Board {
         this.boardMatrix = []
         this.createBoard()
         this.middlePosTile = this.calculateMiddlePosTile() // All the middle points of the tiles within the boardGrid. 
+        this.boardState = "chase"
+        this.chaseTimeOut = chaseTimeOut
+        this.scatterTimeOut = scatterTimeOut
+        this.frightenedTimeOut = frightenedTimeOut
     }
 
     calculateMiddlePosTile() {

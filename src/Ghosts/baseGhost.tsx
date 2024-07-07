@@ -16,6 +16,7 @@ class BaseGhost {
     color: string
     neighbors: Array<any>
     nextTileCoord: Array<number>
+    prevTileCoord: Array<number>
     preVisited: Tile
     tile: Array<number>
     mode: string
@@ -25,6 +26,10 @@ class BaseGhost {
     name: string
     endTile: Tile
     frightened: boolean
+    beginTimeMode: number
+    endTimeMode: number
+    beginTimeFrightened: number
+    endTimeFrightened: number
     constructor(board: Board) {
         this.xMovement = 0
         this.yMovement = 0
@@ -36,6 +41,7 @@ class BaseGhost {
         this.color = ""
         this.neighbors = []
         this.nextTileCoord = [] //[X, Y]
+        this.prevTileCoord = []
         this.preVisited = board.boardMatrix[0][0]
         this.tile = [((this.yPos - 210) / 20), ((this.xPos - 210) / 20)]
         this.mode = "chase"
@@ -45,6 +51,10 @@ class BaseGhost {
         this.name = "Kees"
         this.endTile = board.boardMatrix[0][0]
         this.frightened = false
+        this.beginTimeMode = Math.floor(Date.now()/1000)
+        this.endTimeMode = Math.floor(Date.now()/1000)
+        this.beginTimeFrightened = 0
+        this.endTimeFrightened = 0
     }
 
     determineEndtile(board: Board, endTileY: number, endTileX: number) {
@@ -113,7 +123,7 @@ class BaseGhost {
     becomeFrightened() {
         this.frightened = true
         this.speed = 1
-
+        this.color = "blue"
     }
 
     aStarAlgorithm(board: Board, start: Tile, end: Tile, ghostName: string, ghostMode: string) {
@@ -182,6 +192,7 @@ class BaseGhost {
                     }
 
                 } else {
+                    this.prevTileCoord = this.nextTileCoord
                     this.nextTileCoord = [curArr[curArr.length - 2]!.xMiddle, curArr[curArr.length - 2]!.yMiddle]
                 }
                 

@@ -30,11 +30,16 @@ let ghostActive: Array<any>
 let time: number
 let setClyde: boolean
 let setInky: boolean
+let durationChase: number
+let durationScatter: number
 let durationFrightened: number
 
 function init() {
+    durationChase = 20
+    durationScatter = 7
+    durationFrightened = 3
     player = new Player()
-    board = new Board()
+    board = new Board(durationChase, durationScatter, durationFrightened)
     console.log(board.boardMatrix)
     Blinky = new Chaser(board)
     Pinky = new Ambusher(board)
@@ -44,7 +49,6 @@ function init() {
     time = 0
     setClyde = false
     setInky = false
-    durationFrightened = 19
     
 }
 
@@ -103,7 +107,8 @@ function drawBoard() {
                 if (collisionType && collisionType === "PowerUpCoin") {
                     for (let ghost of ghostActive) {
                         ghost.becomeFrightened()
-                        let startTimeFrightened = Date.now()
+                        ghost.beginTimeFrightened = Math.floor(Date.now()/1000)
+                        ghost.endTimeFrightened = Math.floor(Date.now()/1000)
                     }
                 }
             }
@@ -193,6 +198,51 @@ function draw() {
     drawGhosts()
 }
 
+function updateGhostMode() {
+    for (let ghost of ghostActive) {
+        if (!ghost.frightened) {
+            if (ghost.mode === "chase") {
+                if (ghost.endTimeMode - ghost.beginTimeMode > board.chaseTimeOut) {
+                    ghost.mode = "scatter"
+                    ghost.beginTimeMode = Math.floor(Date.now() / 1000)
+                    ghost.endTimeMode = Math.floor(Date.now()/1000)
+
+                } else {
+                    ghost.endTimeMode = Math.floor(Date.now()/1000)
+                }
+            } else if (ghost.mode === "scatter") {
+                if (ghost.endTimeMode - ghost.beginTimeMode > board.scatterTimeOut) {
+                    ghost.mode = "chase"
+                    ghost.beginTimeMode = Math.floor(Date.now() / 1000)
+                    ghost.endTimeMode = Math.floor(Date.now()/1000)
+
+                } else {
+                    ghost.endTimeMode = Math.floor(Date.now()/1000)
+                }
+            }
+        } else {
+            let correctGhostPos = ghost.xPos % 2 === 0 && ghost.yPos % 2 === 0
+            if ((ghost.endTimeFrightened - ghost.beginTimeFrightened > board.frightenedTimeOut) && correctGhostPos) {
+                ghost.frightened = false
+                if (ghost.name === "Blinky") {
+                    ghost.color = "red"                    
+                }
+                if (ghost.name === "Pinky") {
+                    ghost.color = "pink"
+                }
+                if (ghost.name === "Inky") {
+                    ghost.color = "lightblue"
+                }
+                if (ghost.name === "Clyde") {
+                    ghost.color = "orange"
+                }
+                ghost.speed = 2
+            } else {
+                ghost.endTimeFrightened = Math.floor(Date.now()/1000)
+            }
+        }
+    }
+}
 
 function loop() {
     time += 1
@@ -216,32 +266,10 @@ function loop() {
         Inky.tile = [((Inky.yPos - 210) / 20), ((Inky.xPos - 210) / 20)]
         setInky = true
     }
-
+    updateGhostMode()
     window.requestAnimationFrame(loop)
 }
 
-function chaseToScatter() {
-    Blinky.mode = "scatter"
-    Pinky.mode = "scatter"
-    clyde.mode = "scatter"
-    Inky.mode = "scatter"
-    console.log("scatterKees")
-    
-    setTimeout(scatterToChase, 700); 
-}
-
-function scatterToChase() {
-    Blinky.mode = "chase"
-    Pinky.mode = "chase"
-    Inky.mode = "chase"
-    if (clyde.distanceTarget > 8) {
-        clyde.mode = "chase"
-    }
-    console.log("chaseKees")
-    setTimeout(chaseToScatter, 2000)
-}
 
 init()
-let startTime = Math.floor(Date.now()/1000)
-let chaseScatterTimeout = setTimeout(chaseToScatter, 2000)
 loop()
