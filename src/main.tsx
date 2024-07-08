@@ -108,7 +108,8 @@ function drawBoard() {
                     for (let ghost of ghostActive) {
                         ghost.becomeFrightened()
                         ghost.beginTimeFrightened = Math.floor(Date.now()/1000)
-                        ghost.endTimeFrightened = Math.floor(Date.now()/1000)
+                        ghost.endTimeFrightened = Math.floor(Date.now() / 1000)
+                        ghost.nextTileCoord = ghost.prev
                     }
                 }
             }
