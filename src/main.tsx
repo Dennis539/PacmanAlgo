@@ -109,7 +109,7 @@ function drawBoard() {
                         ghost.becomeFrightened()
                         ghost.beginTimeFrightened = Math.floor(Date.now()/1000)
                         ghost.endTimeFrightened = Math.floor(Date.now() / 1000)
-                        ghost.nextTileCoord = ghost.prev
+                        
                     }
                 }
             }
@@ -141,7 +141,7 @@ function updatePlayer() {
         var newX = player.xPos
         var newY = player.yPos + player.speed
     }
-
+    
     // If there is no collision, move the player
     if (!board.checkPlayerWallCollision(player, newX, newY)) {
         player.move(keys, board, c)
@@ -206,7 +206,9 @@ function updateGhostMode() {
                 if (ghost.endTimeMode - ghost.beginTimeMode > board.chaseTimeOut) {
                     ghost.mode = "scatter"
                     ghost.beginTimeMode = Math.floor(Date.now() / 1000)
-                    ghost.endTimeMode = Math.floor(Date.now()/1000)
+                    ghost.endTimeMode = Math.floor(Date.now() / 1000)
+                    ghost.phaseChange = true
+
 
                 } else {
                     ghost.endTimeMode = Math.floor(Date.now()/1000)
@@ -215,7 +217,8 @@ function updateGhostMode() {
                 if (ghost.endTimeMode - ghost.beginTimeMode > board.scatterTimeOut) {
                     ghost.mode = "chase"
                     ghost.beginTimeMode = Math.floor(Date.now() / 1000)
-                    ghost.endTimeMode = Math.floor(Date.now()/1000)
+                    ghost.endTimeMode = Math.floor(Date.now() / 1000)
+                    ghost.phaseChange = true
 
                 } else {
                     ghost.endTimeMode = Math.floor(Date.now()/1000)
@@ -268,6 +271,11 @@ function loop() {
         setInky = true
     }
     updateGhostMode()
+    for (let ghost of ghostActive) {
+        board.checkPlayerGhostcollision(ghost, player)
+    }
+    console.log("Split Kees")
+
     window.requestAnimationFrame(loop)
 }
 

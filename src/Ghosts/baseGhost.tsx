@@ -30,6 +30,7 @@ class BaseGhost {
     endTimeMode: number
     beginTimeFrightened: number
     endTimeFrightened: number
+    phaseChange: boolean
     constructor(board: Board) {
         this.xMovement = 0
         this.yMovement = 0
@@ -55,6 +56,7 @@ class BaseGhost {
         this.endTimeMode = Math.floor(Date.now()/1000)
         this.beginTimeFrightened = 0
         this.endTimeFrightened = 0
+        this.phaseChange = false
     }
 
     determineEndtile(board: Board, endTileY: number, endTileX: number) {
@@ -89,7 +91,7 @@ class BaseGhost {
             this.determine_neighbors(board.boardMatrix)
             this.aStarAlgorithm(board, beginTile, this.endTile, ghostName, ghostMode)
         } else {
-            console.log("Kees on the move " + ghostName)
+            // console.log("Kees on the move " + ghostName)
             if (this.xPos < this.nextTileCoord[0]) {
                 this.xPos += this.speed
             } else if (this.xPos > this.nextTileCoord[0]) {
@@ -100,7 +102,7 @@ class BaseGhost {
                 this.yPos -= this.speed
             }
         }
-        this.tile = [((this.yPos-210)/20),((this.xPos-210)/20)]
+        this.tile = [Math.floor((this.yPos - 200) / 20), Math.floor((this.xPos - 200) / 20)]
     }
 
     determine_neighbors(grid: Array<Array<any>>) {
@@ -122,6 +124,7 @@ class BaseGhost {
 
     becomeFrightened() {
         this.frightened = true
+        this.phaseChange = true
         this.speed = 1
         this.color = "blue"
     }
@@ -158,9 +161,6 @@ class BaseGhost {
             let curArr = []
 
             if (current === end) {
-                if (ghostName === "Pinky") {
-                    console.log("Ruige Pinky")
-                }
                 while (Array.from(cameFrom.keys()).includes(current)) {
                     current = cameFrom.get(current)
                     curArr.push(current)
@@ -192,8 +192,14 @@ class BaseGhost {
                     }
 
                 } else {
-                    this.prevTileCoord = this.nextTileCoord
-                    this.nextTileCoord = [curArr[curArr.length - 2]!.xMiddle, curArr[curArr.length - 2]!.yMiddle]
+                    if (this.phaseChange) {
+                        this.nextTileCoord = this.prevTileCoord
+                        this.phaseChange = false
+                    } else {
+                        this.prevTileCoord = this.nextTileCoord
+                        this.nextTileCoord = [curArr[curArr.length - 2]!.xMiddle, curArr[curArr.length - 2]!.yMiddle]
+                    }
+
                 }
                 
                 this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
@@ -238,7 +244,7 @@ class BaseGhost {
         }
         // There is apparently a situation when Pinky has been randomly assigned a tile that it
         // will not be able to find. It will randomly assign a new tile in that case.
-        if (ghostName === "Pinky") {
+        if (ghostName === "Pinky" || this.frightened) {
             for (let neighbor of this.neighbors) {
                 console.log(neighbor)
                 if (neighbor.type !== "Wall"  && neighbor.type !== "None" && neighbor != this.preVisited) {

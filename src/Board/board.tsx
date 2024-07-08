@@ -1,6 +1,10 @@
 import Wall from "./wall"
 import Tile from "./tile"
 import Player from "../Player/player"
+import Chaser from "../Ghosts/Blinky"
+import Ambusher from "../Ghosts/Pinky"
+import Whimsical from "../Ghosts/Inky"
+import Clyde from "../Ghosts/Clyde"
 
 class Board {
     height: number
@@ -620,6 +624,30 @@ class Board {
             return tempType
         }
         return null
+    }
+
+    checkPlayerGhostcollision(ghost: Chaser | Ambusher | Whimsical | Clyde, player: Player) {
+
+        if (String(ghost.tile) === String(player.tile)) {
+
+
+            if (ghost.frightened) {
+                let boardXMiddle = this.boardMatrix[ghost.tile[1]][ghost.tile[0]].xMiddle
+                let boardYMiddle = this.boardMatrix[ghost.tile[1]][ghost.tile[0]].yMiddle
+                if (ghost.xPos < boardXMiddle) {
+                    ghost.xPos += boardXMiddle - ghost.xPos
+                } else if (ghost.xPos > boardXMiddle) {
+                    ghost.xPos -= boardXMiddle - ghost.xPos
+                }
+
+                if (ghost.yPos < boardYMiddle) {
+                    ghost.yPos += boardYMiddle - ghost.yPos
+                } else if (ghost.yPos > boardYMiddle) {
+                    ghost.yPos -= boardYMiddle - ghost.yPos
+                }
+                ghost.speed = 10
+            }
+        }
     }
 }
 
