@@ -632,20 +632,23 @@ class Board {
 
 
             if (ghost.frightened) {
-                let boardXMiddle = this.boardMatrix[ghost.tile[1]][ghost.tile[0]].xMiddle
-                let boardYMiddle = this.boardMatrix[ghost.tile[1]][ghost.tile[0]].yMiddle
-                if (ghost.xPos < boardXMiddle) {
-                    ghost.xPos += boardXMiddle - ghost.xPos
-                } else if (ghost.xPos > boardXMiddle) {
-                    ghost.xPos -= boardXMiddle - ghost.xPos
-                }
+                let boardXMiddle = this.boardMatrix[ghost.tile[0]][ghost.tile[1]].xMiddle
+                let boardYMiddle = this.boardMatrix[ghost.tile[0]][ghost.tile[1]].yMiddle
+                // if (ghost.xPos < boardXMiddle) {
+                //     ghost.xPos += (boardXMiddle - ghost.xPos)
+                // } else if (ghost.xPos > boardXMiddle) {
+                //     ghost.xPos -= (boardXMiddle - ghost.xPos)
+                // }
 
-                if (ghost.yPos < boardYMiddle) {
-                    ghost.yPos += boardYMiddle - ghost.yPos
-                } else if (ghost.yPos > boardYMiddle) {
-                    ghost.yPos -= boardYMiddle - ghost.yPos
-                }
+                // if (ghost.yPos < boardYMiddle) {
+                //     ghost.yPos += (boardYMiddle - ghost.yPos)
+                // } else if (ghost.yPos > boardYMiddle) {
+                //     ghost.yPos -= (boardYMiddle - ghost.yPos)
+                // }
+                ghost.xPos = boardXMiddle
+                ghost.yPos = boardYMiddle
                 ghost.speed = 10
+                ghost.touched = true
             }
         }
     }

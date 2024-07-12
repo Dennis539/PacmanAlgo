@@ -31,6 +31,7 @@ class BaseGhost {
     beginTimeFrightened: number
     endTimeFrightened: number
     phaseChange: boolean
+    touched: boolean
     constructor(board: Board) {
         this.xMovement = 0
         this.yMovement = 0
@@ -57,6 +58,7 @@ class BaseGhost {
         this.beginTimeFrightened = 0
         this.endTimeFrightened = 0
         this.phaseChange = false
+        this.touched = false
     }
 
     determineEndtile(board: Board, endTileY: number, endTileX: number) {
@@ -77,15 +79,30 @@ class BaseGhost {
         if (checkMiddlePosTile) {
             let beginTile = board.boardMatrix[this.tile[0]][this.tile[1]]
             if (ghostName === "Blinky") {
-                this.endTile = this.determineEndtile(board, player.tile[0], player.tile[1])
+                if (this.touched) {
+                    this.endTile = board.boardMatrix[7][14]
+                } else {
+                    this.endTile = this.determineEndtile(board, player.tile[0], player.tile[1])
+                }
             } else if (ghostName === "Pinky") {
-                this.endTile = this.determineEndtile(board, player.fourTilesAhead[0], player.fourTilesAhead[1])
+                if (this.touched) {
+                    this.endTile = board.boardMatrix[7][14]
+                } else {
+                    this.endTile = this.determineEndtile(board, player.fourTilesAhead[0], player.fourTilesAhead[1])
+                }
             } else if (ghostName === "Inky") {
-                let inkyTargetCoord = Inky.determineTarget(Blinky, player, board)
-                console.log(inkyTargetCoord)
-                this.endTile = this.determineEndtile(board, inkyTargetCoord[0], inkyTargetCoord[1])
+                if (this.touched) {
+                    this.endTile = board.boardMatrix[7][14]
+                } else {
+                    let inkyTargetCoord = Inky.determineTarget(Blinky, player, board)
+                    this.endTile = this.determineEndtile(board, inkyTargetCoord[0], inkyTargetCoord[1])  
+                }
             } else {
-                this.endTile = this.determineEndtile(board, player.fourTilesAhead[0], player.fourTilesAhead[1])
+                if (this.touched) {
+                    this.endTile = board.boardMatrix[7][14]
+                } else {
+                    this.endTile = this.determineEndtile(board, player.fourTilesAhead[0], player.fourTilesAhead[1])
+                }
             }
 
             this.determine_neighbors(board.boardMatrix)
@@ -199,7 +216,6 @@ class BaseGhost {
                         this.prevTileCoord = this.nextTileCoord
                         this.nextTileCoord = [curArr[curArr.length - 2]!.xMiddle, curArr[curArr.length - 2]!.yMiddle]
                     }
-
                 }
                 
                 this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]

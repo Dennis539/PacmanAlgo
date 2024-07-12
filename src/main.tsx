@@ -37,7 +37,7 @@ let durationFrightened: number
 function init() {
     durationChase = 20
     durationScatter = 7
-    durationFrightened = 3
+    durationFrightened = 10
     player = new Player()
     board = new Board(durationChase, durationScatter, durationFrightened)
     console.log(board.boardMatrix)
@@ -228,6 +228,7 @@ function updateGhostMode() {
             let correctGhostPos = ghost.xPos % 2 === 0 && ghost.yPos % 2 === 0
             if ((ghost.endTimeFrightened - ghost.beginTimeFrightened > board.frightenedTimeOut) && correctGhostPos) {
                 ghost.frightened = false
+                ghost.touched = false
                 if (ghost.name === "Blinky") {
                     ghost.color = "red"                    
                 }
