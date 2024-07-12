@@ -186,11 +186,23 @@ class BaseGhost {
 
                 if (this.distanceTarget <= 2 && this.mode === 'scatter') {
                     // switch locations of scatter mode depending on how close the ghost is to its target. 
+                    console.log("Distance to Kees: " + this.distanceTarget)
                     if (this.homeTarget === this.home[0]) {
                         this.homeTarget = this.home[1]
                     } else {
                         this.homeTarget = this.home[0]
                     }
+                
+                }
+                if (this.distanceTarget <= 1) {
+                    if (this.touched) {
+                        console.log("Touched Kees")
+                        this.xPos = 490
+                        this.yPos = 350
+                        // Reset ghost
+                        return
+                    }
+
                 }
 
                 if (
