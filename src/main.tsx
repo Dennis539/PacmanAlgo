@@ -49,7 +49,6 @@ function init() {
     time = 0
     setClyde = false
     setInky = false
-    
 }
 
 function drawBoard() {
@@ -109,12 +108,10 @@ function drawBoard() {
                         ghost.becomeFrightened()
                         ghost.beginTimeFrightened = Math.floor(Date.now()/1000)
                         ghost.endTimeFrightened = Math.floor(Date.now() / 1000)
-                        
                     }
                 }
             }
             c!.fillStyle = 'red'
-
             c?.fillRect(board.boardMatrix[i][j].xMiddle,board.boardMatrix[i][j].yMiddle,1,1)
         }
     }
@@ -226,22 +223,11 @@ function updateGhostMode() {
             }
         } else {
             let correctGhostPos = ghost.xPos % 2 === 0 && ghost.yPos % 2 === 0
-            if ((ghost.endTimeFrightened - ghost.beginTimeFrightened > board.frightenedTimeOut) && correctGhostPos) {
-                ghost.frightened = false
-                ghost.touched = false
-                if (ghost.name === "Blinky") {
-                    ghost.color = "red"                    
-                }
-                if (ghost.name === "Pinky") {
-                    ghost.color = "pink"
-                }
-                if (ghost.name === "Inky") {
-                    ghost.color = "lightblue"
-                }
-                if (ghost.name === "Clyde") {
-                    ghost.color = "orange"
-                }
-                ghost.speed = 2
+            if (
+                ((ghost.endTimeFrightened - ghost.beginTimeFrightened > board.frightenedTimeOut) && correctGhostPos)
+                || ghost.touched && ghost.xPos === 490 && ghost.yPos === 350
+            ) {
+                board.endFrightened(ghost)
             } else {
                 ghost.endTimeFrightened = Math.floor(Date.now()/1000)
             }

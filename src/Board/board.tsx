@@ -627,30 +627,35 @@ class Board {
     }
 
     checkPlayerGhostcollision(ghost: Chaser | Ambusher | Whimsical | Clyde, player: Player) {
-
         if (String(ghost.tile) === String(player.tile)) {
-
-
-            if (ghost.frightened) {
-                let boardXMiddle = this.boardMatrix[ghost.tile[0]][ghost.tile[1]].xMiddle
-                let boardYMiddle = this.boardMatrix[ghost.tile[0]][ghost.tile[1]].yMiddle
-                // if (ghost.xPos < boardXMiddle) {
-                //     ghost.xPos += (boardXMiddle - ghost.xPos)
-                // } else if (ghost.xPos > boardXMiddle) {
-                //     ghost.xPos -= (boardXMiddle - ghost.xPos)
-                // }
-
-                // if (ghost.yPos < boardYMiddle) {
-                //     ghost.yPos += (boardYMiddle - ghost.yPos)
-                // } else if (ghost.yPos > boardYMiddle) {
-                //     ghost.yPos -= (boardYMiddle - ghost.yPos)
-                // }
-                ghost.xPos = boardXMiddle
-                ghost.yPos = boardYMiddle
+            if (!ghost.touched && ghost.frightened) {
+                ghost.xPos = this.boardMatrix[ghost.tile[0]][ghost.tile[1]].xMiddle
+                ghost.yPos = this.boardMatrix[ghost.tile[0]][ghost.tile[1]].yMiddle
                 ghost.speed = 10
                 ghost.touched = true
             }
+        } else {
+
         }
+
+    }
+
+    endFrightened(ghost: Chaser | Ambusher | Whimsical | Clyde) {
+        ghost.frightened = false
+        ghost.touched = false
+        if (ghost.name === "Blinky") {
+            ghost.color = "red"                    
+        }
+        if (ghost.name === "Pinky") {
+            ghost.color = "pink"
+        }
+        if (ghost.name === "Inky") {
+            ghost.color = "lightblue"
+        }
+        if (ghost.name === "Clyde") {
+            ghost.color = "orange"
+        }
+        ghost.speed = 2
     }
 }
 

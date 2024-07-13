@@ -9,8 +9,6 @@ class BaseGhost {
     xPos: number
     yPos: number
     radius: number
-    xMovement: number
-    yMovement: number
     direction: string
     speed: number
     color: string
@@ -22,7 +20,6 @@ class BaseGhost {
     mode: string
     home: Array<Tile>
     homeTarget: Tile
-    distanceTarget: number
     name: string
     endTile: Tile
     frightened: boolean
@@ -33,8 +30,6 @@ class BaseGhost {
     phaseChange: boolean
     touched: boolean
     constructor(board: Board) {
-        this.xMovement = 0
-        this.yMovement = 0
         this.xPos = 590
         this.yPos = 510
         this.radius = 18
@@ -49,7 +44,6 @@ class BaseGhost {
         this.mode = "chase"
         this.home = [board.boardMatrix[0][0], board.boardMatrix[0][0]]
         this.homeTarget = board.boardMatrix[0][0]
-        this.distanceTarget = 999
         this.name = "Kees"
         this.endTile = board.boardMatrix[0][0]
         this.frightened = false
@@ -182,11 +176,10 @@ class BaseGhost {
                     current = cameFrom.get(current)
                     curArr.push(current)
                 }
-                this.distanceTarget = curArr.length
 
-                if (this.distanceTarget <= 2 && this.mode === 'scatter') {
+                if (curArr.length <= 2 && this.mode === 'scatter') {
                     // switch locations of scatter mode depending on how close the ghost is to its target. 
-                    console.log("Distance to Kees: " + this.distanceTarget)
+                    console.log("Distance to Kees: " + curArr.length)
                     if (this.homeTarget === this.home[0]) {
                         this.homeTarget = this.home[1]
                     } else {
@@ -194,15 +187,12 @@ class BaseGhost {
                     }
                 
                 }
-                if (this.distanceTarget <= 1) {
+                if (curArr.length <= 1) {
                     if (this.touched) {
-                        console.log("Touched Kees")
                         this.xPos = 490
                         this.yPos = 350
-                        // Reset ghost
                         return
                     }
-
                 }
 
                 if (
@@ -246,11 +236,7 @@ class BaseGhost {
             }
 
             for (let neighbor of current.neighbors) {
-                let sameAsPrev = neighbor.xMiddle === this.preVisited.xMiddle && neighbor.yMiddle === this.preVisited.yMiddle
                 if (neighbor && neighbor.type !== "Wall" && neighbor.type !== "None" && neighbor !== this.preVisited) {
-                    if (sameAsPrev) {
-                        console.log("The same")
-                    }
                     let tempGScore = gScore.get(current) + 1
 
                     if (tempGScore < gScore.get(neighbor)) {
