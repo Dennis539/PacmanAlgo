@@ -58,7 +58,7 @@ class Board {
             "W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	C	W	W	W\tW\tC	WR	W	WR	CP	C	C	C	C	C	WY	W	WY	C	C	C	C	C	C	WG	W	WG	C	C	C	C	C	C	W	W	C	W	W	W	W	W	W",
             "N	N	N	N	N	W	C	W	W	W	W	W	W	W	C	W	W	N	N\tW\tC	WR	W	WR	WR	WR	WR	WR	WR	C	WY	W	WY	WY	WY	WY	WY	WY	C	WG	W	WG	WG	WG	WG	WG	WG	C	W	W	C	W	N	N	N	N	N",
             "W	W	W	W	W	W	C	W	W	W	W	W	W	C	C	W	N	N	N\tW\tC	WR	W	W	W	W	W	W	WR	C	WY	W	W	W	W	W	W	WY	C	WG	W	W	W	W	W	W	WG	C	W	W	C	W	W	W	W	W	W",
-            "W	C	C	C	C	C	C	W	W	W	W	W	W	W	C	W	W	N	N\tW\tC	WR	W	WR	WR	WR	WR	WR	WR	C	WY	W	WY	WY	WY	WY	WY	WY	C	WG	WG	WG	WG	WG	WG	W	WG	C	W	W	C	C	C	C	C	C	W",
+            "WN	C	C	C	C	C	C	W	W	W	W	W	W	W	C	W	W	N	N\tW\tC	WR	W	WR	WR	WR	WR	WR	WR	C	WY	W	WY	WY	WY	WY	WY	WY	C	WG	WG	WG	WG	WG	WG	W	WG	C	W	W	C	C	C	C	C	C	W",
             "W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	C	W	W	W\tW\tC	WR	W	WR	C	C	C	C	C	C	WY	W	WY	C	C	C	C	C	C	C	C	C	C	C	WG	W	WG	C	W	W	C	W	W	W	W	W	W",
             "N	N	N	N	N	W	C	W	W	W	W	W	W	W	W	C	C	C	C\tC\tC	WR	W	WR	WR	WR	WR	WR	WR	C	WY	W	WY	WY	WY	WY	WY	WY	C	WG	WG	WG	WG	WG	WG	W	WG	C	W	W	C	W	N	N	N	N	N",
             "W	W	W	W	W	W	C	W	W	W	C	W	W	W	W	W	C	W	W\tW\tC	WR	W	W	W	W	W	W	WR	C	WY	W	W	W	W	W	W	WY	C	WG	W	W	W	W	W	W	WG	C	C	C	C	W	W	W	W	W	W",
@@ -172,8 +172,7 @@ class Board {
                             lineBeginY = y
                             lineEndX = x+10
                             lineEndY = y+20
-                        }
-                        else if (
+                        } else if (
                             (
                                 constructMatrix[i - 1][j - 1].includes("C")
                                 && !constructMatrix[i + 1][j + 1].includes("C")
@@ -201,9 +200,7 @@ class Board {
                             lineBeginY = y+10
                             lineEndX = x+10
                             lineEndY = y+20
-                        }
-                            
-                        else if (
+                        } else if (
                             (
                                 constructMatrix[i - 1][j - 1].includes("C")
                                 && constructMatrix[i + 1][j + 1].includes("C")
@@ -216,6 +213,7 @@ class Board {
                                 && !constructMatrix[i + 1][j + 1].includes("C")
                                 && !constructMatrix[i - 1][j + 1].includes("C")
                                 && constructMatrix[i + 1][j - 1].includes("C")
+                                && !constructMatrix[i][j-1].includes("C")
                                 && (!constructMatrix[i+1][j].includes("C") && !constructMatrix[i][j+1].includes("C"))
                             )
                             ||
@@ -274,7 +272,9 @@ class Board {
                                 && !constructMatrix[i + 1][j + 1].includes("C")
                                 && !constructMatrix[i - 1][j + 1].includes("C")
                                 && !constructMatrix[i + 1][j - 1].includes("C")
-                                && !constructMatrix[i-1][j].includes("C")
+                                && !constructMatrix[i - 1][j].includes("C")
+                                && !constructMatrix[i][j-1].includes("C")
+
                             )
                             ||
                             (
@@ -640,7 +640,8 @@ class Board {
                 ghost.speed = 10
                 ghost.touched = true
             } else {
-                // this.lifeLost = true
+                this.lifeLost = true
+                console.log(ghost.name)
             }
         } 
 

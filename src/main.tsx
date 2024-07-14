@@ -136,8 +136,6 @@ function drawBoard() {
         c!.fill();
         xLives += 30
     }
-
-
 }
 
 function updatePlayer() {
@@ -167,10 +165,8 @@ function updatePlayer() {
     }
 }
 
-let direction = "Open"
+
 function drawPlayer() {
-
-
     // Draw the circle
     c!.beginPath();
     c!.moveTo(player.xPos, player.yPos);
@@ -179,22 +175,21 @@ function drawPlayer() {
     c!.fillStyle = 'yellow'
     c!.fill();
     if (Object.keys(keys).length !== 0) {
-        if (direction === "Open") {
-            player.startAngle += 0.04
-            player.endAngle -= 0.04
-
+        if (player.mouthDirection === "Open") {
+            player.startAngle += 0.08
+            player.endAngle -= 0.08
         }
         else {
-            player.startAngle -= 0.04
-            player.endAngle += 0.04
+            player.startAngle -= 0.08
+            player.endAngle += 0.08
         }
     }
 
 
     if (Math.abs(player.startAngle - player.endAngle) > 2.5) {
-        direction = "Close"
-    } else if (Math.abs(player.startAngle - player.endAngle) < 0.10) {
-        direction = "Open"
+        player.mouthDirection = "Close"
+    } else if (Math.abs(player.startAngle - player.endAngle) < 0.17) {
+        player.mouthDirection = "Open"
     }
 }
 
@@ -205,7 +200,11 @@ function drawGhosts() {
         c?.beginPath()
         c?.arc(ghost.xPos, ghost.yPos, ghost.radius, 0, 2*Math.PI)
         c?.fill()
-        ghost.move(board, player, ghost.name, ghost.mode, Inky, Blinky)
+        if (ghost.entering) {
+
+        } else {
+            ghost.move(board, player, ghost.name, ghost.mode, Inky, Blinky)
+        }
     }
 }
 
@@ -228,8 +227,6 @@ function updateGhostMode() {
                     ghost.beginTimeMode = Math.floor(Date.now() / 1000)
                     ghost.endTimeMode = Math.floor(Date.now() / 1000)
                     ghost.phaseChange = true
-
-
                 } else {
                     ghost.endTimeMode = Math.floor(Date.now()/1000)
                 }
@@ -262,30 +259,58 @@ function loop() {
     time += 1
     draw()
     updatePlayer()
-    if (time === 100) {
-        Pinky.xPos = 490
-        Pinky.yPos = 350
+    if (time === 100 || Pinky.entering === true) {
+        if (!Pinky.entering) {
+            Pinky.entering = true
+        }
+        Pinky.enter()
         Pinky.tile = [((Pinky.yPos - 210) / 20), ((Pinky.xPos - 210) / 20)]
     }
-    if (player.score === 500 && !setClyde) {
-        clyde.xPos = 490
-        clyde.yPos = 350
+
+    if ((player.score === 1000 || clyde.entering) && !setClyde) {
+        if (!clyde.entering) {
+            clyde.entering = true
+        }
+        clyde.enter()
         clyde.tile = [((clyde.yPos - 210) / 20), ((clyde.xPos - 210) / 20)]
-        setClyde = true
+        if (clyde.xPos === 490 && clyde.yPos === 350) {
+            clyde.entering = false
+            setClyde = true
+        }
     }
 
-    if (player.score === 500 && !setInky) {
-        Inky.xPos = 490
-        Inky.yPos = 350
+    if ((player.score === 500 || Inky.entering) && !setInky) {
+        if (!Inky.entering) {
+            Inky.entering = true
+        }
+        Inky.enter()
         Inky.tile = [((Inky.yPos - 210) / 20), ((Inky.xPos - 210) / 20)]
-        setInky = true
+        if (Inky.xPos === 490 && Inky.yPos === 350) {
+            Inky.entering = false
+            setInky = true
+        }
     }
+
     updateGhostMode()
     for (let ghost of ghostActive) {
         board.checkPlayerGhostcollision(ghost, player)
     }
     
     if (board.lifeLost) {
+        player.startAngle = Math.PI * 1.5
+        player.endAngle = (Math.PI * 1.5) - 0.05
+        console.log(player.startAngle - player.endAngle)
+        function caught() {
+            player.startAngle += 0.08
+            player.endAngle -= 0.08
+        }
+
+        if (Math.abs(player.startAngle - player.endAngle) < 2.5) {
+            console.log("Print Kees")
+            window.requestAnimationFrame(caught)
+
+        }
+
         if (player.lives > 0) {
             player.lives -= 1
             // Reset board
@@ -293,8 +318,6 @@ function loop() {
     } else {
         window.requestAnimationFrame(loop)
     }
-
-
 }
 
 

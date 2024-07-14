@@ -5,6 +5,7 @@ class Player {
     yPos: number
     radius: number
     direction: string
+    mouthDirection: "Open" | "Close"
     speed: number
     score: number
     startAngle: number
@@ -18,10 +19,11 @@ class Player {
         this.yPos = 490
         this.radius = 18
         this.speed = 2
-        this.direction = "right"
+        this.direction = "Kees"
+        this.mouthDirection = "Open"
         this.score = 0
-        this.startAngle = 0
-        this.endAngle = 0
+        this.startAngle = Math.PI * 1.5
+        this.endAngle = (Math.PI * 1.5) - 0.05
         this.eat = false
         this.tile = [Math.floor((this.yPos - 200) / 20), Math.floor((this.xPos - 200) / 20)] // Y and X index of the boardGrid. 
         this.fourTilesAhead = [Math.floor((this.yPos - 200) / 20) - 4, Math.floor((this.xPos - 200) / 20)]
@@ -47,6 +49,7 @@ class Player {
                 this.direction = "left"
                 this.startAngle = Math.PI
                 this.endAngle = Math.PI - 0.05
+                this.mouthDirection = "Open"
             }
 
         } else if ("ArrowRight" in keys) {
@@ -64,6 +67,7 @@ class Player {
                 this.direction = "right"
                 this.startAngle = 0
                 this.endAngle = -0.05
+                this.mouthDirection = "Open"
             }
 
         } else if ("ArrowUp" in keys) {
@@ -80,6 +84,7 @@ class Player {
                 this.direction = "up"
                 this.startAngle = Math.PI * 1.5
                 this.endAngle = (Math.PI * 1.5) - 0.05
+                this.mouthDirection = "Open"
             }
 
         } else if ("ArrowDown" in keys) {
@@ -98,6 +103,7 @@ class Player {
                 this.direction = "down"
                 this.startAngle = Math.PI/2
                 this.endAngle = (Math.PI/2) - 0.05
+                this.mouthDirection = "Open"
             }
 
         }
@@ -156,5 +162,9 @@ class Player {
         this.updateDirection(c, keys, board)
     }
 
+    caught() {
+        this.startAngle += 0.08
+        this.endAngle -= 0.08
+    }
 }
 export default Player

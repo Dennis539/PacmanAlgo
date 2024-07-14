@@ -29,6 +29,7 @@ class BaseGhost {
     endTimeFrightened: number
     phaseChange: boolean
     touched: boolean
+    entering: boolean
     constructor(board: Board) {
         this.xPos = 590
         this.yPos = 510
@@ -53,6 +54,7 @@ class BaseGhost {
         this.endTimeFrightened = 0
         this.phaseChange = false
         this.touched = false
+        this.entering = false
     }
 
     determineEndtile(board: Board, endTileY: number, endTileX: number) {

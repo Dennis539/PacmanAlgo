@@ -16,6 +16,14 @@ class Ambusher extends BaseGhost{
         this.name = "Pinky"
     }
 
+    enter() {
+        if (this.entering && this.xPos !== 490) {
+            this.xPos -= 1
+        } else {
+            this.entering = false
+            this.tile = [((this.yPos - 210) / 20), ((this.xPos - 210) / 20)]
+        }
+    }
 }
 
 export default Ambusher
