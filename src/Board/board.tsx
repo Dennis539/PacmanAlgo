@@ -12,14 +12,12 @@ class Board {
     xPos: number
     yPos: number
     steps: number
-    walls: Array<Wall>
-    coins: Array<Tile>
     boardMatrix: Array<Array<any>>
     middlePosTile: Array<Array<number>>
-    boardState: "chase" | "scatter"
     chaseTimeOut: number
     scatterTimeOut: number
     frightenedTimeOut: number
+    lifeLost: boolean
 
     constructor(chaseTimeOut: number, scatterTimeOut: number, frightenedTimeOut: number) {
         this.height = 600
@@ -27,15 +25,13 @@ class Board {
         this.xPos = 150
         this.yPos = 150
         this.steps = 20
-        this.walls = []
-        this.coins = [] 
         this.boardMatrix = []
         this.createBoard()
         this.middlePosTile = this.calculateMiddlePosTile() // All the middle points of the tiles within the boardGrid. 
-        this.boardState = "chase"
         this.chaseTimeOut = chaseTimeOut
         this.scatterTimeOut = scatterTimeOut
         this.frightenedTimeOut = frightenedTimeOut
+        this.lifeLost = false
     }
 
     calculateMiddlePosTile() {
@@ -56,17 +52,17 @@ class Board {
         var preConstructMatrix = [
             "W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	N\tW\tW	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W	W",
             "W	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W	N\tW\tC	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W",
-            "W	C	W	W	W	W	C	W	W	W	C	C	W	W	W	W	C	W	N\tW\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	W",
-            "W	C	W	W	W	W	C	W	W	W	C	W	W	W	W	W	C	W	W\tW\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	W",
-            "W	CP	C	C	C	C	C	W	W	W	W	W	W	W	W	C	C	C	C\tC\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	C	C	C	C	C	C	C	CP	W",
-            "W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	C	W	W	W\tW\tC	W	W	W	CP	C	C	C	C	C	W	W	W	C	C	C	C	C	C	W	W	W	C	C	C	C	C	C	W	W	C	W	W	W	W	W	W",
-            "N	N	N	N	N	W	C	W	W	W	W	W	W	W	C	W	W	N	N\tW\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	W	N	N	N	N	N",
-            "W	W	W	W	W	W	C	W	W	W	W	W	W	C	C	W	N	N	N\tW\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W",
-            "W	C	C	C	C	C	C	W	W	W	W	W	W	W	C	W	W	N	N\tW\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	C	C	C	C	C	W",
-            "W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	C	W	W	W\tW\tC	W	W	W	C	C	C	C	C	C	W	W	W	C	C	C	C	C	C	C	C	C	C	C	W	W	W	C	W	W	C	W	W	W	W	W	W",
-            "N	N	N	N	N	W	C	W	W	W	W	W	W	W	W	C	C	C	C\tC\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	W	N	N	N	N	N",
-            "W	W	W	W	W	W	C	W	W	W	C	W	W	W	W	W	C	W	W\tW\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	C	C	C	W	W	W	W	W	W",
-            "W	C	C	C	C	C	C	W	W	W	C	C	W	W	W	W	C	W	N\tW\tC	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	W	W	W	W	W	W	C	W	W	C	C	C	C	C	C	W",
+            "W	C	W	W	W	W	C	W	W	W	C	C	W	W	W	W	C	W	N\tW\tC	WR	WR	WR	WR	WR	WR	WR	WR	C	WY	WY	WY	WY	WY	WY	WY	WY	C	WG	WG	WG	WG	WG	WG	WG	WG	C	W	W	W	W	W	W	W	C	W",
+            "W	C	W	W	W	W	C	W	W	W	C	W	W	W	W	W	C	W	W\tW\tC	WR	W	W	W	W	W	W	WR	C	WY	W	W	W	W	W	W	WY	C	WG	W	W	W	W	W	W	WG	C	W	W	W	W	W	W	W	C	W",
+            "W	CP	C	C	C	C	C	W	W	W	W	W	W	W	W	C	C	C	C\tC\tC	WR	W	WR	WR	WR	WR	WR	WR	C	WY	W	WY	WY	WY	WY	WY	WY	C	WG	W	WG	WG	WG	WG	WG	WG	C	C	C	C	C	C	C	C	CP	W",
+            "W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	C	W	W	W\tW\tC	WR	W	WR	CP	C	C	C	C	C	WY	W	WY	C	C	C	C	C	C	WG	W	WG	C	C	C	C	C	C	W	W	C	W	W	W	W	W	W",
+            "N	N	N	N	N	W	C	W	W	W	W	W	W	W	C	W	W	N	N\tW\tC	WR	W	WR	WR	WR	WR	WR	WR	C	WY	W	WY	WY	WY	WY	WY	WY	C	WG	W	WG	WG	WG	WG	WG	WG	C	W	W	C	W	N	N	N	N	N",
+            "W	W	W	W	W	W	C	W	W	W	W	W	W	C	C	W	N	N	N\tW\tC	WR	W	W	W	W	W	W	WR	C	WY	W	W	W	W	W	W	WY	C	WG	W	W	W	W	W	W	WG	C	W	W	C	W	W	W	W	W	W",
+            "W	C	C	C	C	C	C	W	W	W	W	W	W	W	C	W	W	N	N\tW\tC	WR	W	WR	WR	WR	WR	WR	WR	C	WY	W	WY	WY	WY	WY	WY	WY	C	WG	WG	WG	WG	WG	WG	W	WG	C	W	W	C	C	C	C	C	C	W",
+            "W	W	W	W	W	W	C	W	W	W	W	W	W	W	C	C	W	W	W\tW\tC	WR	W	WR	C	C	C	C	C	C	WY	W	WY	C	C	C	C	C	C	C	C	C	C	C	WG	W	WG	C	W	W	C	W	W	W	W	W	W",
+            "N	N	N	N	N	W	C	W	W	W	W	W	W	W	W	C	C	C	C\tC\tC	WR	W	WR	WR	WR	WR	WR	WR	C	WY	W	WY	WY	WY	WY	WY	WY	C	WG	WG	WG	WG	WG	WG	W	WG	C	W	W	C	W	N	N	N	N	N",
+            "W	W	W	W	W	W	C	W	W	W	C	W	W	W	W	W	C	W	W\tW\tC	WR	W	W	W	W	W	W	WR	C	WY	W	W	W	W	W	W	WY	C	WG	W	W	W	W	W	W	WG	C	C	C	C	W	W	W	W	W	W",
+            "W	C	C	C	C	C	C	W	W	W	C	C	W	W	W	W	C	W	N\tW\tC	WR	WR	WR	WR	WR	WR	WR	WR	C	WY	WY	WY	WY	WY	WY	WY	WY	C	WG	WG	WG	WG	WG	WG	WG	WG	C	W	W	C	C	C	C	C	C	W",
             "W	C	W	W	W	W	C	C	C	C	C	C	C	C	C	C	C	W	N\tW\tC	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	W	W	W	C	W	W	W	C	W",
             "W	C	W	W	W	W	C	W	W	W	W	W	W	W	W	W	C	W	N\tW\tC	W	W	W	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	W	W	W	C	W	W	W	C	W	W	W	C	W",
             "W	C	W	W	W	W	C	W	W	W	W	W	W	W	W	W	C	W	N\tW\tC	W	W	W	W	W	W	W	W	W	W	W	C	W	W	C	W	W	W	W	W	W	W	W	W	W	W	C	W	W	W	C	W	W	W	C	W",
@@ -89,7 +85,7 @@ class Board {
         for (let i = 0; i < constructMatrix.length; i++) {
             var boardArray = []
             for (let j = 0; j < constructMatrix[i].length; j++) {
-                if (constructMatrix[i][j] === "W") {
+                if (constructMatrix[i][j].includes("W")) {
                     if (j === 0
                         || i === 0
                         || j === constructMatrix[i].length - 1
@@ -97,8 +93,8 @@ class Board {
 
                         if (i < constructMatrix.length - 1 && j < constructMatrix[0].length - 1
                             && constructMatrix[i + 1][j + 1].includes("C")
-                            && constructMatrix[i][j + 1] === "W"
-                            && constructMatrix[i+1][j] === "W"
+                            && constructMatrix[i][j + 1].includes("W")
+                            && constructMatrix[i+1][j].includes("W")
                         ) {
                             sideToSide = "rightToBottom"
                             lineBeginX = x+20
@@ -108,8 +104,8 @@ class Board {
                         }
                         else if (j < constructMatrix[0].length - 1 && i > 0
                             && constructMatrix[i - 1][j + 1].includes("C")
-                            && constructMatrix[i][j + 1] === "W"
-                            && constructMatrix[i-1][j] === "W"
+                            && constructMatrix[i][j + 1].includes("W")
+                            && constructMatrix[i-1][j].includes("W")
                         ) {
                             sideToSide = "rightToTop"
                             lineBeginX = x+20
@@ -119,8 +115,8 @@ class Board {
                         }
                         else if (i < constructMatrix.length - 1 && j > 0
                             && constructMatrix[i + 1][j - 1].includes("C")
-                            && constructMatrix[i][j - 1] === "W"
-                            && constructMatrix[i+1][j] === "W"
+                            && constructMatrix[i][j - 1].includes("W")
+                            && constructMatrix[i+1][j].includes("W")
                         ) {
                             sideToSide = "leftToBottom"
                             lineBeginX = x + 20
@@ -130,8 +126,8 @@ class Board {
                         }
                         else if (i >0 && j > 0
                             && constructMatrix[i - 1][j - 1].includes("C")
-                            && constructMatrix[i][j - 1] === "W"
-                            && constructMatrix[i-1][j] === "W"
+                            && constructMatrix[i][j - 1].includes("W")
+                            && constructMatrix[i-1][j].includes("W")
                         ) {
                             sideToSide = "leftToTop"
                             lineBeginX = x
@@ -162,14 +158,14 @@ class Board {
                         && i !== 0
                         && i !== constructMatrix.length-1) {
                         if (
-                            constructMatrix[i - 1][j] === "W"
-                            && constructMatrix[i + 1][j] === "W" 
-                            && constructMatrix[i][j - 1] === "W"
-                            && constructMatrix[i][j + 1] === "W"
-                            && constructMatrix[i - 1][j -1] === "W"
-                            && constructMatrix[i + 1][j+1] === "W" 
-                            && constructMatrix[i+1][j - 1] === "W"
-                            && constructMatrix[i-1][j + 1] === "W"
+                            constructMatrix[i - 1][j].includes("W")
+                            && constructMatrix[i + 1][j].includes("W") 
+                            && constructMatrix[i][j - 1].includes("W")
+                            && constructMatrix[i][j + 1].includes("W")
+                            && constructMatrix[i - 1][j -1].includes("W")
+                            && constructMatrix[i + 1][j+1].includes("W") 
+                            && constructMatrix[i+1][j - 1].includes("W")
+                            && constructMatrix[i-1][j + 1].includes("W")
                         ) {
                             sideToSide = "surrounded"
                             lineBeginX = x + 10
@@ -294,8 +290,8 @@ class Board {
                             lineEndY = y+20
                         }
 
-                        else if (constructMatrix[i][j - 1] === "W"
-                            && constructMatrix[i][j + 1] === "W"
+                        else if (constructMatrix[i][j - 1].includes("W")
+                            && constructMatrix[i][j + 1].includes("W")
                         ) {
                             sideToSide = "leftToRight"
                             lineBeginX = x
@@ -303,8 +299,8 @@ class Board {
                             lineEndX = x+20
                             lineEndY = y+10
                         }
-                        else if (constructMatrix[i - 1][j] === "W"
-                            && constructMatrix[i + 1][j] === "W"
+                        else if (constructMatrix[i - 1][j].includes("W")
+                            && constructMatrix[i + 1][j].includes("W")
                         ) {
                             sideToSide = "upToBottom"
                             lineBeginX = x + 10
@@ -321,8 +317,18 @@ class Board {
                             lineEndY = y+20
                         }
                     }
+                    let wallColor: string
+                    if (constructMatrix[i][j] === "WR") {
+                        wallColor = "red"
+                    } else if (constructMatrix[i][j] === "WG") {
+                        wallColor = "lawngreen"
+                    } else if (constructMatrix[i][j] === "WY") { 
+                        wallColor = "yellow"
+                    } else {
+                        wallColor = "blue"
+                    }
 
-                    boardArray.push(new Wall(x, y, sideToSide, lineBeginX, lineBeginY, lineEndX, lineEndY))
+                    boardArray.push(new Wall(x, y, sideToSide, lineBeginX, lineBeginY, lineEndX, lineEndY, wallColor))
                 } else if (constructMatrix[i][j].includes("C")) {
                     if (constructMatrix[i][j] === "CP") {
                         boardArray.push(new Tile(x,y, "PowerUpCoin"))
@@ -633,10 +639,10 @@ class Board {
                 ghost.yPos = this.boardMatrix[ghost.tile[0]][ghost.tile[1]].yMiddle
                 ghost.speed = 10
                 ghost.touched = true
+            } else {
+                // this.lifeLost = true
             }
-        } else {
-
-        }
+        } 
 
     }
 

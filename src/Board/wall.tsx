@@ -12,11 +12,13 @@ class Wall {
     lineEndX: number
     lineEndY: number
     neighbors: Array<any>
+    color: string
 
     constructor(
         xPos: number, yPos: number, wallDir: string,
         lineBeginX: number, lineBeginY: number,
-        lineEndX: number, lineEndY: number
+        lineEndX: number, lineEndY: number,
+        color: string
     ) {
         this.height = 20
         this.width = 20
@@ -31,6 +33,7 @@ class Wall {
         this.lineEndX = lineEndX
         this.lineEndY = lineEndY
         this.neighbors = []
+        this.color = color
     }
  
 }

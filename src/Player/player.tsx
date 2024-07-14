@@ -12,6 +12,7 @@ class Player {
     eat: boolean
     tile: Array<number>
     fourTilesAhead: Array<number>
+    lives: number
     constructor() {
         this.xPos = 610
         this.yPos = 490
@@ -23,7 +24,8 @@ class Player {
         this.endAngle = 0
         this.eat = false
         this.tile = [Math.floor((this.yPos - 200) / 20), Math.floor((this.xPos - 200) / 20)] // Y and X index of the boardGrid. 
-        this.fourTilesAhead = [Math.floor((this.yPos - 200) / 20)-4, Math.floor((this.xPos - 200) / 20)]
+        this.fourTilesAhead = [Math.floor((this.yPos - 200) / 20) - 4, Math.floor((this.xPos - 200) / 20)]
+        this.lives = 3
     }
 
     updateDirection(c:any, keys: any, board: Board) {

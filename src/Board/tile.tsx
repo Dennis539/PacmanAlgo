@@ -6,7 +6,6 @@ class Tile {
     xMiddle: number
     yMiddle: number
     type: string
-    image: any
     neighbors: Array<any>
     lighter: boolean
     darker: boolean
@@ -20,8 +19,6 @@ class Tile {
         this.xMiddle = this.xPos + 10
         this.yMiddle = this.yPos + 10
         this.type = type
-        this.image = new Image()
-        this.image.src = 'coin.png'
         this.neighbors = []
         this.lighter = true
         this.darker = false

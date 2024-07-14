@@ -52,7 +52,7 @@ function init() {
 }
 
 function drawBoard() {
-    c!.fillStyle = 'white'
+    c!.fillStyle = 'black'
 
     c?.fillRect(board.xPos, board.yPos, board.width, board.height)
     for (let i = 0; i < board.boardMatrix.length; i++){
@@ -61,6 +61,8 @@ function drawBoard() {
                 continue
             }
             if (board.boardMatrix[i][j].type === "Wall") {
+                c!.strokeStyle = board.boardMatrix[i][j].color
+                c!.lineWidth = 2
                 c?.beginPath()
                 let wall = board.boardMatrix[i][j]
                 if (wall.wallDir === "leftToRight") {
@@ -90,7 +92,13 @@ function drawBoard() {
                 c?.stroke()
             } else if (board.boardMatrix[i][j].type === "Coin") {
                 let coin = board.boardMatrix[i][j]
-                c?.drawImage(coin.image, coin.xPos + 6, coin.yPos + 6, coin.width, coin.height)
+                c!.fillStyle = "orange"
+                c!.beginPath();
+                c!.moveTo(player.xPos, player.yPos);
+                c!.arc(coin.xPos + 10, coin.yPos+10, 2, 0, 90, false);
+                c!.lineTo(player.xPos, player.yPos);
+                c!.fill();
+
                 board.playerCoinCollision(player, coin)
             } else if (board.boardMatrix[i][j].type === "PowerUpCoin") {
                 let powerUpCoin = board.boardMatrix[i][j]
@@ -112,9 +120,23 @@ function drawBoard() {
                 }
             }
             c!.fillStyle = 'red'
-            c?.fillRect(board.boardMatrix[i][j].xMiddle,board.boardMatrix[i][j].yMiddle,1,1)
+            // c?.fillRect(board.boardMatrix[i][j].xMiddle,board.boardMatrix[i][j].yMiddle,1,1)
         }
     }
+    let xLives = 220
+    let yLives = 570
+    c!.fillStyle = 'yellow'
+    for (let i = 0; i < player.lives; i++) {
+        c!.beginPath();
+        c!.moveTo(xLives, yLives);
+        let startAngle = Math.PI + 0.55
+        let endAngle = Math.PI - 0.55
+        c!.arc(xLives, yLives, 10, startAngle, endAngle, false);
+        c!.lineTo(xLives, yLives);
+        c!.fill();
+        xLives += 30
+    }
+
 
 }
 
@@ -158,12 +180,13 @@ function drawPlayer() {
     c!.fill();
     if (Object.keys(keys).length !== 0) {
         if (direction === "Open") {
-            player.endAngle -= 0.04
             player.startAngle += 0.04
+            player.endAngle -= 0.04
+
         }
         else {
-            player.endAngle += 0.04
             player.startAngle -= 0.04
+            player.endAngle += 0.04
         }
     }
 
@@ -261,9 +284,17 @@ function loop() {
     for (let ghost of ghostActive) {
         board.checkPlayerGhostcollision(ghost, player)
     }
-    console.log("Split Kees")
+    
+    if (board.lifeLost) {
+        if (player.lives > 0) {
+            player.lives -= 1
+            // Reset board
+        }
+    } else {
+        window.requestAnimationFrame(loop)
+    }
 
-    window.requestAnimationFrame(loop)
+
 }
 
 
