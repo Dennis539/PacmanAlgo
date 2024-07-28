@@ -641,10 +641,10 @@ class Board {
                 ghost.touched = true
             } else {
                 this.lifeLost = true
-                console.log(ghost.name)
+                player.startAngle = Math.PI * 1.5
+                player.endAngle = (Math.PI * 1.5) - 0.05
             }
         } 
-
     }
 
     endFrightened(ghost: Chaser | Ambusher | Whimsical | Clyde) {

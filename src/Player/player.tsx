@@ -1,4 +1,5 @@
 import Board from "../Board/board"
+import Particle from "./particle"
 
 class Player {
     xPos: number
@@ -14,7 +15,9 @@ class Player {
     tile: Array<number>
     fourTilesAhead: Array<number>
     lives: number
-    constructor() {
+    dead: boolean
+    explosion: null | Array<Particle>
+    constructor(lives: number) {
         this.xPos = 610
         this.yPos = 490
         this.radius = 18
@@ -27,7 +30,9 @@ class Player {
         this.eat = false
         this.tile = [Math.floor((this.yPos - 200) / 20), Math.floor((this.xPos - 200) / 20)] // Y and X index of the boardGrid. 
         this.fourTilesAhead = [Math.floor((this.yPos - 200) / 20) - 4, Math.floor((this.xPos - 200) / 20)]
-        this.lives = 3
+        this.lives = lives
+        this.dead = false
+        this.explosion = null
     }
 
     updateDirection(c:any, keys: any, board: Board) {
@@ -165,6 +170,20 @@ class Player {
     caught() {
         this.startAngle += 0.08
         this.endAngle -= 0.08
+    }
+
+    createExplosion(target: Player) {
+        let explosion = []
+        for (let i = 0; i <= 150; i++) {
+            let dx = (Math.random() - 0.5) * (Math.random() * 6);
+            let dy = (Math.random() - 0.5) * (Math.random() * 6);
+            let radius = Math.random() * 3;
+            const explosionX = target.xPos + (4/2)
+            const explosionY = target.yPos + (4/2)
+            let particle = new Particle(explosionX, explosionY, radius, dx, dy);
+            explosion.push(particle)
+        }
+        return explosion
     }
 }
 export default Player

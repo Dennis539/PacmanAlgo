@@ -38,9 +38,8 @@ function init() {
     durationChase = 20
     durationScatter = 7
     durationFrightened = 10
-    player = new Player()
+    player = new Player(3)
     board = new Board(durationChase, durationScatter, durationFrightened)
-    console.log(board.boardMatrix)
     Blinky = new Chaser(board)
     Pinky = new Ambusher(board)
     Inky = new Whimsical(board)
@@ -49,6 +48,33 @@ function init() {
     time = 0
     setClyde = false
     setInky = false
+}
+
+function resetBoard() {
+    let copyPlayer = player
+    player = new Player(copyPlayer.lives)
+
+    Blinky.xPos = 490
+    Blinky.yPos = 350
+
+    clyde.xPos = 570
+    clyde.yPos = 330
+
+    Inky.xPos = 570
+    Inky.yPos = 370
+
+    Pinky.xPos = 530
+    Pinky.yPos = 350
+
+    setClyde = false
+    setInky = false
+    board.lifeLost = false
+
+    for (let ghost of ghostActive) {
+        ghost.touched = false
+        ghost.frightened = false
+        ghost.tile = [Math.floor((ghost.yPos - 200) / 20), Math.floor((ghost.xPos - 200) / 20)]
+    }
 }
 
 function drawBoard() {
@@ -139,57 +165,89 @@ function drawBoard() {
 }
 
 function updatePlayer() {
-    player.updateDirection(c, keys, board)
+    if (board.lifeLost) {
+        function caught() {
+            player.startAngle += 0.08
+            player.endAngle -= 0.08
+        }
+        if (Math.abs(player.startAngle - player.endAngle) <= (Math.PI*2)-0.155) {
+            caught()
+        } else {
+            player.dead = true
+            if (!player.explosion) {
+                player.explosion = player.createExplosion(player)
+            }
+            player.explosion.forEach((particle,i) => {
+                if (particle.alpha <= 0) {
+                    player.explosion!.splice(i,1)
+                } else {
+                    particle.update(c)
+                }
+            });
+        }
+        if (player.explosion && player.explosion.length === 0) {
+            if (player.lives > 0) {
+                player.lives -= 1
+                resetBoard()
+            } else {
+                // Game Over screen
+            }
+        }
+    } 
 
-    // Check whether a future movement will cause a collision. 
-    if (player.direction === "right") {
-        var newX = player.xPos + player.speed
-        var newY = player.yPos
-    }
-    else if (player.direction === "left") {
-        var newX = player.xPos - player.speed
-        var newY = player.yPos
-    }
-    else if (player.direction === "up") {
-        var newX = player.xPos 
-        var newY = player.yPos - player.speed
-    }
     else {
-        var newX = player.xPos
-        var newY = player.yPos + player.speed
-    }
-    
-    // If there is no collision, move the player
-    if (!board.checkPlayerWallCollision(player, newX, newY)) {
-        player.move(keys, board, c)
+        player.updateDirection(c, keys, board)
+
+        // Check whether a future movement will cause a collision. 
+        if (player.direction === "right") {
+            var newX = player.xPos + player.speed
+            var newY = player.yPos
+        }
+        else if (player.direction === "left") {
+            var newX = player.xPos - player.speed
+            var newY = player.yPos
+        }
+        else if (player.direction === "up") {
+            var newX = player.xPos 
+            var newY = player.yPos - player.speed
+        }
+        else {
+            var newX = player.xPos
+            var newY = player.yPos + player.speed
+        }
+        
+        // If there is no collision, move the player
+        if (!board.checkPlayerWallCollision(player, newX, newY)) {
+            player.move(keys, board, c)
+        }
     }
 }
 
 
 function drawPlayer() {
-    // Draw the circle
-    c!.beginPath();
-    c!.moveTo(player.xPos, player.yPos);
-    c!.arc(player.xPos, player.yPos, player.radius, player.startAngle, player.endAngle, false);
-    c!.lineTo(player.xPos, player.yPos);
-    c!.fillStyle = 'yellow'
-    c!.fill();
-    if (Object.keys(keys).length !== 0) {
-        if (player.mouthDirection === "Open") {
-            player.startAngle += 0.08
-            player.endAngle -= 0.08
+    if (!player.dead) {
+        c!.beginPath();
+        c!.moveTo(player.xPos, player.yPos);
+        c!.arc(player.xPos, player.yPos, player.radius, player.startAngle, player.endAngle, false);
+        c!.lineTo(player.xPos, player.yPos);
+        c!.fillStyle = 'yellow'
+        c!.fill();
+        if (Object.keys(keys).length !== 0) {
+            if (player.mouthDirection === "Open") {
+                player.startAngle += 0.08
+                player.endAngle -= 0.08
+            }
+            else {
+                player.startAngle -= 0.08
+                player.endAngle += 0.08
+            }
         }
-        else {
-            player.startAngle -= 0.08
-            player.endAngle += 0.08
+
+        if (Math.abs(player.startAngle - player.endAngle) > 2.5) {
+            player.mouthDirection = "Close"
+        } else if (Math.abs(player.startAngle - player.endAngle) < 0.17) {
+            player.mouthDirection = "Open"
         }
-    }
-
-
-    if (Math.abs(player.startAngle - player.endAngle) > 2.5) {
-        player.mouthDirection = "Close"
-    } else if (Math.abs(player.startAngle - player.endAngle) < 0.17) {
-        player.mouthDirection = "Open"
     }
 }
 
@@ -215,7 +273,9 @@ function draw() {
     c?.fillRect(0, 0, canvas.width, canvas.height)
     drawBoard()
     drawPlayer()
-    drawGhosts()
+    if (!board.lifeLost) {
+        drawGhosts()
+    }
 }
 
 function updateGhostMode() {
@@ -259,65 +319,46 @@ function loop() {
     time += 1
     draw()
     updatePlayer()
-    if (time === 100 || Pinky.entering === true) {
-        if (!Pinky.entering) {
-            Pinky.entering = true
+
+    if (!board.lifeLost) {
+        if (time === 100 || Pinky.entering === true) {
+            if (!Pinky.entering) {
+                Pinky.entering = true
+            }
+            Pinky.enter()
+            Pinky.tile = [((Pinky.yPos - 210) / 20), ((Pinky.xPos - 210) / 20)]
         }
-        Pinky.enter()
-        Pinky.tile = [((Pinky.yPos - 210) / 20), ((Pinky.xPos - 210) / 20)]
+
+        if ((player.score === 1000 || clyde.entering) && !setClyde) {
+            if (!clyde.entering) {
+                clyde.entering = true
+            }
+            clyde.enter()
+            clyde.tile = [((clyde.yPos - 210) / 20), ((clyde.xPos - 210) / 20)]
+            if (clyde.xPos === 490 && clyde.yPos === 350) {
+                clyde.entering = false
+                setClyde = true
+            }
+        }
+
+        if ((player.score === 500 || Inky.entering) && !setInky) {
+            if (!Inky.entering) {
+                Inky.entering = true
+            }
+            Inky.enter()
+            Inky.tile = [((Inky.yPos - 210) / 20), ((Inky.xPos - 210) / 20)]
+            if (Inky.xPos === 490 && Inky.yPos === 350) {
+                Inky.entering = false
+                setInky = true
+            }
+        }
+
+        updateGhostMode()
+        for (let ghost of ghostActive) {
+            board.checkPlayerGhostcollision(ghost, player)
+        }
     }
-
-    if ((player.score === 1000 || clyde.entering) && !setClyde) {
-        if (!clyde.entering) {
-            clyde.entering = true
-        }
-        clyde.enter()
-        clyde.tile = [((clyde.yPos - 210) / 20), ((clyde.xPos - 210) / 20)]
-        if (clyde.xPos === 490 && clyde.yPos === 350) {
-            clyde.entering = false
-            setClyde = true
-        }
-    }
-
-    if ((player.score === 500 || Inky.entering) && !setInky) {
-        if (!Inky.entering) {
-            Inky.entering = true
-        }
-        Inky.enter()
-        Inky.tile = [((Inky.yPos - 210) / 20), ((Inky.xPos - 210) / 20)]
-        if (Inky.xPos === 490 && Inky.yPos === 350) {
-            Inky.entering = false
-            setInky = true
-        }
-    }
-
-    updateGhostMode()
-    for (let ghost of ghostActive) {
-        board.checkPlayerGhostcollision(ghost, player)
-    }
-    
-    if (board.lifeLost) {
-        player.startAngle = Math.PI * 1.5
-        player.endAngle = (Math.PI * 1.5) - 0.05
-        console.log(player.startAngle - player.endAngle)
-        function caught() {
-            player.startAngle += 0.08
-            player.endAngle -= 0.08
-        }
-
-        if (Math.abs(player.startAngle - player.endAngle) < 2.5) {
-            console.log("Print Kees")
-            window.requestAnimationFrame(caught)
-
-        }
-
-        if (player.lives > 0) {
-            player.lives -= 1
-            // Reset board
-        }
-    } else {
-        window.requestAnimationFrame(loop)
-    }
+    window.requestAnimationFrame(loop)
 }
 
 
