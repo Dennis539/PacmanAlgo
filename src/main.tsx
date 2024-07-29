@@ -27,7 +27,6 @@ let Pinky: Ambusher
 let Inky: Whimsical
 let clyde: Clyde
 let ghostActive: Array<any>
-let time: number
 let setClyde: boolean
 let setInky: boolean
 let durationChase: number
@@ -45,7 +44,7 @@ function init() {
     Inky = new Whimsical(board)
     clyde = new Clyde(board)
     ghostActive = [Blinky, Pinky, clyde, Inky]
-    time = 0
+    board.time = 0
     setClyde = false
     setInky = false
 }
@@ -73,8 +72,10 @@ function resetBoard() {
     for (let ghost of ghostActive) {
         ghost.touched = false
         ghost.frightened = false
+        ghost.entering = false
         ghost.tile = [Math.floor((ghost.yPos - 200) / 20), Math.floor((ghost.xPos - 200) / 20)]
     }
+    board.time = 1
 }
 
 function drawBoard() {
@@ -316,20 +317,24 @@ function updateGhostMode() {
 }
 
 function loop() {
-    time += 1
+    board.time += 1
     draw()
     updatePlayer()
 
     if (!board.lifeLost) {
-        if (time === 100 || Pinky.entering === true) {
+        if (board.time === 100 || Pinky.entering === true) {
+            console.log(board.time)
             if (!Pinky.entering) {
                 Pinky.entering = true
             }
             Pinky.enter()
             Pinky.tile = [((Pinky.yPos - 210) / 20), ((Pinky.xPos - 210) / 20)]
+            if (Pinky.xPos === 490 && Pinky.yPos === 350) {
+                Pinky.entering = false
+            }
         }
 
-        if ((player.score === 1000 || clyde.entering) && !setClyde) {
+        if (((player.score === 1000) || clyde.entering) && !setClyde) {
             if (!clyde.entering) {
                 clyde.entering = true
             }
@@ -341,7 +346,7 @@ function loop() {
             }
         }
 
-        if ((player.score === 500 || Inky.entering) && !setInky) {
+        if (((player.score === 500  && board.time === 150)|| Inky.entering) && !setInky) {
             if (!Inky.entering) {
                 Inky.entering = true
             }

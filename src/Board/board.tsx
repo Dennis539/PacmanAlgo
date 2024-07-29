@@ -18,6 +18,7 @@ class Board {
     scatterTimeOut: number
     frightenedTimeOut: number
     lifeLost: boolean
+    time: number
 
     constructor(chaseTimeOut: number, scatterTimeOut: number, frightenedTimeOut: number) {
         this.height = 600
@@ -32,6 +33,7 @@ class Board {
         this.scatterTimeOut = scatterTimeOut
         this.frightenedTimeOut = frightenedTimeOut
         this.lifeLost = false
+        this.time = 1
     }
 
     calculateMiddlePosTile() {
