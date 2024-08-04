@@ -19,16 +19,15 @@ class Clyde extends BaseGhost {
     }
 
     enter() {
-        if (this.entering && (this.xPos !== 490 || this.yPos !== 350)) {
-            if (this.entering && this.yPos !== 350) {
+        if (!this.hasEntered && (this.xPos !== 490 || this.yPos !== 350)) {
+            console.log("Kees not there")
+            if (!this.hasEntered && this.yPos !== 350) {
                 this.yPos += 1
-            } else if (this.entering && this.xPos !== 490) {
+            } else if (!this.hasEntered && this.xPos !== 490) {
+                console.log("Kees here")
                 this.xPos -= 1
             } 
-            console.log(this.xPos, this.yPos)
         } else {
-            this.entering = false
-            console.log("Kees")
             this.tile = [((this.yPos - 210) / 20), ((this.xPos - 210) / 20)]
         }
     }

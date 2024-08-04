@@ -17,14 +17,14 @@ class Player {
     lives: number
     dead: boolean
     explosion: null | Array<Particle>
-    constructor(lives: number) {
+    constructor(lives: number, score: number) {
         this.xPos = 610
         this.yPos = 490
         this.radius = 18
         this.speed = 2
         this.direction = "Kees"
         this.mouthDirection = "Open"
-        this.score = 0
+        this.score = score
         this.startAngle = Math.PI * 1.5
         this.endAngle = (Math.PI * 1.5) - 0.05
         this.eat = false
@@ -185,5 +185,6 @@ class Player {
         }
         return explosion
     }
+
 }
 export default Player

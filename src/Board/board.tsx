@@ -19,6 +19,9 @@ class Board {
     frightenedTimeOut: number
     lifeLost: boolean
     time: number
+    setPinky: boolean
+    setClyde: boolean
+    setInky: boolean
 
     constructor(chaseTimeOut: number, scatterTimeOut: number, frightenedTimeOut: number) {
         this.height = 600
@@ -34,6 +37,9 @@ class Board {
         this.frightenedTimeOut = frightenedTimeOut
         this.lifeLost = false
         this.time = 1
+        this.setPinky = false
+        this.setClyde = false
+        this.setInky = false
     }
 
     calculateMiddlePosTile() {

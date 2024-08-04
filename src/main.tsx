@@ -1,3 +1,4 @@
+import BaseGhost from "./Ghosts/baseGhost.tsx"
 import Board from "./Board/board.tsx"
 import Player from "./Player/player.tsx"
 import Chaser from "./Ghosts/Blinky.tsx"
@@ -26,9 +27,7 @@ let Blinky: Chaser
 let Pinky: Ambusher
 let Inky: Whimsical
 let clyde: Clyde
-let ghostActive: Array<any>
-let setClyde: boolean
-let setInky: boolean
+let ghostActive: Array<BaseGhost>
 let durationChase: number
 let durationScatter: number
 let durationFrightened: number
@@ -37,7 +36,7 @@ function init() {
     durationChase = 20
     durationScatter = 7
     durationFrightened = 10
-    player = new Player(3)
+    player = new Player(0, 0)
     board = new Board(durationChase, durationScatter, durationFrightened)
     Blinky = new Chaser(board)
     Pinky = new Ambusher(board)
@@ -45,13 +44,11 @@ function init() {
     clyde = new Clyde(board)
     ghostActive = [Blinky, Pinky, clyde, Inky]
     board.time = 0
-    setClyde = false
-    setInky = false
 }
 
 function resetBoard() {
     let copyPlayer = player
-    player = new Player(copyPlayer.lives)
+    player = new Player(copyPlayer.lives, copyPlayer.score)
 
     Blinky.xPos = 490
     Blinky.yPos = 350
@@ -65,15 +62,16 @@ function resetBoard() {
     Pinky.xPos = 530
     Pinky.yPos = 350
 
-    setClyde = false
-    setInky = false
     board.lifeLost = false
 
     for (let ghost of ghostActive) {
         ghost.touched = false
         ghost.frightened = false
-        ghost.entering = false
         ghost.tile = [Math.floor((ghost.yPos - 200) / 20), Math.floor((ghost.xPos - 200) / 20)]
+        if (ghost.name !== "Blinky") {
+            ghost.hasEntered = false
+        }
+        console.log(ghost)
     }
     board.time = 1
 }
@@ -147,7 +145,6 @@ function drawBoard() {
                 }
             }
             c!.fillStyle = 'red'
-            // c?.fillRect(board.boardMatrix[i][j].xMiddle,board.boardMatrix[i][j].yMiddle,1,1)
         }
     }
     let xLives = 220
@@ -167,12 +164,8 @@ function drawBoard() {
 
 function updatePlayer() {
     if (board.lifeLost) {
-        function caught() {
-            player.startAngle += 0.08
-            player.endAngle -= 0.08
-        }
-        if (Math.abs(player.startAngle - player.endAngle) <= (Math.PI*2)-0.155) {
-            caught()
+        if (Math.abs(player.startAngle - player.endAngle) <= (Math.PI*2)-0.155) { // Checks whether the circle is closed
+            player.caught()
         } else {
             player.dead = true
             if (!player.explosion) {
@@ -191,7 +184,8 @@ function updatePlayer() {
                 player.lives -= 1
                 resetBoard()
             } else {
-                // Game Over screen
+                console.log("Kees is caught")
+                drawDeath()
             }
         }
     } 
@@ -259,11 +253,10 @@ function drawGhosts() {
         c?.beginPath()
         c?.arc(ghost.xPos, ghost.yPos, ghost.radius, 0, 2*Math.PI)
         c?.fill()
-        if (ghost.entering) {
-
-        } else {
+        if (ghost.hasEntered) {
             ghost.move(board, player, ghost.name, ghost.mode, Inky, Blinky)
-        }
+
+        } 
     }
 }
 
@@ -316,47 +309,53 @@ function updateGhostMode() {
     }
 }
 
+function drawDeath() {
+
+    c?.clearRect(canvas.width/3, canvas.height/3, canvas.width/3, canvas.height/3)
+    c!.fillStyle = "pink"
+    c?.fillRect(canvas.width/3, canvas.height/3, canvas.width / 3, canvas.height / 3)
+    c!.font = "20px Courier New";
+    c!.textAlign = 'center';
+    c!.strokeStyle = "white";
+    c!.strokeText("Oh he dead", canvas.width/2, canvas.height/2);
+    if ("ArrowDown" in keys) {
+        document.location.reload()
+    }
+}
+
 function loop() {
     board.time += 1
     draw()
     updatePlayer()
 
     if (!board.lifeLost) {
-        if (board.time === 100 || Pinky.entering === true) {
-            console.log(board.time)
-            if (!Pinky.entering) {
-                Pinky.entering = true
-            }
+        if (board.time >= 100 && !Pinky.hasEntered) {
             Pinky.enter()
             Pinky.tile = [((Pinky.yPos - 210) / 20), ((Pinky.xPos - 210) / 20)]
             if (Pinky.xPos === 490 && Pinky.yPos === 350) {
-                Pinky.entering = false
+                Pinky.hasEntered = true
+            }
+        }
+        if (!clyde.hasEntered) {
+            if (player.score >= 1000 && board.time >= 50) {
+                clyde.enter()
+                clyde.tile = [((clyde.yPos - 210) / 20), ((clyde.xPos - 210) / 20)]
+                if (clyde.xPos === 490 && clyde.yPos === 350) {
+                    clyde.hasEntered = true
+                }
             }
         }
 
-        if (((player.score === 1000) || clyde.entering) && !setClyde) {
-            if (!clyde.entering) {
-                clyde.entering = true
-            }
-            clyde.enter()
-            clyde.tile = [((clyde.yPos - 210) / 20), ((clyde.xPos - 210) / 20)]
-            if (clyde.xPos === 490 && clyde.yPos === 350) {
-                clyde.entering = false
-                setClyde = true
+        if (!Inky.hasEntered) {
+            if (player.score >= 500  && board.time >= 150) {
+                Inky.enter()
+                Inky.tile = [((Inky.yPos - 210) / 20), ((Inky.xPos - 210) / 20)]
+                if (Inky.xPos === 490 && Inky.yPos === 350) {
+                    Inky.hasEntered = true
+                }
             }
         }
 
-        if (((player.score === 500  && board.time === 150)|| Inky.entering) && !setInky) {
-            if (!Inky.entering) {
-                Inky.entering = true
-            }
-            Inky.enter()
-            Inky.tile = [((Inky.yPos - 210) / 20), ((Inky.xPos - 210) / 20)]
-            if (Inky.xPos === 490 && Inky.yPos === 350) {
-                Inky.entering = false
-                setInky = true
-            }
-        }
 
         updateGhostMode()
         for (let ghost of ghostActive) {

@@ -29,7 +29,7 @@ class BaseGhost {
     endTimeFrightened: number
     phaseChange: boolean
     touched: boolean
-    entering: boolean
+    hasEntered: boolean
     constructor(board: Board) {
         this.xPos = 590
         this.yPos = 510
@@ -54,7 +54,7 @@ class BaseGhost {
         this.endTimeFrightened = 0
         this.phaseChange = false
         this.touched = false
-        this.entering = false
+        this.hasEntered = false
     }
 
     determineEndtile(board: Board, endTileY: number, endTileX: number) {
@@ -75,7 +75,7 @@ class BaseGhost {
         if (checkMiddlePosTile) {
             let beginTile = board.boardMatrix[this.tile[0]][this.tile[1]]
             if (ghostName === "Blinky") {
-                if (this.touched) {
+                if (this.touched) { 
                     this.endTile = board.boardMatrix[7][14]
                 } else {
                     this.endTile = this.determineEndtile(board, player.tile[0], player.tile[1])
@@ -181,7 +181,6 @@ class BaseGhost {
 
                 if (curArr.length <= 2 && this.mode === 'scatter') {
                     // switch locations of scatter mode depending on how close the ghost is to its target. 
-                    console.log("Distance to Kees: " + curArr.length)
                     if (this.homeTarget === this.home[0]) {
                         this.homeTarget = this.home[1]
                     } else {

@@ -15,12 +15,11 @@ class Ambusher extends BaseGhost{
         this.homeTarget = board.boardMatrix[1][1]
         this.name = "Pinky"
     }
-
+ 
     enter() {
-        if (this.entering && this.xPos !== 490) {
+        if (!this.hasEntered && this.xPos !== 490) {
             this.xPos -= 1
         } else {
-            this.entering = false
             this.tile = [((this.yPos - 210) / 20), ((this.xPos - 210) / 20)]
         }
     }
