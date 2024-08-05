@@ -311,9 +311,12 @@ function updateGhostMode() {
 
 function drawDeath() {
 
-    c?.clearRect(canvas.width/3, canvas.height/3, canvas.width/3, canvas.height/3)
-    c!.fillStyle = "pink"
-    c?.fillRect(canvas.width/3, canvas.height/3, canvas.width / 3, canvas.height / 3)
+    // c?.clearRect(canvas.width/3, canvas.height/3, canvas.width/3, canvas.height/3)
+
+    c!.fillStyle = "#808080";
+    c!.beginPath();
+    c?.roundRect(canvas.width / 3, canvas.height / 3, canvas.width / 3, canvas.height / 3, 50)
+    c!.fill()
     c!.font = "20px Courier New";
     c!.textAlign = 'center';
     c!.strokeStyle = "white";
