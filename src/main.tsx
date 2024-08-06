@@ -309,6 +309,15 @@ function updateGhostMode() {
     }
 }
 
+function drawGameOverButtons(display: string, x:number, y:number) {
+    c!.fillStyle = '#eeaa00';
+    c!.fillRect(x, y, 150, 75);
+    c!.fillStyle = '#001122';
+    c!.textAlign = 'center';
+    c!.font = '20px arial';
+    c!.fillText(display, x+75, y+40, 150);
+}
+
 function drawDeath() {
 
     // c?.clearRect(canvas.width/3, canvas.height/3, canvas.width/3, canvas.height/3)
@@ -320,10 +329,12 @@ function drawDeath() {
     c!.font = "20px Courier New";
     c!.textAlign = 'center';
     c!.strokeStyle = "white";
-    c!.strokeText("Oh he dead", canvas.width/2, canvas.height/2);
-    if ("ArrowDown" in keys) {
-        document.location.reload()
-    }
+    c!.strokeText("Oh he dead", canvas.width / 2, (canvas.height / 2) - 80);
+    drawGameOverButtons("Restart Game", (canvas.width / 2 )- 200, (canvas.height / 2))
+    drawGameOverButtons("End Game", (canvas.width / 2 )+ 50, (canvas.height / 2))
+    // if ("ArrowDown" in keys) {
+    //     document.location.reload()
+    // }
 }
 
 function loop() {
