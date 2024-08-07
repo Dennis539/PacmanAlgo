@@ -1,4 +1,8 @@
-class Button {
+interface Clickable {
+  onClick: () => void;
+}
+
+class Button implements Clickable{
     text: string
     fillColor: string
     textColor: string
@@ -6,6 +10,7 @@ class Button {
     y: number
     width: number
     height: number
+    
     constructor(text: string, fillColor: string, textColor: string) {
         this.text = text;
         this.fillColor = fillColor;
@@ -14,6 +19,11 @@ class Button {
         this.y = 0
         this.width = 0
         this.height = 0
+        this.onClick = this.onClick.bind(this);
+    }
+
+    onClick(): void {
+        console.log('Button was clicked!');
     }
 
     setPosition(x: number, y: number): void {
@@ -36,6 +46,16 @@ class Button {
         c.font = '25px arial';
         c.fillText(this.text, this.x + this.width / 2, this.y + this.height / 2, this.width);
     }
+
+    inBounds(mouseX: number, mouseY: number): boolean {
+        return !(
+            mouseX < this.x
+            || mouseX > this.x + this.width
+            || mouseY < this.y
+            || mouseY > this.y + this.height
+        )
+    }
+
 }
 
 export default Button

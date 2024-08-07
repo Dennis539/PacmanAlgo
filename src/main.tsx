@@ -314,6 +314,7 @@ function updateGhostMode() {
 function drawDeath() {
 
     // c?.clearRect(canvas.width/3, canvas.height/3, canvas.width/3, canvas.height/3)
+    let buttons: Button[] = [];
 
     c!.fillStyle = "#808080";
     c!.beginPath();
@@ -325,13 +326,26 @@ function drawDeath() {
     c!.strokeText("Oh he dead", canvas.width / 2, (canvas.height / 2) - 80);
 
     let restartButton = new Button("Restart Game", "#eeaa00", "black")
-    restartButton.setPosition((canvas.width / 2) - 200, (canvas.height / 2))
-    restartButton.setSize(150, 75)
-    restartButton.draw(c!)
     let endGameButton = new Button("End Game", "#eeaa00", "black")
+    restartButton.setPosition((canvas.width / 2) - 200, (canvas.height / 2))
     endGameButton.setPosition((canvas.width / 2) + 50, (canvas.height / 2))
-    endGameButton.setSize(150, 75)
-    endGameButton.draw(c!)
+    restartButton.onClick = () => document.location.reload()
+    buttons.push(restartButton)
+    buttons.push(endGameButton)
+    buttons.forEach(button => button.setSize(150, 75))
+    buttons.forEach(button => button.draw(c!))
+
+    canvas.addEventListener('click', (event: MouseEvent) => {
+        let x = event.pageX - (canvas.clientLeft + canvas.offsetLeft);
+        let y = event.pageY - (canvas.clientTop + canvas.offsetTop);
+        
+        buttons.forEach(b => {
+            if (b.inBounds(x, y) && !!b.onClick) b.onClick();
+        })
+    })
+
+
+
     // if ("ArrowDown" in keys) {
     //     document.location.reload()
     // }
