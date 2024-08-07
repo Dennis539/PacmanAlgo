@@ -48,7 +48,6 @@ class Board {
             for (let j = 0; j < this.boardMatrix[i].length; j++) {
                 if (this.boardMatrix[i][j]) {
                     middlePosTile.push([this.boardMatrix[i][j].xPos+10, this.boardMatrix[i][j].yPos+10])
-
                 }
             }
         }

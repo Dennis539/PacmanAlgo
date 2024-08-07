@@ -5,6 +5,7 @@ import Chaser from "./Ghosts/Blinky.tsx"
 import Ambusher from "./Ghosts/Pinky.tsx"
 import Whimsical from "./Ghosts/Inky.tsx"
 import Clyde from "./Ghosts/Clyde.tsx"
+import Button from "./Button/Button.tsx"
 
 let canvas = document.querySelector('canvas')!
 const c = canvas?.getContext('2d')
@@ -309,14 +310,6 @@ function updateGhostMode() {
     }
 }
 
-function drawGameOverButtons(display: string, x:number, y:number) {
-    c!.fillStyle = '#eeaa00';
-    c!.fillRect(x, y, 150, 75);
-    c!.fillStyle = '#001122';
-    c!.textAlign = 'center';
-    c!.font = '20px arial';
-    c!.fillText(display, x+75, y+40, 150);
-}
 
 function drawDeath() {
 
@@ -330,8 +323,15 @@ function drawDeath() {
     c!.textAlign = 'center';
     c!.strokeStyle = "white";
     c!.strokeText("Oh he dead", canvas.width / 2, (canvas.height / 2) - 80);
-    drawGameOverButtons("Restart Game", (canvas.width / 2 )- 200, (canvas.height / 2))
-    drawGameOverButtons("End Game", (canvas.width / 2 )+ 50, (canvas.height / 2))
+
+    let restartButton = new Button("Restart Game", "#eeaa00", "black")
+    restartButton.setPosition((canvas.width / 2) - 200, (canvas.height / 2))
+    restartButton.setSize(150, 75)
+    restartButton.draw(c!)
+    let endGameButton = new Button("End Game", "#eeaa00", "black")
+    endGameButton.setPosition((canvas.width / 2) + 50, (canvas.height / 2))
+    endGameButton.setSize(150, 75)
+    endGameButton.draw(c!)
     // if ("ArrowDown" in keys) {
     //     document.location.reload()
     // }
