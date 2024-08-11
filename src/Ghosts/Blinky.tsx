@@ -16,6 +16,7 @@ class Chaser extends BaseGhost{
         this.home = [board.boardMatrix[1][x1], board.boardMatrix[1][x2]]
         this.homeTarget = board.boardMatrix[1][x1]
         this.name = "Blinky"
+        // this.hasEntered = true
     }
 
 }

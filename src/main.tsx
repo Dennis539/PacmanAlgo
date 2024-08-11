@@ -163,6 +163,7 @@ function drawBoard() {
     }
 }
 
+
 function updatePlayer() {
     if (board.lifeLost) {
         if (Math.abs(player.startAngle - player.endAngle) <= (Math.PI*2)-0.155) { // Checks whether the circle is closed
@@ -190,7 +191,6 @@ function updatePlayer() {
             }
         }
     } 
-
     else {
         player.updateDirection(c, keys, board)
 
@@ -238,7 +238,6 @@ function drawPlayer() {
                 player.endAngle += 0.08
             }
         }
-
         if (Math.abs(player.startAngle - player.endAngle) > 2.5) {
             player.mouthDirection = "Close"
         } else if (Math.abs(player.startAngle - player.endAngle) < 0.17) {
@@ -272,6 +271,7 @@ function draw() {
         drawGhosts()
     }
 }
+
 
 function updateGhostMode() {
     for (let ghost of ghostActive) {
@@ -312,8 +312,6 @@ function updateGhostMode() {
 
 
 function drawDeath() {
-
-    // c?.clearRect(canvas.width/3, canvas.height/3, canvas.width/3, canvas.height/3)
     let buttons: Button[] = [];
 
     c!.fillStyle = "#808080";
@@ -329,7 +327,9 @@ function drawDeath() {
     let endGameButton = new Button("End Game", "#eeaa00", "black")
     restartButton.setPosition((canvas.width / 2) - 200, (canvas.height / 2))
     endGameButton.setPosition((canvas.width / 2) + 50, (canvas.height / 2))
-    restartButton.onClick = () => document.location.reload()
+    restartButton.onClick = () => {
+        document.location.reload()
+    }
     buttons.push(restartButton)
     buttons.push(endGameButton)
     buttons.forEach(button => button.setSize(150, 75))
@@ -343,19 +343,23 @@ function drawDeath() {
             if (b.inBounds(x, y) && !!b.onClick) b.onClick();
         })
     })
-
-
-
-    // if ("ArrowDown" in keys) {
-    //     document.location.reload()
-    // }
 }
+
 
 function loop() {
     board.time += 1
     draw()
     updatePlayer()
-
+    const isCoin = (object: any) => object.type !== "coin"
+    if (board.boardMatrix.flat().some(isCoin)) {
+        for (let row of board.boardMatrix) {
+            for (let tile of row) {
+                if (tile.type.includes("W")) {
+                    tile.color === "white"
+                }
+            }
+        }
+    }
     if (!board.lifeLost) {
         if (board.time >= 100 && !Pinky.hasEntered) {
             Pinky.enter()
@@ -383,7 +387,6 @@ function loop() {
                 }
             }
         }
-
 
         updateGhostMode()
         for (let ghost of ghostActive) {
