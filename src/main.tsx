@@ -351,14 +351,17 @@ function loop() {
     draw()
     updatePlayer()
     const isCoin = (object: any) => object.type !== "coin"
-    if (board.boardMatrix.flat().some(isCoin)) {
-        for (let row of board.boardMatrix) {
-            for (let tile of row) {
-                if (tile.type.includes("W")) {
-                    tile.color === "white"
-                }
-            }
-        }
+    if (board.boardMatrix.flat().some(isCoin) && board.time >= 150) {
+        // Here we enter the state where the level is completed and the animation will be played and a new level will be loaded. 
+        board.boardMatrix.map(
+            boardRow => boardRow.map(
+                boardTile => boardTile.hasOwnProperty("color") && boardTile.color === "blue" ? boardTile.color = "white" :
+                    boardTile.hasOwnProperty("color") && boardTile.color === "white" ? boardTile.color = "blue" : console.log("Nothing")
+            )
+        )
+        setTimeout(() => {
+            window.requestAnimationFrame(loop)
+        }, 2000);
     }
     if (!board.lifeLost) {
         if (board.time >= 100 && !Pinky.hasEntered) {
