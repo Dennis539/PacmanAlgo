@@ -351,52 +351,67 @@ function loop() {
     draw()
     updatePlayer()
     const isCoin = (object: any) => object.type !== "coin"
-    if (board.boardMatrix.flat().some(isCoin) && board.time >= 150) {
+    if (!board.boardMatrix.flat().some(isCoin)) {
         // Here we enter the state where the level is completed and the animation will be played and a new level will be loaded. 
+        if (board.flicker === 0) {
+            setTimeout(() => {
+                console.log("Timeout")
+            }, 1500);
+        }
         board.boardMatrix.map(
             boardRow => boardRow.map(
                 boardTile => boardTile.hasOwnProperty("color") && boardTile.color === "blue" ? boardTile.color = "white" :
                     boardTile.hasOwnProperty("color") && boardTile.color === "white" ? boardTile.color = "blue" : console.log("Nothing")
             )
         )
-        setTimeout(() => {
-            window.requestAnimationFrame(loop)
-        }, 2000);
-    }
-    if (!board.lifeLost) {
-        if (board.time >= 100 && !Pinky.hasEntered) {
-            Pinky.enter()
-            Pinky.tile = [((Pinky.yPos - 210) / 20), ((Pinky.xPos - 210) / 20)]
-            if (Pinky.xPos === 490 && Pinky.yPos === 350) {
-                Pinky.hasEntered = true
-            }
+        if (board.flicker <= 7) {
+            board.flicker += 1
+            setTimeout(() => {
+                window.requestAnimationFrame(loop)
+            }, 500);
         }
-        if (!clyde.hasEntered) {
-            if (player.score >= 1000 && board.time >= 50) {
-                clyde.enter()
-                clyde.tile = [((clyde.yPos - 210) / 20), ((clyde.xPos - 210) / 20)]
-                if (clyde.xPos === 490 && clyde.yPos === 350) {
-                    clyde.hasEntered = true
-                }
-            }
+        else {
+            // start new game
         }
 
-        if (!Inky.hasEntered) {
-            if (player.score >= 500  && board.time >= 150) {
-                Inky.enter()
-                Inky.tile = [((Inky.yPos - 210) / 20), ((Inky.xPos - 210) / 20)]
-                if (Inky.xPos === 490 && Inky.yPos === 350) {
-                    Inky.hasEntered = true
+    }
+    else {
+        if (!board.lifeLost) {
+            if (board.time >= 100 && !Pinky.hasEntered) {
+                Pinky.enter()
+                Pinky.tile = [((Pinky.yPos - 210) / 20), ((Pinky.xPos - 210) / 20)]
+                if (Pinky.xPos === 490 && Pinky.yPos === 350) {
+                    Pinky.hasEntered = true
                 }
             }
-        }
+            if (!clyde.hasEntered) {
+                if (player.score >= 1000 && board.time >= 50) {
+                    clyde.enter()
+                    clyde.tile = [((clyde.yPos - 210) / 20), ((clyde.xPos - 210) / 20)]
+                    if (clyde.xPos === 490 && clyde.yPos === 350) {
+                        clyde.hasEntered = true
+                    }
+                }
+            }
 
-        updateGhostMode()
-        for (let ghost of ghostActive) {
-            board.checkPlayerGhostcollision(ghost, player)
+            if (!Inky.hasEntered) {
+                if (player.score >= 500  && board.time >= 150) {
+                    Inky.enter()
+                    Inky.tile = [((Inky.yPos - 210) / 20), ((Inky.xPos - 210) / 20)]
+                    if (Inky.xPos === 490 && Inky.yPos === 350) {
+                        Inky.hasEntered = true
+                    }
+                }
+            }
+
+            updateGhostMode()
+            for (let ghost of ghostActive) {
+                board.checkPlayerGhostcollision(ghost, player)
+            }
         }
+        window.requestAnimationFrame(loop)
     }
-    window.requestAnimationFrame(loop)
+
 }
 
 

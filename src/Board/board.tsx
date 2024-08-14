@@ -22,6 +22,7 @@ class Board {
     setPinky: boolean
     setClyde: boolean
     setInky: boolean
+    flicker: number
 
     constructor(chaseTimeOut: number, scatterTimeOut: number, frightenedTimeOut: number) {
         this.height = 600
@@ -40,6 +41,7 @@ class Board {
         this.setPinky = false
         this.setClyde = false
         this.setInky = false
+        this.flicker = 0
     }
 
     calculateMiddlePosTile() {
