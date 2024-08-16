@@ -35,7 +35,7 @@ class Player {
         this.explosion = null
     }
 
-    updateDirection(c:any, keys: any, board: Board) {
+    updateDirection(keys: any, board: Board) {
         let x = this.tile[1]
         let y = this.tile[0]
         // throw "Stop"
@@ -147,7 +147,7 @@ class Player {
         return dbfs(visited, y, x, board)!
     }
 
-    move(keys: any, board: Board, c:any) {
+    move(keys: any, board: Board) {
         if ("ArrowLeft" in keys) {
             this.xPos -= this.speed
         }
@@ -164,7 +164,7 @@ class Player {
 
         }
         this.tile = [Math.floor((this.yPos - 200) / 20), Math.floor((this.xPos - 200) / 20)]
-        this.updateDirection(c, keys, board)
+        this.updateDirection(keys, board)
     }
 
     caught() {

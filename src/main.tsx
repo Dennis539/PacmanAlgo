@@ -192,7 +192,7 @@ function updatePlayer() {
         }
     } 
     else {
-        player.updateDirection(c, keys, board)
+        player.updateDirection(keys, board)
 
         // Check whether a future movement will cause a collision. 
         if (player.direction === "right") {
@@ -214,7 +214,7 @@ function updatePlayer() {
         
         // If there is no collision, move the player
         if (!board.checkPlayerWallCollision(player, newX, newY)) {
-            player.move(keys, board, c)
+            player.move(keys, board)
         }
     }
 }
