@@ -658,18 +658,24 @@ class Board {
         ghost: Chaser | Ambusher | Whimsical | Clyde,
         player: Player
     ) {
-        if (String(ghost.tile) === String(player.tile)) {
-            if (!ghost.touched && ghost.frightened && ghost.speed !== 10) {
+        let distX: number = player.xPos - ghost.xPos
+        let distY: number = player.yPos - ghost.yPos
+        let dist: number = Math.sqrt(distX * distX + distY * distY)
+
+        if (dist < ghost.radius + player.radius) {
+            if ((!ghost.touched && ghost.frightened) || ghost.speed === 10) {
                 // Last condition makes sure that the ghost cannot kill Pacman when travelling back to home
                 const ghostLoc = this.boardMatrix[ghost.tile[0]][ghost.tile[1]]
                 ghost.xPos = ghostLoc.xMiddle
                 ghost.yPos = ghostLoc.yMiddle
                 ghost.speed = 10
                 ghost.touched = true
+                console.log('Kees was touched')
             } else {
                 this.lifeLost = true
                 player.startAngle = Math.PI * 1.5
                 player.endAngle = Math.PI * 1.5 - 0.05
+                console.log('Kees dead')
             }
         }
     }
