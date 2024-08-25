@@ -670,12 +670,10 @@ class Board {
                 ghost.yPos = ghostLoc.yMiddle
                 ghost.speed = 10
                 ghost.touched = true
-                console.log('Kees was touched')
             } else {
                 this.lifeLost = true
                 player.startAngle = Math.PI * 1.5
                 player.endAngle = Math.PI * 1.5 - 0.05
-                console.log('Kees dead')
             }
         }
     }
