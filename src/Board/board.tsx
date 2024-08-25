@@ -23,6 +23,7 @@ class Board {
     setClyde: boolean
     setInky: boolean
     flicker: number
+    gameOverScreen: boolean
 
     constructor(
         chaseTimeOut: number,
@@ -46,6 +47,7 @@ class Board {
         this.setClyde = false
         this.setInky = false
         this.flicker = 0
+        this.gameOverScreen = false
     }
 
     calculateMiddlePosTile() {
@@ -663,13 +665,14 @@ class Board {
         let dist: number = Math.sqrt(distX * distX + distY * distY)
 
         if (dist < ghost.radius + player.radius) {
-            if ((!ghost.touched && ghost.frightened) || ghost.speed === 10) {
+            if (!ghost.touched && ghost.frightened) {
                 // Last condition makes sure that the ghost cannot kill Pacman when travelling back to home
                 const ghostLoc = this.boardMatrix[ghost.tile[0]][ghost.tile[1]]
                 ghost.xPos = ghostLoc.xMiddle
                 ghost.yPos = ghostLoc.yMiddle
                 ghost.speed = 10
                 ghost.touched = true
+            } else if (ghost.speed === 10) {
             } else {
                 this.lifeLost = true
                 player.startAngle = Math.PI * 1.5

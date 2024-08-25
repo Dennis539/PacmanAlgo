@@ -21,6 +21,22 @@ window.addEventListener('keyup', function (e) {
     delete keys[e.key]
 })
 
+function createGameOverButtons() {
+    let buttons: Button[] = []
+
+    let restartButton = new Button('Restart Game', '#eeaa00', 'black')
+    let endGameButton = new Button('End Game', '#eeaa00', 'black')
+    restartButton.setPosition(canvas.width / 2 - 200, canvas.height / 2)
+    endGameButton.setPosition(canvas.width / 2 + 50, canvas.height / 2)
+    restartButton.onClick = () => {
+        document.location.reload()
+    }
+    buttons.push(restartButton)
+    buttons.push(endGameButton)
+    buttons.forEach((button) => button.setSize(150, 75))
+    return buttons
+}
+
 let player: Player
 let board: Board
 let Blinky: Chaser
@@ -31,6 +47,7 @@ let ghostActive: Array<BaseGhost>
 let durationChase: number
 let durationScatter: number
 let durationFrightened: number
+let GameOverButtons = createGameOverButtons()
 
 function init() {
     durationChase = 20
@@ -63,6 +80,7 @@ function resetBoard() {
     Pinky.yPos = 350
 
     board.lifeLost = false
+    board.gameOverScreen = false
 
     for (let ghost of ghostActive) {
         ghost.touched = false
@@ -196,6 +214,36 @@ function drawBoard() {
     }
 }
 
+function drawGameOverScreen(GameOverButtons: Array<Button>, board: Board) {
+    c!.fillStyle = '#808080'
+    c!.beginPath()
+    c?.roundRect(
+        canvas.width / 3,
+        canvas.height / 3,
+        canvas.width / 3,
+        canvas.height / 3,
+        50
+    )
+    c!.fill()
+    c!.font = '20px Courier New'
+    c!.textAlign = 'center'
+    c!.strokeStyle = 'white'
+    c!.strokeText('Oh he dead', canvas.width / 2, canvas.height / 2 - 80)
+    if (!board.gameOverScreen) {
+        canvas.addEventListener('click', (event: MouseEvent) => {
+            let x = event.pageX - (canvas.clientLeft + canvas.offsetLeft)
+            let y = event.pageY - (canvas.clientTop + canvas.offsetTop)
+
+            GameOverButtons.forEach((b) => {
+                if (b.inBounds(x, y) && !!b.onClick) b.onClick()
+            })
+        })
+        board.gameOverScreen = true
+    }
+
+    GameOverButtons.forEach((button) => button.draw(c!))
+}
+
 function updatePlayer() {
     if (board.lifeLost) {
         if (
@@ -222,7 +270,7 @@ function updatePlayer() {
                 player.lives -= 1
                 resetBoard()
             } else {
-                drawDeath()
+                drawGameOverScreen(GameOverButtons, board)
             }
         }
     } else {
@@ -347,46 +395,6 @@ function updateGhostMode() {
             }
         }
     }
-}
-
-function drawDeath() {
-    let buttons: Button[] = []
-
-    c!.fillStyle = '#808080'
-    c!.beginPath()
-    c?.roundRect(
-        canvas.width / 3,
-        canvas.height / 3,
-        canvas.width / 3,
-        canvas.height / 3,
-        50
-    )
-    c!.fill()
-    c!.font = '20px Courier New'
-    c!.textAlign = 'center'
-    c!.strokeStyle = 'white'
-    c!.strokeText('Oh he dead', canvas.width / 2, canvas.height / 2 - 80)
-
-    let restartButton = new Button('Restart Game', '#eeaa00', 'black')
-    let endGameButton = new Button('End Game', '#eeaa00', 'black')
-    restartButton.setPosition(canvas.width / 2 - 200, canvas.height / 2)
-    endGameButton.setPosition(canvas.width / 2 + 50, canvas.height / 2)
-    restartButton.onClick = () => {
-        document.location.reload()
-    }
-    buttons.push(restartButton)
-    buttons.push(endGameButton)
-    buttons.forEach((button) => button.setSize(150, 75))
-    buttons.forEach((button) => button.draw(c!))
-
-    canvas.addEventListener('click', (event: MouseEvent) => {
-        let x = event.pageX - (canvas.clientLeft + canvas.offsetLeft)
-        let y = event.pageY - (canvas.clientTop + canvas.offsetTop)
-
-        buttons.forEach((b) => {
-            if (b.inBounds(x, y) && !!b.onClick) b.onClick()
-        })
-    })
 }
 
 function loop() {
