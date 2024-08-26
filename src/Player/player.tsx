@@ -125,7 +125,7 @@ class Player {
 
     findEligibleTile(board: Board, y: number, x: number): Array<number> {
         let visited = ['']
-        function dbfs(
+        function dfs(
             visited: Array<string>,
             y: number,
             x: number,
@@ -154,7 +154,7 @@ class Player {
                     [y - 1, x]
                 ]
                 for (let newDirArr of newDir) {
-                    let res: Array<number> | undefined = dbfs(
+                    let res: Array<number> | undefined = dfs(
                         visited,
                         newDirArr[0],
                         newDirArr[1],
@@ -168,7 +168,7 @@ class Player {
                 return [y, x]
             }
         }
-        return dbfs(visited, y, x, board)!
+        return dfs(visited, y, x, board)!
     }
 
     move(keys: any, board: Board) {

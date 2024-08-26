@@ -25,24 +25,23 @@ class Tile {
         this.lightness = 50
     }
 
-    updateLightness () {
+    updateLightness() {
         // lighter
-        if(this.lighter && this.lightness < 100){
+        if (this.lighter && this.lightness < 100) {
             this.lightness += 1
-        } 
-        
+        }
+
         // ligher stop
-        else if(this.lightness >= 100) {
+        else if (this.lightness >= 100) {
             this.lighter = false
             this.darker = true
             this.lightness -= 1
         }
-        
 
         // fade out
-        else if(this.darker && this.lightness > 50) {
+        else if (this.darker && this.lightness > 50) {
             this.lightness -= 1
-        }        
+        }
 
         // fade out stop
         else if (this.darker && this.lightness <= 50) {
@@ -50,7 +49,7 @@ class Tile {
             this.darker = false
             this.lightness += 1
         }
-	}
+    }
 }
 
 export default Tile

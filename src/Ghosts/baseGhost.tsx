@@ -30,6 +30,7 @@ class BaseGhost {
     phaseChange: boolean
     touched: boolean
     hasEntered: boolean
+    algorithm: 'aStar' | 'dfs' | 'bfs'
     constructor(board: Board) {
         this.xPos = 590
         this.yPos = 510
@@ -55,6 +56,7 @@ class BaseGhost {
         this.phaseChange = false
         this.touched = false
         this.hasEntered = false
+        this.algorithm = 'dfs'
     }
 
     _determineEndtile(board: Board, endTileY: number, endTileX: number) {
@@ -80,66 +82,6 @@ class BaseGhost {
         }
     }
 
-    move(
-        board: Board,
-        player: Player,
-        ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
-        ghostMode: string,
-        Inky: Whimsical,
-        Blinky: Chaser
-    ) {
-        // aStar will only run when the ghost is on the middlepos. Otherwise, move closer to the middlepos.
-        const checkMiddlePosTile = board.middlePosTile.some(
-            (middleArray) =>
-                middleArray[0] === this.xPos && middleArray[1] === this.yPos
-        )
-        if (checkMiddlePosTile) {
-            let beginTile = board.boardMatrix[this.tile[0]][this.tile[1]]
-            let endTileX: number
-            let endTileY: number
-            if (this.touched) {
-                this.endTile = board.boardMatrix[7][14]
-            } else {
-                if (ghostName === 'Blinky') {
-                    endTileX = player.tile[1]
-                    endTileY = player.tile[0]
-                } else if (ghostName === 'Pinky') {
-                    endTileX = player.fourTilesAhead[1]
-                    endTileY = player.fourTilesAhead[0]
-                } else if (ghostName === 'Inky') {
-                    let inkyTargetCoord = Inky.determineTarget(
-                        Blinky,
-                        player,
-                        board
-                    )
-                    endTileX = inkyTargetCoord[1]
-                    endTileY = inkyTargetCoord[0]
-                } else {
-                    endTileX = player.fourTilesAhead[1]
-                    endTileY = player.fourTilesAhead[0]
-                }
-                this.endTile = this._determineEndtile(board, endTileY, endTileX)
-            }
-
-            this._determine_neighbors(board.boardMatrix)
-            this._aStarAlgorithm(
-                board,
-                beginTile,
-                this.endTile,
-                ghostName,
-                ghostMode,
-                player
-            )
-        } else {
-            // console.log("Kees on the move " + ghostName)
-            this._moveToCenterOfTile()
-        }
-        this.tile = [
-            Math.floor((this.yPos - 200) / 20),
-            Math.floor((this.xPos - 200) / 20)
-        ]
-    }
-
     _determine_neighbors(grid: Array<Array<any>>) {
         for (let i = 0; i < grid.length; i++) {
             for (let j = 0; j < grid[i].length; j++) {
@@ -156,13 +98,6 @@ class BaseGhost {
                 }
             }
         }
-    }
-
-    becomeFrightened() {
-        this.frightened = true
-        this.phaseChange = true
-        this.speed = 1
-        this.color = 'blue'
     }
 
     _assignRandomNextTileCoord() {
@@ -197,16 +132,57 @@ class BaseGhost {
         )
     }
 
-    dbfs(
+    _determineNextTilePos(
+        curArr: Array<Tile>,
+        ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
+        ghostMode: string,
+        board: Board
+    ): void {
+        if (curArr.length <= 1 && this.touched) {
+            this.xPos = 490
+            this.yPos = 350
+            return
+        }
+
+        if (curArr.length <= 2 && this.mode === 'scatter') {
+            // switch locations of scatter mode depending on how close the ghost is to its target.
+            if (this.homeTarget === this.home[0]) {
+                this.homeTarget = this.home[1]
+            } else {
+                this.homeTarget = this.home[0]
+            }
+        }
+
+        if (this._determineErrorSpot(ghostName, curArr, ghostMode)) {
+            this.nextTileCoord = this._assignRandomNextTileCoord()
+            if (ghostName === 'Clyde') {
+                this.mode = 'scatter'
+            }
+        } else {
+            this.prevTileCoord = this.nextTileCoord
+            this.nextTileCoord = [
+                curArr[curArr.length - 2]!.xMiddle,
+                curArr[curArr.length - 2]!.yMiddle
+            ]
+        }
+
+        this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
+        this._moveToCenterOfTile()
+    }
+
+    _dfs(
         visited: Array<string>,
         xCoord: number,
         yCoord: number,
         board: Board
-    ): Array<Array<number>> | undefined {
+    ): Array<Tile> | undefined {
         // if endcoordinates match, return an array with another array containing y and x
-        // on other parts of the code, return the dbfs function with an array appended to it.
-        if (board.boardMatrix[yCoord][xCoord] === this.endTile) {
-            return [[yCoord, xCoord]]
+        // on other parts of the code, return the dfs function with an array appended to it.
+        let yEndCoord = (this.endTile.yMiddle - 210) / 20
+        let xEndCoord = (this.endTile.xMiddle - 210) / 20
+        if ([yCoord, xCoord].toString() === [yEndCoord, xEndCoord].toString()) {
+            console.log('found Kees')
+            return [board.boardMatrix[yCoord][xCoord]]
         }
         let xRange = [...Array(board.boardMatrix[0].length).keys()]
         let yRange = [...Array(board.boardMatrix.length).keys()]
@@ -218,15 +194,35 @@ class BaseGhost {
         ) {
             return
         }
-        if (!visited.includes([xCoord, yCoord].toString())) {
-            visited.push([xCoord, yRange].toString())
-        }
-        let dx = [xCoord - 1, xCoord + 1]
-        let dy = [yCoord - 1, yCoord + 1]
+        visited.push([yCoord, xCoord].toString())
 
-        for (let x of dx) {
-            for (let y of dy) {
+        let newCoords = [
+            [xCoord - 1, yCoord],
+            [xCoord + 1, yCoord],
+            [xCoord, yCoord - 1],
+            [xCoord, yCoord + 1]
+        ]
+
+        for (let coords of newCoords) {
+            let x = coords[0]
+            let y = coords[1]
+            let res = this._dfs(visited, x, y, board)
+            if (res) {
+                res.push(board.boardMatrix[y][x])
+                return res
             }
+        }
+    }
+
+    _dfsAlgorithm(
+        board: Board,
+        ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
+        ghostMode: string
+    ) {
+        let dfsArr = this._dfs([], this.tile[1], this.tile[0], board)
+        console.log(dfsArr)
+        if (dfsArr) {
+            this._determineNextTilePos(dfsArr, ghostName, ghostMode, board)
         }
     }
 
@@ -235,8 +231,7 @@ class BaseGhost {
         start: Tile,
         end: Tile,
         ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
-        ghostMode: string,
-        player: Player
+        ghostMode: string
     ) {
         let count = 0
         let openSet = new PriorityQueue<Array<any>>()
@@ -245,22 +240,6 @@ class BaseGhost {
         let gScore = new Map()
         let fScore = new Map()
         let grid = board.boardMatrix
-        let playerGhostDistX: number = player.xPos - this.xPos
-        let playerGhostDistY: number = player.yPos - this.yPos
-        let playerGhostDist: number = Math.sqrt(
-            playerGhostDistX * playerGhostDistX +
-                playerGhostDistY * playerGhostDistY
-        )
-        if (this.touched && playerGhostDist < this.radius + player.radius) {
-            this.preVisited = board.boardMatrix[player.tile[0]][player.tile[1]]
-        }
-        if (this.phaseChange) {
-            this.nextTileCoord = this.prevTileCoord
-            this.phaseChange = false
-            this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
-            this._moveToCenterOfTile()
-            return
-        }
 
         for (let i = 0; i < grid.length; i++) {
             for (let j = 0; j < grid[i].length; j++) {
@@ -287,44 +266,14 @@ class BaseGhost {
         while (!openSet.empty()) {
             let current: Tile = openSet.poll()![2]
             openSetHash.delete(current)
-            let curArr = []
+            let curArr: Array<Tile> = []
 
             if (current === end) {
                 while (Array.from(cameFrom.keys()).includes(current)) {
                     current = cameFrom.get(current)
                     curArr.push(current)
                 }
-
-                if (curArr.length <= 1 && this.touched) {
-                    this.xPos = 490
-                    this.yPos = 350
-                    return
-                }
-
-                if (curArr.length <= 2 && this.mode === 'scatter') {
-                    // switch locations of scatter mode depending on how close the ghost is to its target.
-                    if (this.homeTarget === this.home[0]) {
-                        this.homeTarget = this.home[1]
-                    } else {
-                        this.homeTarget = this.home[0]
-                    }
-                }
-
-                if (this._determineErrorSpot(ghostName, curArr, ghostMode)) {
-                    this.nextTileCoord = this._assignRandomNextTileCoord()
-                    if (ghostName === 'Clyde') {
-                        this.mode = 'scatter'
-                    }
-                } else {
-                    this.prevTileCoord = this.nextTileCoord
-                    this.nextTileCoord = [
-                        curArr[curArr.length - 2]!.xMiddle,
-                        curArr[curArr.length - 2]!.yMiddle
-                    ]
-                }
-
-                this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
-                this._moveToCenterOfTile()
+                this._determineNextTilePos(curArr, ghostName, ghostMode, board)
                 return
             }
 
@@ -365,6 +314,93 @@ class BaseGhost {
         }
         this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
         this._moveToCenterOfTile()
+    }
+
+    move(
+        board: Board,
+        player: Player,
+        ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
+        ghostMode: string,
+        Inky: Whimsical,
+        Blinky: Chaser
+    ) {
+        // algorithm will only run when the ghost is on the middlepos. Otherwise, move closer to the middlepos.
+        const checkMiddlePosTile = board.middlePosTile.some(
+            (middleArray) =>
+                middleArray[0] === this.xPos && middleArray[1] === this.yPos
+        )
+        if (checkMiddlePosTile) {
+            let beginTile = board.boardMatrix[this.tile[0]][this.tile[1]]
+            let endTileX: number
+            let endTileY: number
+            if (this.touched) {
+                this.endTile = board.boardMatrix[7][14]
+            } else {
+                if (ghostName === 'Blinky') {
+                    endTileX = player.tile[1]
+                    endTileY = player.tile[0]
+                } else if (ghostName === 'Pinky') {
+                    endTileX = player.fourTilesAhead[1]
+                    endTileY = player.fourTilesAhead[0]
+                } else if (ghostName === 'Inky') {
+                    let inkyTargetCoord = Inky.determineTarget(
+                        Blinky,
+                        player,
+                        board
+                    )
+                    endTileX = inkyTargetCoord[1]
+                    endTileY = inkyTargetCoord[0]
+                } else {
+                    endTileX = player.fourTilesAhead[1]
+                    endTileY = player.fourTilesAhead[0]
+                }
+                this.endTile = this._determineEndtile(board, endTileY, endTileX)
+            }
+
+            let playerGhostDistX: number = player.xPos - this.xPos
+            let playerGhostDistY: number = player.yPos - this.yPos
+            let playerGhostDist: number = Math.sqrt(
+                playerGhostDistX * playerGhostDistX +
+                    playerGhostDistY * playerGhostDistY
+            )
+            if (this.touched && playerGhostDist < this.radius + player.radius) {
+                this.preVisited =
+                    board.boardMatrix[player.tile[0]][player.tile[1]]
+            }
+            if (this.phaseChange) {
+                this.nextTileCoord = this.prevTileCoord
+                this.phaseChange = false
+                this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
+                this._moveToCenterOfTile()
+                return
+            }
+            this._determine_neighbors(board.boardMatrix)
+            if (this.algorithm === 'aStar') {
+                this._aStarAlgorithm(
+                    board,
+                    beginTile,
+                    this.endTile,
+                    ghostName,
+                    ghostMode
+                )
+            } else if (this.algorithm === 'dfs') {
+                this._dfsAlgorithm(board, ghostName, ghostMode)
+                console.log('Executed')
+            }
+        } else {
+            this._moveToCenterOfTile()
+        }
+        this.tile = [
+            Math.floor((this.yPos - 200) / 20),
+            Math.floor((this.xPos - 200) / 20)
+        ]
+    }
+
+    becomeFrightened() {
+        this.frightened = true
+        this.phaseChange = true
+        this.speed = 1
+        this.color = 'blue'
     }
 }
 
