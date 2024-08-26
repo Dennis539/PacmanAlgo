@@ -197,7 +197,12 @@ class BaseGhost {
         )
     }
 
-    dbfs(visited: Array<string>, xCoord: number, yCoord: number, board: Board) {
+    dbfs(
+        visited: Array<string>,
+        xCoord: number,
+        yCoord: number,
+        board: Board
+    ): Array<Array<number>> | undefined {
         // if endcoordinates match, return an array with another array containing y and x
         // on other parts of the code, return the dbfs function with an array appended to it.
         if (board.boardMatrix[yCoord][xCoord] === this.endTile) {
@@ -215,6 +220,13 @@ class BaseGhost {
         }
         if (!visited.includes([xCoord, yCoord].toString())) {
             visited.push([xCoord, yRange].toString())
+        }
+        let dx = [xCoord - 1, xCoord + 1]
+        let dy = [yCoord - 1, yCoord + 1]
+
+        for (let x of dx) {
+            for (let y of dy) {
+            }
         }
     }
 
