@@ -102,7 +102,6 @@ class BaseGhost {
 
     _assignRandomNextTileCoord() {
         for (let neighbor of this.neighbors) {
-            console.log(neighbor)
             if (
                 neighbor.type !== 'Wall' &&
                 neighbor.type !== 'None' &&
@@ -160,10 +159,18 @@ class BaseGhost {
             }
         } else {
             this.prevTileCoord = this.nextTileCoord
-            this.nextTileCoord = [
-                curArr[curArr.length - 2]!.xMiddle,
-                curArr[curArr.length - 2]!.yMiddle
-            ]
+            if (this.algorithm === 'aStar') {
+                this.nextTileCoord = [
+                    curArr[curArr.length - 2]!.xMiddle,
+                    curArr[curArr.length - 2]!.yMiddle
+                ]
+            } else {
+                console.log(curArr)
+                this.nextTileCoord = [
+                    curArr[curArr.length - 1]!.xMiddle,
+                    curArr[curArr.length - 1]!.yMiddle
+                ]
+            }
         }
 
         this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
@@ -190,7 +197,8 @@ class BaseGhost {
             !yRange.includes(yCoord) ||
             !xRange.includes(xCoord) ||
             visited.includes([yCoord, xCoord].toString()) ||
-            board.boardMatrix[yCoord][xCoord].type === 'Wall'
+            board.boardMatrix[yCoord][xCoord].type === 'Wall' ||
+            board.boardMatrix[yCoord][xCoord] === this.preVisited
         ) {
             return
         }
