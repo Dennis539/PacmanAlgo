@@ -56,7 +56,7 @@ class BaseGhost {
         this.phaseChange = false
         this.touched = false
         this.hasEntered = false
-        this.algorithm = 'dfs'
+        this.algorithm = 'aStar'
     }
 
     _determineEndtile(board: Board, endTileY: number, endTileX: number) {
@@ -226,14 +226,14 @@ class BaseGhost {
         let yEndCoord = (end.yMiddle - 210) / 20
         let xEndCoord = (end.xMiddle - 210) / 20
         let cameFrom = new Map()
-        let visited = []
-        let openSet = new PriorityQueue<Array<any>>()
+        let visited: Array<string> = []
+        let openSet: Array<any> = []
 
-        openSet.add([start, null]) // the node itself and the pointer towards the previous node
-        while (!openSet.empty()) {
+        openSet.push([start, null]) // the node itself and the pointer towards the previous node
+        while (openSet.length !== 0) {
             let copyOpenSet = openSet
             for (let i of copyOpenSet) {
-                let current: Tile = openSet.poll()![0]
+                let current: Tile = openSet.shift()![0]
                 if (current === end) {
                 }
                 let curTile = [
@@ -242,11 +242,28 @@ class BaseGhost {
                 ]
 
                 let newCoords = [
-                    [curTile, curTile],
-                    [curTile, curTile],
-                    [curTile, curTile],
-                    [curTile, curTile]
+                    [curTile[0] - 1, curTile[1]],
+                    [curTile[0] + 1, curTile[1]],
+                    [curTile[0], curTile[1] - 1],
+                    [curTile[0], curTile[1] + 1]
                 ]
+                let xRange = [...Array(board.boardMatrix[0].length).keys()]
+                let yRange = [...Array(board.boardMatrix.length).keys()]
+                for (let newCoord of newCoords) {
+                    let yCoord = newCoord[0]
+                    let xCoord = newCoord[1]
+                    let nextTile = board.boardMatrix[yCoord][xCoord]
+                    if (
+                        yRange.includes(yCoord) &&
+                        xRange.includes(xCoord) &&
+                        !visited.includes([yCoord, xCoord].toString()) &&
+                        board.boardMatrix[yCoord][xCoord].type !== 'Wall' &&
+                        board.boardMatrix[yCoord][xCoord] !== this.preVisited
+                    ) {
+                        openSet.push(board.boardMatrix[yCoord][xCoord])
+                        cameFrom.set(nextTile, current)
+                    }
+                }
             }
         }
     }
