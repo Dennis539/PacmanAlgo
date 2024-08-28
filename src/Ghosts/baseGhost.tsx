@@ -227,13 +227,26 @@ class BaseGhost {
         let xEndCoord = (end.xMiddle - 210) / 20
         let cameFrom = new Map()
         let visited = []
-        let openSet = new PriorityQueue<Tile>()
+        let openSet = new PriorityQueue<Array<any>>()
 
-        openSet.add(start)
+        openSet.add([start, null]) // the node itself and the pointer towards the previous node
         while (!openSet.empty()) {
             let copyOpenSet = openSet
             for (let i of copyOpenSet) {
-                let tileObject = openSet.poll()
+                let current: Tile = openSet.poll()![0]
+                if (current === end) {
+                }
+                let curTile = [
+                    Math.floor((current.yPos - 200) / 20),
+                    Math.floor((current.xPos - 200) / 20)
+                ]
+
+                let newCoords = [
+                    [curTile, curTile],
+                    [curTile, curTile],
+                    [curTile, curTile],
+                    [curTile, curTile]
+                ]
             }
         }
     }
