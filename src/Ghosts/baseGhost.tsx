@@ -222,6 +222,22 @@ class BaseGhost {
         }
     }
 
+    _bfs(start: Tile, end: Tile, board: Board) {
+        let yEndCoord = (end.yMiddle - 210) / 20
+        let xEndCoord = (end.xMiddle - 210) / 20
+        let cameFrom = new Map()
+        let visited = []
+        let openSet = new PriorityQueue<Tile>()
+
+        openSet.add(start)
+        while (!openSet.empty()) {
+            let copyOpenSet = openSet
+            for (let i of copyOpenSet) {
+                let tileObject = openSet.poll()
+            }
+        }
+    }
+
     _dfsAlgorithm(
         board: Board,
         ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
@@ -394,6 +410,8 @@ class BaseGhost {
             } else if (this.algorithm === 'dfs') {
                 this._dfsAlgorithm(board, ghostName, ghostMode)
                 console.log('Executed')
+            } else if (this.algorithm === 'bfs') {
+                console.log('Executed BFS')
             }
         } else {
             this._moveToCenterOfTile()
