@@ -56,7 +56,7 @@ class BaseGhost {
         this.phaseChange = false
         this.touched = false
         this.hasEntered = false
-        this.algorithm = 'aStar'
+        this.algorithm = 'bfs'
     }
 
     _determineEndtile(board: Board, endTileY: number, endTileX: number) {
@@ -222,24 +222,48 @@ class BaseGhost {
         }
     }
 
-    _bfs(start: Tile, end: Tile, board: Board) {
+    _bfs(
+        start: Tile,
+        end: Tile,
+        board: Board,
+        ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
+        ghostMode: string
+    ) {
         let yEndCoord = (end.yMiddle - 210) / 20
         let xEndCoord = (end.xMiddle - 210) / 20
         let cameFrom = new Map()
         let visited: Array<string> = []
         let openSet: Array<any> = []
-
-        openSet.push([start, null]) // the node itself and the pointer towards the previous node
+        let curArr: Array<Tile> = []
+        let endTile = [
+            Math.floor((end.yPos - 200) / 20),
+            Math.floor((end.xPos - 200) / 20)
+        ]
+        openSet.push(start) // the node itself and the pointer towards the previous node
         while (openSet.length !== 0) {
             let copyOpenSet = openSet
+
             for (let i of copyOpenSet) {
-                let current: Tile = openSet.shift()![0]
-                if (current === end) {
-                }
+                let current: Tile = openSet.shift()
                 let curTile = [
                     Math.floor((current.yPos - 200) / 20),
                     Math.floor((current.xPos - 200) / 20)
                 ]
+                if (curTile.toString() === endTile.toString()) {
+                    while (Array.from(cameFrom.keys()).includes(current)) {
+                        current = cameFrom.get(current)
+                        curArr.push(current)
+                    }
+                    this._determineNextTilePos(
+                        curArr,
+                        ghostName,
+                        ghostMode,
+                        board
+                    )
+                    console.log('Found Kees')
+                    return
+                }
+                console.log(current)
 
                 let newCoords = [
                     [curTile[0] - 1, curTile[1]],
@@ -264,6 +288,7 @@ class BaseGhost {
                         cameFrom.set(nextTile, current)
                     }
                 }
+                visited.push(curTile.toString())
             }
         }
     }
@@ -441,6 +466,7 @@ class BaseGhost {
                 this._dfsAlgorithm(board, ghostName, ghostMode)
                 console.log('Executed')
             } else if (this.algorithm === 'bfs') {
+                this._bfs(beginTile, this.endTile, board, ghostName, ghostMode)
                 console.log('Executed BFS')
             }
         } else {
