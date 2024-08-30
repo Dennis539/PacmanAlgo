@@ -7,6 +7,7 @@ import Whimsical from '../Ghosts/Inky'
 import Clyde from '../Ghosts/Clyde'
 
 class Board {
+    debug: boolean
     height: number
     width: number
     xPos: number
@@ -30,6 +31,7 @@ class Board {
         scatterTimeOut: number,
         frightenedTimeOut: number
     ) {
+        this.debug = true
         this.height = 600
         this.width = 0
         this.xPos = 150

@@ -30,7 +30,10 @@ class BaseGhost {
     phaseChange: boolean
     touched: boolean
     hasEntered: boolean
-    algorithm: 'aStar' | 'dfs' | 'bfs'
+    algorithm: 'aStar' | 'dfs' | 'bfs' | 'Dijkstra'
+    showAlgorithm: boolean
+    showAlgorithmStep: Array<Tile>
+    path: Array<Tile>
     constructor(board: Board) {
         this.xPos = 590
         this.yPos = 510
@@ -56,7 +59,10 @@ class BaseGhost {
         this.phaseChange = false
         this.touched = false
         this.hasEntered = false
-        this.algorithm = 'bfs'
+        this.algorithm = 'Dijkstra'
+        this.showAlgorithm = true
+        this.showAlgorithmStep = []
+        this.path = []
     }
 
     _determineEndtile(board: Board, endTileY: number, endTileX: number) {
@@ -159,16 +165,15 @@ class BaseGhost {
             }
         } else {
             this.prevTileCoord = this.nextTileCoord
-            if (this.algorithm === 'aStar') {
-                this.nextTileCoord = [
-                    curArr[curArr.length - 2]!.xMiddle,
-                    curArr[curArr.length - 2]!.yMiddle
-                ]
-            } else {
-                console.log(curArr)
+            if (this.algorithm === 'dfs') {
                 this.nextTileCoord = [
                     curArr[curArr.length - 1]!.xMiddle,
                     curArr[curArr.length - 1]!.yMiddle
+                ]
+            } else {
+                this.nextTileCoord = [
+                    curArr[curArr.length - 2]!.xMiddle,
+                    curArr[curArr.length - 2]!.yMiddle
                 ]
             }
         }
@@ -203,7 +208,7 @@ class BaseGhost {
             return
         }
         visited.push([yCoord, xCoord].toString())
-
+        this.showAlgorithmStep.push(board.boardMatrix[yCoord][xCoord])
         let newCoords = [
             [xCoord - 1, yCoord],
             [xCoord + 1, yCoord],
@@ -222,6 +227,19 @@ class BaseGhost {
         }
     }
 
+    _dfsAlgorithm(
+        board: Board,
+        ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
+        ghostMode: string
+    ) {
+        let dfsArr = this._dfs([], this.tile[1], this.tile[0], board)
+        console.log(dfsArr)
+        if (dfsArr) {
+            this.path = dfsArr
+            this._determineNextTilePos(dfsArr, ghostName, ghostMode, board)
+        }
+    }
+
     _bfs(
         start: Tile,
         end: Tile,
@@ -229,8 +247,6 @@ class BaseGhost {
         ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
         ghostMode: string
     ) {
-        let yEndCoord = (end.yMiddle - 210) / 20
-        let xEndCoord = (end.xMiddle - 210) / 20
         let cameFrom = new Map()
         let visited: Array<string> = []
         let openSet: Array<any> = []
@@ -242,28 +258,28 @@ class BaseGhost {
         openSet.push(start) // the node itself and the pointer towards the previous node
         while (openSet.length !== 0) {
             let copyOpenSet = openSet
-
             for (let i of copyOpenSet) {
                 let current: Tile = openSet.shift()
                 let curTile = [
                     Math.floor((current.yPos - 200) / 20),
                     Math.floor((current.xPos - 200) / 20)
                 ]
+
                 if (curTile.toString() === endTile.toString()) {
                     while (Array.from(cameFrom.keys()).includes(current)) {
                         current = cameFrom.get(current)
                         curArr.push(current)
                     }
+
                     this._determineNextTilePos(
                         curArr,
                         ghostName,
                         ghostMode,
                         board
                     )
-                    console.log('Found Kees')
+                    this.path = curArr
                     return
                 }
-                console.log(current)
 
                 let newCoords = [
                     [curTile[0] - 1, curTile[1]],
@@ -288,21 +304,86 @@ class BaseGhost {
                         cameFrom.set(nextTile, current)
                     }
                 }
-                visited.push(curTile.toString())
+                if (!visited.includes(curTile.toString())) {
+                    visited.push(curTile.toString())
+                    this.showAlgorithmStep.push(current)
+                }
             }
         }
+        if (ghostName === 'Pinky' || this.frightened) {
+            this.nextTileCoord = this._assignRandomNextTileCoord()
+        }
+        this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
+        this._moveToCenterOfTile()
     }
 
-    _dfsAlgorithm(
+    _DijkstrasAlgorithm(
         board: Board,
+        start: Tile,
+        end: Tile,
         ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
         ghostMode: string
     ) {
-        let dfsArr = this._dfs([], this.tile[1], this.tile[0], board)
-        console.log(dfsArr)
-        if (dfsArr) {
-            this._determineNextTilePos(dfsArr, ghostName, ghostMode, board)
+        let cameFrom = new Map()
+        let openSet: Array<Array<any>> = []
+        openSet.push([0, start])
+        let visited: Array<string> = []
+        let curArr: Array<Tile> = [] // Maybe implement a priorityqueue someday
+        let matrix = board.boardMatrix
+        while (openSet.length !== 0) {
+            openSet = openSet.sort(function (a, b) {
+                return b[0] - a[0]
+            })
+            let currentArray: Array<any> = openSet.pop()!
+            let current: Tile = currentArray[1]
+            let distScore = currentArray[0]
+
+            if (current === end) {
+                console.log('Kees is there')
+                while (Array.from(cameFrom.keys()).includes(current)) {
+                    current = cameFrom.get(current)
+                    curArr.push(current)
+                }
+                this._determineNextTilePos(curArr, ghostName, ghostMode, board)
+                this.path = curArr
+
+                return
+            }
+            visited.push(
+                [
+                    Math.floor((current.yMiddle - 200) / 20),
+                    Math.floor((current.xMiddle - 200) / 20)
+                ].toString()
+            )
+
+            for (let neighbor of current.neighbors) {
+                let coordArr: Array<number> = [
+                    Math.floor((neighbor.yMiddle - 200) / 20),
+                    Math.floor((neighbor.xMiddle - 200) / 20)
+                ]
+                let xRange = [...Array(matrix[0].length).keys()]
+                let yRange = [...Array(matrix.length).keys()]
+                if (
+                    yRange.includes(coordArr[0]) &&
+                    xRange.includes(coordArr[1]) &&
+                    !visited.includes(coordArr.toString()) &&
+                    neighbor.type !== 'Wall' &&
+                    neighbor !== this.preVisited
+                ) {
+                    cameFrom.set(neighbor, current)
+                    openSet.push([distScore + 1, neighbor])
+                    // as the paths have no specific weights, the score is incremented by 1 each time
+                }
+            }
         }
+        // There is apparently a situation when Pinky has been randomly assigned a tile that it
+        // will not be able to find. It will randomly assign a new tile in that case.
+        if (ghostName === 'Pinky' || this.frightened) {
+            console.log('Kees is here')
+            this.nextTileCoord = this._assignRandomNextTileCoord()
+        }
+        this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
+        this._moveToCenterOfTile()
     }
 
     _aStarAlgorithm(
@@ -313,11 +394,12 @@ class BaseGhost {
         ghostMode: string
     ) {
         let count = 0
-        let openSet = new PriorityQueue<Array<any>>()
-        openSet.add([0, count, start])
+        let openSet: Array<Array<any>> = []
+        openSet.push([0, count, start])
         let cameFrom = new Map()
         let gScore = new Map()
         let fScore = new Map()
+        let curArr: Array<Tile> = [] // Maybe implement a priorityqueue someday
         let grid = board.boardMatrix
 
         for (let i = 0; i < grid.length; i++) {
@@ -342,10 +424,13 @@ class BaseGhost {
         let openSetHash = new Set()
         openSetHash.add(start)
 
-        while (!openSet.empty()) {
-            let current: Tile = openSet.poll()![2]
+        while (openSet.length !== 0) {
+            let sortedArray = openSet.sort(function (a, b) {
+                return b[0] - a[0]
+            })
+            let current = sortedArray.pop()![2]
+            console.log(sortedArray)
             openSetHash.delete(current)
-            let curArr: Array<Tile> = []
 
             if (current === end) {
                 while (Array.from(cameFrom.keys()).includes(current)) {
@@ -353,6 +438,8 @@ class BaseGhost {
                     curArr.push(current)
                 }
                 this._determineNextTilePos(curArr, ghostName, ghostMode, board)
+                this.path = curArr
+
                 return
             }
 
@@ -363,6 +450,8 @@ class BaseGhost {
                     neighbor.type !== 'None' &&
                     neighbor !== this.preVisited
                 ) {
+                    console.log('Kees is here')
+
                     let tempGScore = gScore.get(current) + 1
 
                     if (tempGScore < gScore.get(neighbor)) {
@@ -379,10 +468,15 @@ class BaseGhost {
 
                         if (!openSetHash.has(neighbor)) {
                             count += 1
-                            openSet.add([fScore.get(neighbor), count, neighbor])
+                            openSet.push([
+                                fScore.get(neighbor),
+                                count,
+                                neighbor
+                            ])
                             openSetHash.add(neighbor)
                         }
                     }
+                    this.showAlgorithmStep.push(neighbor)
                 }
             }
         }
@@ -409,6 +503,7 @@ class BaseGhost {
                 middleArray[0] === this.xPos && middleArray[1] === this.yPos
         )
         if (checkMiddlePosTile) {
+            this.showAlgorithmStep = []
             let beginTile = board.boardMatrix[this.tile[0]][this.tile[1]]
             let endTileX: number
             let endTileY: number
@@ -468,6 +563,14 @@ class BaseGhost {
             } else if (this.algorithm === 'bfs') {
                 this._bfs(beginTile, this.endTile, board, ghostName, ghostMode)
                 console.log('Executed BFS')
+            } else if (this.algorithm === 'Dijkstra') {
+                this._DijkstrasAlgorithm(
+                    board,
+                    beginTile,
+                    this.endTile,
+                    ghostName,
+                    ghostMode
+                )
             }
         } else {
             this._moveToCenterOfTile()

@@ -106,6 +106,9 @@ function drawBoard() {
             if (!board.boardMatrix[i][j]) {
                 continue
             }
+            if (board.boardMatrix[i][j].type === 'Coin') {
+                c!.fillStyle = board.boardMatrix[i][j].color
+            }
             if (board.boardMatrix[i][j].type === 'Wall') {
                 c!.strokeStyle = board.boardMatrix[i][j].color
                 c!.lineWidth = 2
@@ -338,6 +341,20 @@ function drawGhosts() {
         c?.fill()
         if (ghost.hasEntered) {
             ghost.move(board, player, ghost.name, ghost.mode, Inky, Blinky)
+            if (ghost.showAlgorithm && ghost.name === 'Pinky') {
+                ghost.showAlgorithmStep.map((tile) =>
+                    c!.fillRect(tile.xMiddle, tile.yMiddle, 10, 10)
+                )
+                c!.fillStyle = 'green'
+                let ghostEndX = ghost.endTile.xMiddle
+                let ghostEndY = ghost.endTile.yMiddle
+                c!.fillRect(ghostEndX, ghostEndY, 10, 10)
+                c!.fillStyle = 'red'
+
+                ghost.path.map((tile) =>
+                    c!.fillRect(tile.xMiddle, tile.yMiddle, 10, 10)
+                )
+            }
         }
     }
 }

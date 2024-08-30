@@ -10,6 +10,7 @@ class Tile {
     lighter: boolean
     darker: boolean
     lightness: number
+    color: string
 
     constructor(xPos: number, yPos: number, type: string) {
         this.height = 8
@@ -23,6 +24,7 @@ class Tile {
         this.lighter = true
         this.darker = false
         this.lightness = 50
+        this.color = ''
     }
 
     updateLightness() {
