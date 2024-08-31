@@ -13,8 +13,6 @@ const showAlgorithmPathDiv = document.getElementById('showAlgorithmPathDiv')
 const c = canvas?.getContext('2d')
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
-// algorithmDropdown!.style.left = '500px'
-algorithmDropdown!.style.top = '50px'
 
 function updateAlgorithm(evt: any) {
     for (let ghost of ghostActive) {

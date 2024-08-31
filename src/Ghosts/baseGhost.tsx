@@ -30,7 +30,7 @@ class BaseGhost {
     phaseChange: boolean
     touched: boolean
     hasEntered: boolean
-    algorithm: 'aStar' | 'dfs' | 'bfs' | 'Dijkstra'
+    algorithm: 'aStar' | 'dfs' | 'bfs' | 'Dijkstra' | 'GreedyBestFirstSearch'
     showAlgorithm: boolean
     showAlgorithmStep: Array<Tile>
     path: Array<Tile>
@@ -233,7 +233,6 @@ class BaseGhost {
         ghostMode: string
     ) {
         let dfsArr = this._dfs([], this.tile[1], this.tile[0], board)
-        console.log(dfsArr)
         if (dfsArr) {
             this.path = dfsArr
             this._determineNextTilePos(dfsArr, ghostName, ghostMode, board)
@@ -381,11 +380,67 @@ class BaseGhost {
         // There is apparently a situation when Pinky has been randomly assigned a tile that it
         // will not be able to find. It will randomly assign a new tile in that case.
         if (ghostName === 'Pinky' || this.frightened) {
-            console.log('Kees is here')
             this.nextTileCoord = this._assignRandomNextTileCoord()
         }
         this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
         this._moveToCenterOfTile()
+    }
+
+    _GreedyBestFirstSearch(
+        board: Board,
+        start: Tile,
+        end: Tile,
+        ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
+        ghostMode: string
+    ) {
+        let visited: Array<string> = []
+        let cameFrom = new Map()
+        let matrix = board.boardMatrix
+        let distX: number = Math.abs(start.xMiddle - end.xMiddle)
+        let distY: number = Math.abs(start.yMiddle - end.yMiddle)
+        let openSet: Array<[number, Tile]> = [
+            [Math.sqrt(distX * distX + distY * distY), start]
+        ]
+        console.log(openSet)
+        while (openSet.length <= 0) {
+            console.log(openSet)
+            console.log('Keesie')
+            openSet = openSet.sort(function (a, b) {
+                return b[0] - a[0]
+            }) // Should sorting be done in reverse?
+            let currentArray = openSet.pop()
+            let current = currentArray![1]
+            if (current === end) {
+                console.log('Kees is here')
+            }
+            visited.push([current.yMiddle, current.xMiddle].toString())
+            let neighbor: Tile
+            for (neighbor of current.neighbors) {
+                let coordArr: Array<number> = [
+                    Math.floor((neighbor.yMiddle - 200) / 20),
+                    Math.floor((neighbor.xMiddle - 200) / 20)
+                ]
+                let xRange = [...Array(matrix[0].length).keys()]
+                let yRange = [...Array(matrix.length).keys()]
+                if (
+                    xRange.includes(coordArr[0]) &&
+                    yRange.includes(coordArr[0]) &&
+                    !visited.includes(
+                        [current.yMiddle, current.xMiddle].toString()
+                    ) &&
+                    matrix[coordArr[0]][coordArr[1]].type !== 'Wall' &&
+                    neighbor !== this.preVisited
+                ) {
+                    let distX: number = Math.abs(neighbor.xMiddle - end.xMiddle)
+                    let distY: number = Math.abs(neighbor.yMiddle - end.yMiddle)
+                    openSet.push([
+                        Math.sqrt(distX * distX + distY * distY),
+                        current
+                    ])
+                    cameFrom.set(neighbor, current)
+                }
+            }
+        }
     }
 
     _aStarAlgorithm(
@@ -452,8 +507,6 @@ class BaseGhost {
                     neighbor.type !== 'None' &&
                     neighbor !== this.preVisited
                 ) {
-                    console.log('Kees is here')
-
                     let tempGScore = gScore.get(current) + 1
 
                     if (tempGScore < gScore.get(neighbor)) {
@@ -567,6 +620,14 @@ class BaseGhost {
                 console.log('Executed BFS')
             } else if (this.algorithm === 'Dijkstra') {
                 this._DijkstrasAlgorithm(
+                    board,
+                    beginTile,
+                    this.endTile,
+                    ghostName,
+                    ghostMode
+                )
+            } else if (this.algorithm === 'GreedyBestFirstSearch') {
+                this._GreedyBestFirstSearch(
                     board,
                     beginTile,
                     this.endTile,
