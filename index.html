@@ -1,7 +1,23 @@
 <!doctype html>
 <html lang="en">
-  <head></head>
+  <head>
+    <link rel="stylesheet" href="./src/index.css">
+  </head>
   <body style="margin: 0">
+
+    <div id="algorithmDropdown">
+      <select id="algorithmDropdownSelect">
+        <option value="dfs">DFS</option>
+        <option value="bfs">BFS</option>
+        <option value="Dijkstra" selected="selected">Dijkstra's</option>
+        <option value="aStar">A*</option>
+      </select>
+    </div>
+    <div id="showAlgorithmPathDiv">
+      <input type="checkbox" id="showAlgorithmPath" name="showAlgorithmPath" />
+      <label for="showAlgorithmPath">Show path of the algorithm</label>
+    </div>
+
       <canvas id="GameCanvas" background-color="black">
           <script src="src/main.tsx" type="module" gameStart="false"></script>
       </canvas>

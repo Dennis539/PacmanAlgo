@@ -1,4 +1,4 @@
-import PriorityQueue from 'priority-queue-typescript'
+// import PriorityQueue from 'priority-queue-typescript'
 import Board from '../Board/board'
 import Player from '../Player/player'
 import Tile from '../Board/tile'
@@ -60,7 +60,7 @@ class BaseGhost {
         this.touched = false
         this.hasEntered = false
         this.algorithm = 'Dijkstra'
-        this.showAlgorithm = true
+        this.showAlgorithm = false
         this.showAlgorithmStep = []
         this.path = []
     }
@@ -260,6 +260,8 @@ class BaseGhost {
             let copyOpenSet = openSet
             for (let i of copyOpenSet) {
                 let current: Tile = openSet.shift()
+                if (!i) {
+                }
                 let curTile = [
                     Math.floor((current.yPos - 200) / 20),
                     Math.floor((current.xPos - 200) / 20)

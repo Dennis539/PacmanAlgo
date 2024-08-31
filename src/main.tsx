@@ -8,9 +8,28 @@ import Clyde from './Ghosts/Clyde.tsx'
 import Button from './Button/Button.tsx'
 
 let canvas = document.querySelector('canvas')!
+const algorithmDropdown = document.getElementById('algorithmDropdown')
+const showAlgorithmPathDiv = document.getElementById('showAlgorithmPathDiv')
 const c = canvas?.getContext('2d')
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
+// algorithmDropdown!.style.left = '500px'
+algorithmDropdown!.style.top = '50px'
+
+function updateAlgorithm(evt: any) {
+    for (let ghost of ghostActive) {
+        ghost.algorithm = evt.target.value
+    }
+}
+
+function updateShowAlgorithm(evt: any) {
+    for (let ghost of ghostActive) {
+        ghost.showAlgorithm = !ghost.showAlgorithm
+    }
+    console.log(evt.target.value)
+}
+algorithmDropdown!.addEventListener('change', updateAlgorithm)
+showAlgorithmPathDiv!.addEventListener('change', updateShowAlgorithm)
 
 var keys: any = {}
 window.addEventListener('keydown', function (e) {
