@@ -1,8 +1,25 @@
 <!doctype html>
 <html lang="en">
-  <head>  <script type="module" crossorigin src="/PacmanAlgo/assets/index-DAwYfqzY.js"></script>
-</head>
+  <head>
+    <script type="module" crossorigin src="/PacmanAlgo/assets/index-B6GubZ5k.js"></script>
+    <link rel="stylesheet" crossorigin href="/PacmanAlgo/assets/index-07JKiFOi.css">
+  </head>
   <body style="margin: 0">
+
+    <div id="algorithmDropdown">
+      <select id="algorithmDropdownSelect">
+        <option value="dfs">DFS</option>
+        <option value="bfs">BFS</option>
+        <option value="Dijkstra" selected="selected">Dijkstra's</option>
+        <option value="aStar">A*</option>
+        <option value="GreedyBestFirstSearch">Best First Search</option>
+      </select>
+    </div>
+    <div id="showAlgorithmPathDiv">
+      <input type="checkbox" id="showAlgorithmPath" name="showAlgorithmPath" />
+      <label for="showAlgorithmPath">Show path of the algorithm</label>
+    </div>
+
       <canvas id="GameCanvas" background-color="black">
       </canvas>
   </body>
