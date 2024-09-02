@@ -395,23 +395,30 @@ class BaseGhost {
     ) {
         let visited: Array<string> = []
         let cameFrom = new Map()
+        let curArr: Array<Tile> = []
         let matrix = board.boardMatrix
         let distX: number = Math.abs(start.xMiddle - end.xMiddle)
         let distY: number = Math.abs(start.yMiddle - end.yMiddle)
         let openSet: Array<[number, Tile]> = [
             [Math.sqrt(distX * distX + distY * distY), start]
         ]
-        console.log(openSet)
-        while (openSet.length <= 0) {
-            console.log(openSet)
-            console.log('Keesie')
+        while (openSet.length !== 0) {
             openSet = openSet.sort(function (a, b) {
                 return b[0] - a[0]
-            }) // Should sorting be done in reverse?
+            })
             let currentArray = openSet.pop()
+
             let current = currentArray![1]
             if (current === end) {
-                console.log('Kees is here')
+                console.log('Kees is there')
+                while (Array.from(cameFrom.keys()).includes(current)) {
+                    current = cameFrom.get(current)
+                    curArr.push(current)
+                }
+                this._determineNextTilePos(curArr, ghostName, ghostMode, board)
+                this.path = curArr
+
+                return
             }
             visited.push([current.yMiddle, current.xMiddle].toString())
             let neighbor: Tile
@@ -423,24 +430,29 @@ class BaseGhost {
                 let xRange = [...Array(matrix[0].length).keys()]
                 let yRange = [...Array(matrix.length).keys()]
                 if (
-                    xRange.includes(coordArr[0]) &&
+                    xRange.includes(coordArr[1]) &&
                     yRange.includes(coordArr[0]) &&
                     !visited.includes(
-                        [current.yMiddle, current.xMiddle].toString()
+                        [neighbor.yMiddle, neighbor.xMiddle].toString()
                     ) &&
-                    matrix[coordArr[0]][coordArr[1]].type !== 'Wall' &&
+                    neighbor.type !== 'Wall' &&
                     neighbor !== this.preVisited
                 ) {
                     let distX: number = Math.abs(neighbor.xMiddle - end.xMiddle)
                     let distY: number = Math.abs(neighbor.yMiddle - end.yMiddle)
                     openSet.push([
                         Math.sqrt(distX * distX + distY * distY),
-                        current
+                        neighbor
                     ])
                     cameFrom.set(neighbor, current)
                 }
             }
         }
+        if (ghostName === 'Pinky' || this.frightened) {
+            this.nextTileCoord = this._assignRandomNextTileCoord()
+        }
+        this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
+        this._moveToCenterOfTile()
     }
 
     _aStarAlgorithm(
