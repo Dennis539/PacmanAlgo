@@ -1,9 +1,9 @@
 // import PriorityQueue from 'priority-queue-typescript'
-import Board from '../Board/board'
-import Player from '../Player/player'
-import Tile from '../Board/tile'
-import Whimsical from './Inky'
-import Chaser from './Blinky'
+import Board from "../Board/board"
+import Player from "../Player/player"
+import Tile from "../Board/tile"
+import Whimsical from "./Inky"
+import Chaser from "./Blinky"
 
 class BaseGhost {
     xPos: number
@@ -20,7 +20,7 @@ class BaseGhost {
     mode: string
     home: Array<Tile>
     homeTarget: Tile
-    name: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde'
+    name: "Blinky" | "Pinky" | "Inky" | "Clyde"
     endTile: Tile
     frightened: boolean
     beginTimeMode: number
@@ -30,7 +30,7 @@ class BaseGhost {
     phaseChange: boolean
     touched: boolean
     hasEntered: boolean
-    algorithm: 'aStar' | 'dfs' | 'bfs' | 'Dijkstra' | 'GreedyBestFirstSearch'
+    algorithm: "aStar" | "dfs" | "bfs" | "Dijkstra" | "GreedyBestFirstSearch"
     showAlgorithm: boolean
     showAlgorithmStep: Array<Tile>
     path: Array<Tile>
@@ -39,17 +39,17 @@ class BaseGhost {
         this.yPos = 510
         this.radius = 18
         this.speed = 2
-        this.direction = 'right'
-        this.color = ''
+        this.direction = "right"
+        this.color = ""
         this.neighbors = []
         this.nextTileCoord = [] //[X, Y]
         this.prevTileCoord = []
         this.preVisited = board.boardMatrix[0][0]
         this.tile = [(this.yPos - 210) / 20, (this.xPos - 210) / 20]
-        this.mode = 'chase'
+        this.mode = "chase"
         this.home = [board.boardMatrix[0][0], board.boardMatrix[0][0]]
         this.homeTarget = board.boardMatrix[0][0]
-        this.name = 'Blinky'
+        this.name = "Blinky"
         this.endTile = board.boardMatrix[0][0]
         this.frightened = false
         this.beginTimeMode = Math.floor(Date.now() / 1000)
@@ -59,7 +59,7 @@ class BaseGhost {
         this.phaseChange = false
         this.touched = false
         this.hasEntered = false
-        this.algorithm = 'Dijkstra'
+        this.algorithm = "Dijkstra"
         this.showAlgorithm = false
         this.showAlgorithmStep = []
         this.path = []
@@ -67,9 +67,9 @@ class BaseGhost {
 
     _determineEndtile(board: Board, endTileY: number, endTileX: number) {
         let endTile: Tile
-        if (this.mode === 'chase') {
+        if (this.mode === "chase") {
             endTile = board.boardMatrix[endTileY][endTileX]
-        } else if (this.mode === 'scatter') {
+        } else if (this.mode === "scatter") {
             endTile = this.homeTarget
         } else {
             endTile = board.boardMatrix[endTileY][endTileX]
@@ -109,8 +109,8 @@ class BaseGhost {
     _assignRandomNextTileCoord() {
         for (let neighbor of this.neighbors) {
             if (
-                neighbor.type !== 'Wall' &&
-                neighbor.type !== 'None' &&
+                neighbor.type !== "Wall" &&
+                neighbor.type !== "None" &&
                 neighbor != this.preVisited
             ) {
                 return [neighbor.xMiddle, neighbor.yMiddle]
@@ -120,26 +120,26 @@ class BaseGhost {
     }
 
     _determineErrorSpot(
-        ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
+        ghostName: "Blinky" | "Pinky" | "Inky" | "Clyde",
         curArr: Array<any>,
         ghostMode: string
     ) {
         return (
-            (ghostName === 'Pinky' &&
+            (ghostName === "Pinky" &&
                 curArr.length <= 2 &&
-                ghostMode !== 'scatter') ||
-            (ghostName === 'Inky' &&
+                ghostMode !== "scatter") ||
+            (ghostName === "Inky" &&
                 curArr.length <= 2 &&
-                ghostMode !== 'scatter') ||
-            (ghostName === 'Clyde' &&
+                ghostMode !== "scatter") ||
+            (ghostName === "Clyde" &&
                 curArr.length <= 8 &&
-                ghostMode !== 'scatter')
+                ghostMode !== "scatter")
         )
     }
 
     _determineNextTilePos(
         curArr: Array<Tile>,
-        ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
+        ghostName: "Blinky" | "Pinky" | "Inky" | "Clyde",
         ghostMode: string,
         board: Board
     ): void {
@@ -149,7 +149,7 @@ class BaseGhost {
             return
         }
 
-        if (curArr.length <= 2 && this.mode === 'scatter') {
+        if (curArr.length <= 2 && this.mode === "scatter") {
             // switch locations of scatter mode depending on how close the ghost is to its target.
             if (this.homeTarget === this.home[0]) {
                 this.homeTarget = this.home[1]
@@ -160,12 +160,12 @@ class BaseGhost {
 
         if (this._determineErrorSpot(ghostName, curArr, ghostMode)) {
             this.nextTileCoord = this._assignRandomNextTileCoord()
-            if (ghostName === 'Clyde') {
-                this.mode = 'scatter'
+            if (ghostName === "Clyde") {
+                this.mode = "scatter"
             }
         } else {
             this.prevTileCoord = this.nextTileCoord
-            if (this.algorithm === 'dfs') {
+            if (this.algorithm === "dfs") {
                 this.nextTileCoord = [
                     curArr[curArr.length - 1]!.xMiddle,
                     curArr[curArr.length - 1]!.yMiddle
@@ -193,7 +193,7 @@ class BaseGhost {
         let yEndCoord = (this.endTile.yMiddle - 210) / 20
         let xEndCoord = (this.endTile.xMiddle - 210) / 20
         if ([yCoord, xCoord].toString() === [yEndCoord, xEndCoord].toString()) {
-            console.log('found Kees')
+            console.log("found Kees")
             return [board.boardMatrix[yCoord][xCoord]]
         }
         let xRange = [...Array(board.boardMatrix[0].length).keys()]
@@ -202,7 +202,7 @@ class BaseGhost {
             !yRange.includes(yCoord) ||
             !xRange.includes(xCoord) ||
             visited.includes([yCoord, xCoord].toString()) ||
-            board.boardMatrix[yCoord][xCoord].type === 'Wall' ||
+            board.boardMatrix[yCoord][xCoord].type === "Wall" ||
             board.boardMatrix[yCoord][xCoord] === this.preVisited
         ) {
             return
@@ -229,7 +229,7 @@ class BaseGhost {
 
     _dfsAlgorithm(
         board: Board,
-        ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
+        ghostName: "Blinky" | "Pinky" | "Inky" | "Clyde",
         ghostMode: string
     ) {
         let dfsArr = this._dfs([], this.tile[1], this.tile[0], board)
@@ -243,7 +243,7 @@ class BaseGhost {
         start: Tile,
         end: Tile,
         board: Board,
-        ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
+        ghostName: "Blinky" | "Pinky" | "Inky" | "Clyde",
         ghostMode: string
     ) {
         let cameFrom = new Map()
@@ -298,7 +298,7 @@ class BaseGhost {
                         yRange.includes(yCoord) &&
                         xRange.includes(xCoord) &&
                         !visited.includes([yCoord, xCoord].toString()) &&
-                        board.boardMatrix[yCoord][xCoord].type !== 'Wall' &&
+                        board.boardMatrix[yCoord][xCoord].type !== "Wall" &&
                         board.boardMatrix[yCoord][xCoord] !== this.preVisited
                     ) {
                         openSet.push(board.boardMatrix[yCoord][xCoord])
@@ -311,7 +311,7 @@ class BaseGhost {
                 }
             }
         }
-        if (ghostName === 'Pinky' || this.frightened) {
+        if (ghostName === "Pinky" || this.frightened) {
             this.nextTileCoord = this._assignRandomNextTileCoord()
         }
         this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
@@ -322,7 +322,7 @@ class BaseGhost {
         board: Board,
         start: Tile,
         end: Tile,
-        ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
+        ghostName: "Blinky" | "Pinky" | "Inky" | "Clyde",
         ghostMode: string
     ) {
         let cameFrom = new Map()
@@ -340,7 +340,7 @@ class BaseGhost {
             let distScore = currentArray[0]
 
             if (current === end) {
-                console.log('Kees is there')
+                console.log("Kees is there")
                 while (Array.from(cameFrom.keys()).includes(current)) {
                     current = cameFrom.get(current)
                     curArr.push(current)
@@ -368,7 +368,7 @@ class BaseGhost {
                     yRange.includes(coordArr[0]) &&
                     xRange.includes(coordArr[1]) &&
                     !visited.includes(coordArr.toString()) &&
-                    neighbor.type !== 'Wall' &&
+                    neighbor.type !== "Wall" &&
                     neighbor !== this.preVisited
                 ) {
                     cameFrom.set(neighbor, current)
@@ -379,7 +379,7 @@ class BaseGhost {
         }
         // There is apparently a situation when Pinky has been randomly assigned a tile that it
         // will not be able to find. It will randomly assign a new tile in that case.
-        if (ghostName === 'Pinky' || this.frightened) {
+        if (ghostName === "Pinky" || this.frightened) {
             this.nextTileCoord = this._assignRandomNextTileCoord()
         }
         this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
@@ -390,7 +390,7 @@ class BaseGhost {
         board: Board,
         start: Tile,
         end: Tile,
-        ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
+        ghostName: "Blinky" | "Pinky" | "Inky" | "Clyde",
         ghostMode: string
     ) {
         let visited: Array<string> = []
@@ -410,7 +410,7 @@ class BaseGhost {
 
             let current = currentArray![1]
             if (current === end) {
-                console.log('Kees is there')
+                console.log("Kees is there")
                 while (Array.from(cameFrom.keys()).includes(current)) {
                     current = cameFrom.get(current)
                     curArr.push(current)
@@ -435,7 +435,7 @@ class BaseGhost {
                     !visited.includes(
                         [neighbor.yMiddle, neighbor.xMiddle].toString()
                     ) &&
-                    neighbor.type !== 'Wall' &&
+                    neighbor.type !== "Wall" &&
                     neighbor !== this.preVisited
                 ) {
                     let distX: number = Math.abs(neighbor.xMiddle - end.xMiddle)
@@ -448,7 +448,7 @@ class BaseGhost {
                 }
             }
         }
-        if (ghostName === 'Pinky' || this.frightened) {
+        if (ghostName === "Pinky" || this.frightened) {
             this.nextTileCoord = this._assignRandomNextTileCoord()
         }
         this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
@@ -459,7 +459,7 @@ class BaseGhost {
         board: Board,
         start: Tile,
         end: Tile,
-        ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
+        ghostName: "Blinky" | "Pinky" | "Inky" | "Clyde",
         ghostMode: string
     ) {
         let count = 0
@@ -475,8 +475,8 @@ class BaseGhost {
             for (let j = 0; j < grid[i].length; j++) {
                 if (
                     !grid[i][j] ||
-                    grid[i][j].type === 'Wall' ||
-                    grid[i][j].type === 'None'
+                    grid[i][j].type === "Wall" ||
+                    grid[i][j].type === "None"
                 ) {
                     continue
                 }
@@ -515,8 +515,8 @@ class BaseGhost {
             for (let neighbor of current.neighbors) {
                 if (
                     neighbor &&
-                    neighbor.type !== 'Wall' &&
-                    neighbor.type !== 'None' &&
+                    neighbor.type !== "Wall" &&
+                    neighbor.type !== "None" &&
                     neighbor !== this.preVisited
                 ) {
                     let tempGScore = gScore.get(current) + 1
@@ -549,7 +549,7 @@ class BaseGhost {
         }
         // There is apparently a situation when Pinky has been randomly assigned a tile that it
         // will not be able to find. It will randomly assign a new tile in that case.
-        if (ghostName === 'Pinky' || this.frightened) {
+        if (ghostName === "Pinky" || this.frightened) {
             this.nextTileCoord = this._assignRandomNextTileCoord()
         }
         this.preVisited = board.boardMatrix[this.tile[0]][this.tile[1]]
@@ -559,7 +559,7 @@ class BaseGhost {
     move(
         board: Board,
         player: Player,
-        ghostName: 'Blinky' | 'Pinky' | 'Inky' | 'Clyde',
+        ghostName: "Blinky" | "Pinky" | "Inky" | "Clyde",
         ghostMode: string,
         Inky: Whimsical,
         Blinky: Chaser
@@ -577,13 +577,13 @@ class BaseGhost {
             if (this.touched) {
                 this.endTile = board.boardMatrix[7][14]
             } else {
-                if (ghostName === 'Blinky') {
+                if (ghostName === "Blinky") {
                     endTileX = player.tile[1]
                     endTileY = player.tile[0]
-                } else if (ghostName === 'Pinky') {
+                } else if (ghostName === "Pinky") {
                     endTileX = player.fourTilesAhead[1]
                     endTileY = player.fourTilesAhead[0]
-                } else if (ghostName === 'Inky') {
+                } else if (ghostName === "Inky") {
                     let inkyTargetCoord = Inky.determineTarget(
                         Blinky,
                         player,
@@ -616,7 +616,7 @@ class BaseGhost {
                 return
             }
             this._determine_neighbors(board.boardMatrix)
-            if (this.algorithm === 'aStar') {
+            if (this.algorithm === "aStar") {
                 this._aStarAlgorithm(
                     board,
                     beginTile,
@@ -624,13 +624,13 @@ class BaseGhost {
                     ghostName,
                     ghostMode
                 )
-            } else if (this.algorithm === 'dfs') {
+            } else if (this.algorithm === "dfs") {
                 this._dfsAlgorithm(board, ghostName, ghostMode)
-                console.log('Executed')
-            } else if (this.algorithm === 'bfs') {
+                console.log("Executed")
+            } else if (this.algorithm === "bfs") {
                 this._bfs(beginTile, this.endTile, board, ghostName, ghostMode)
-                console.log('Executed BFS')
-            } else if (this.algorithm === 'Dijkstra') {
+                console.log("Executed BFS")
+            } else if (this.algorithm === "Dijkstra") {
                 this._DijkstrasAlgorithm(
                     board,
                     beginTile,
@@ -638,7 +638,7 @@ class BaseGhost {
                     ghostName,
                     ghostMode
                 )
-            } else if (this.algorithm === 'GreedyBestFirstSearch') {
+            } else if (this.algorithm === "GreedyBestFirstSearch") {
                 this._GreedyBestFirstSearch(
                     board,
                     beginTile,
@@ -660,7 +660,7 @@ class BaseGhost {
         this.frightened = true
         this.phaseChange = true
         this.speed = 1
-        this.color = 'blue'
+        this.color = "blue"
     }
 }
 

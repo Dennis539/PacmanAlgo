@@ -43,13 +43,15 @@ button:focus-visible {
 }
 
 #showAlgorithmPathDiv {
+  display: none;
   position: absolute;
   left: 400px;
   top: 50px
 }
 
 #algorithmDropdown {
-  display: inline-block;
+  /* display: inline-block; */
+  display: none;
   position: absolute;
   overflow: hidden;
   height: 28px;

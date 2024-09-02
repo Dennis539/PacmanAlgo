@@ -1,16 +1,18 @@
-import BaseGhost from './Ghosts/baseGhost.tsx'
-import Board from './Board/board.tsx'
-import Player from './Player/player.tsx'
-import Chaser from './Ghosts/Blinky.tsx'
-import Ambusher from './Ghosts/Pinky.tsx'
-import Whimsical from './Ghosts/Inky.tsx'
-import Clyde from './Ghosts/Clyde.tsx'
-import Button from './Button/Button.tsx'
+import BaseGhost from "./Ghosts/baseGhost.tsx"
+import Board from "./Board/board.tsx"
+import Player from "./Player/player.tsx"
+import Chaser from "./Ghosts/Blinky.tsx"
+import Ambusher from "./Ghosts/Pinky.tsx"
+import Whimsical from "./Ghosts/Inky.tsx"
+import Clyde from "./Ghosts/Clyde.tsx"
+import Button from "./Button/Button.tsx"
 
-let canvas = document.querySelector('canvas')!
-const algorithmDropdown = document.getElementById('algorithmDropdown')
-const showAlgorithmPathDiv = document.getElementById('showAlgorithmPathDiv')
-const c = canvas?.getContext('2d')
+let canvas = document.querySelector("canvas")!
+const algorithmDropdown = document.getElementById("algorithmDropdown")
+const showAlgorithmPathDiv = document.getElementById("showAlgorithmPathDiv")
+let StartModelEl = document.getElementById("StartModelEl")!
+
+const c = canvas?.getContext("2d")
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 
@@ -20,33 +22,35 @@ function updateAlgorithm(evt: any) {
     }
 }
 
-function updateShowAlgorithm(evt: any) {
+function updateShowAlgorithm() {
     for (let ghost of ghostActive) {
         ghost.showAlgorithm = !ghost.showAlgorithm
     }
-    console.log(evt.target.value)
 }
-algorithmDropdown!.addEventListener('change', updateAlgorithm)
-showAlgorithmPathDiv!.addEventListener('change', updateShowAlgorithm)
+algorithmDropdown!.addEventListener("change", updateAlgorithm)
+showAlgorithmPathDiv!.addEventListener("change", updateShowAlgorithm)
 
 var keys: any = {}
-window.addEventListener('keydown', function (e) {
+window.addEventListener("keydown", function (e) {
     keys[e.key] = true
     e.preventDefault()
 })
-window.addEventListener('keyup', function (e) {
+window.addEventListener("keyup", function (e) {
     delete keys[e.key]
 })
 
 function createGameOverButtons() {
     let buttons: Button[] = []
 
-    let restartButton = new Button('Restart Game', '#eeaa00', 'black')
-    let endGameButton = new Button('End Game', '#eeaa00', 'black')
+    let restartButton = new Button("Restart Game", "#eeaa00", "black")
+    let endGameButton = new Button("Back to main", "#eeaa00", "black")
     restartButton.setPosition(canvas.width / 2 - 200, canvas.height / 2)
     endGameButton.setPosition(canvas.width / 2 + 50, canvas.height / 2)
-    restartButton.onClick = () => {
+    endGameButton.onClick = () => {
         document.location.reload()
+    }
+    restartButton.onClick = () => {
+        // document.location.reload()
     }
     buttons.push(restartButton)
     buttons.push(endGameButton)
@@ -106,7 +110,7 @@ function resetBoard() {
             Math.floor((ghost.yPos - 200) / 20),
             Math.floor((ghost.xPos - 200) / 20)
         ]
-        if (ghost.name !== 'Blinky') {
+        if (ghost.name !== "Blinky") {
             ghost.hasEntered = false
         }
         console.log(ghost)
@@ -115,7 +119,7 @@ function resetBoard() {
 }
 
 function drawBoard() {
-    c!.fillStyle = 'black'
+    c!.fillStyle = "black"
 
     c?.fillRect(board.xPos, board.yPos, board.width, board.height)
     for (let i = 0; i < board.boardMatrix.length; i++) {
@@ -123,21 +127,21 @@ function drawBoard() {
             if (!board.boardMatrix[i][j]) {
                 continue
             }
-            if (board.boardMatrix[i][j].type === 'Coin') {
+            if (board.boardMatrix[i][j].type === "Coin") {
                 c!.fillStyle = board.boardMatrix[i][j].color
             }
-            if (board.boardMatrix[i][j].type === 'Wall') {
+            if (board.boardMatrix[i][j].type === "Wall") {
                 c!.strokeStyle = board.boardMatrix[i][j].color
                 c!.lineWidth = 2
                 c?.beginPath()
                 let wall = board.boardMatrix[i][j]
-                if (wall.wallDir === 'leftToRight') {
+                if (wall.wallDir === "leftToRight") {
                     c?.moveTo(wall.xPos, wall.yPos + 10)
                     c?.lineTo(wall.xPos + 20, wall.yPos + 10)
-                } else if (wall.wallDir === 'upToBottom') {
+                } else if (wall.wallDir === "upToBottom") {
                     c?.moveTo(wall.xPos + 10, wall.yPos)
                     c?.lineTo(wall.xPos + 10, wall.yPos + 20)
-                } else if (wall.wallDir === 'rightToBottom') {
+                } else if (wall.wallDir === "rightToBottom") {
                     c?.moveTo(wall.xPos + 20, wall.yPos + 10)
                     c?.arcTo(
                         wall.xPos + 10,
@@ -146,7 +150,7 @@ function drawBoard() {
                         wall.yPos + 20,
                         10
                     )
-                } else if (wall.wallDir === 'leftToBottom') {
+                } else if (wall.wallDir === "leftToBottom") {
                     c?.moveTo(wall.xPos, wall.yPos + 10)
                     c?.arcTo(
                         wall.xPos + 10,
@@ -155,7 +159,7 @@ function drawBoard() {
                         wall.yPos + 20,
                         10
                     )
-                } else if (wall.wallDir === 'rightToTop') {
+                } else if (wall.wallDir === "rightToTop") {
                     c?.moveTo(wall.xPos + 20, wall.yPos + 10)
                     c?.arcTo(
                         wall.xPos + 10,
@@ -164,7 +168,7 @@ function drawBoard() {
                         wall.yPos,
                         10
                     )
-                } else if (wall.wallDir === 'leftToTop') {
+                } else if (wall.wallDir === "leftToTop") {
                     c?.moveTo(wall.xPos, wall.yPos + 10)
                     c?.arcTo(
                         wall.xPos + 10,
@@ -175,9 +179,9 @@ function drawBoard() {
                     )
                 }
                 c?.stroke()
-            } else if (board.boardMatrix[i][j].type === 'Coin') {
+            } else if (board.boardMatrix[i][j].type === "Coin") {
                 let coin = board.boardMatrix[i][j]
-                c!.fillStyle = 'orange'
+                c!.fillStyle = "orange"
                 c!.beginPath()
                 c!.moveTo(player.xPos, player.yPos)
                 c!.arc(coin.xPos + 10, coin.yPos + 10, 2, 0, 90, false)
@@ -185,7 +189,7 @@ function drawBoard() {
                 c!.fill()
 
                 board.playerCoinCollision(player, coin)
-            } else if (board.boardMatrix[i][j].type === 'PowerUpCoin') {
+            } else if (board.boardMatrix[i][j].type === "PowerUpCoin") {
                 let powerUpCoin = board.boardMatrix[i][j]
                 powerUpCoin.updateLightness()
                 c!.fillStyle = `hsl(62,100%,${powerUpCoin.lightness}%)` // saturation at 100%
@@ -206,7 +210,7 @@ function drawBoard() {
                     player,
                     powerUpCoin
                 )
-                if (collisionType && collisionType === 'PowerUpCoin') {
+                if (collisionType && collisionType === "PowerUpCoin") {
                     for (let ghost of ghostActive) {
                         ghost.becomeFrightened()
                         ghost.beginTimeFrightened = Math.floor(
@@ -216,12 +220,12 @@ function drawBoard() {
                     }
                 }
             }
-            c!.fillStyle = 'red'
+            c!.fillStyle = "red"
         }
     }
     let xLives = 220
     let yLives = 570
-    c!.fillStyle = 'yellow'
+    c!.fillStyle = "yellow"
     for (let i = 0; i < player.lives; i++) {
         c!.beginPath()
         c!.moveTo(xLives, yLives)
@@ -235,7 +239,7 @@ function drawBoard() {
 }
 
 function drawGameOverScreen(GameOverButtons: Array<Button>, board: Board) {
-    c!.fillStyle = '#808080'
+    c!.fillStyle = "#808080"
     c!.beginPath()
     c?.roundRect(
         canvas.width / 3,
@@ -245,12 +249,12 @@ function drawGameOverScreen(GameOverButtons: Array<Button>, board: Board) {
         50
     )
     c!.fill()
-    c!.font = '20px Courier New'
-    c!.textAlign = 'center'
-    c!.strokeStyle = 'white'
-    c!.strokeText('Oh he dead', canvas.width / 2, canvas.height / 2 - 80)
+    c!.font = "20px Courier New"
+    c!.textAlign = "center"
+    c!.strokeStyle = "white"
+    c!.strokeText("Oh he dead", canvas.width / 2, canvas.height / 2 - 80)
     if (!board.gameOverScreen) {
-        canvas.addEventListener('click', (event: MouseEvent) => {
+        canvas.addEventListener("click", (event: MouseEvent) => {
             let x = event.pageX - (canvas.clientLeft + canvas.offsetLeft)
             let y = event.pageY - (canvas.clientTop + canvas.offsetTop)
 
@@ -297,13 +301,13 @@ function updatePlayer() {
         player.updateDirection(keys, board)
 
         // Check whether a future movement will cause a collision.
-        if (player.direction === 'right') {
+        if (player.direction === "right") {
             var newX = player.xPos + player.speed
             var newY = player.yPos
-        } else if (player.direction === 'left') {
+        } else if (player.direction === "left") {
             var newX = player.xPos - player.speed
             var newY = player.yPos
-        } else if (player.direction === 'up') {
+        } else if (player.direction === "up") {
             var newX = player.xPos
             var newY = player.yPos - player.speed
         } else {
@@ -331,10 +335,10 @@ function drawPlayer() {
             false
         )
         c!.lineTo(player.xPos, player.yPos)
-        c!.fillStyle = 'yellow'
+        c!.fillStyle = "yellow"
         c!.fill()
         if (Object.keys(keys).length !== 0) {
-            if (player.mouthDirection === 'Open') {
+            if (player.mouthDirection === "Open") {
                 player.startAngle += 0.08
                 player.endAngle -= 0.08
             } else {
@@ -343,9 +347,9 @@ function drawPlayer() {
             }
         }
         if (Math.abs(player.startAngle - player.endAngle) > 2.5) {
-            player.mouthDirection = 'Close'
+            player.mouthDirection = "Close"
         } else if (Math.abs(player.startAngle - player.endAngle) < 0.17) {
-            player.mouthDirection = 'Open'
+            player.mouthDirection = "Open"
         }
     }
 }
@@ -358,15 +362,15 @@ function drawGhosts() {
         c?.fill()
         if (ghost.hasEntered) {
             ghost.move(board, player, ghost.name, ghost.mode, Inky, Blinky)
-            if (ghost.showAlgorithm && ghost.name === 'Pinky') {
+            if (ghost.showAlgorithm && ghost.name === "Pinky") {
                 ghost.showAlgorithmStep.map((tile) =>
                     c!.fillRect(tile.xMiddle, tile.yMiddle, 10, 10)
                 )
-                c!.fillStyle = 'green'
+                c!.fillStyle = "green"
                 let ghostEndX = ghost.endTile.xMiddle
                 let ghostEndY = ghost.endTile.yMiddle
                 c!.fillRect(ghostEndX, ghostEndY, 10, 10)
-                c!.fillStyle = 'red'
+                c!.fillStyle = "red"
 
                 ghost.path.map((tile) =>
                     c!.fillRect(tile.xMiddle, tile.yMiddle, 10, 10)
@@ -378,7 +382,7 @@ function drawGhosts() {
 
 function draw() {
     c?.clearRect(0, 0, canvas.width, canvas.height)
-    c!.fillStyle = 'black'
+    c!.fillStyle = "black"
     c?.fillRect(0, 0, canvas.width, canvas.height)
     drawBoard()
     drawPlayer()
@@ -390,24 +394,24 @@ function draw() {
 function updateGhostMode() {
     for (let ghost of ghostActive) {
         if (!ghost.frightened) {
-            if (ghost.mode === 'chase') {
+            if (ghost.mode === "chase") {
                 if (
                     ghost.endTimeMode - ghost.beginTimeMode >
                     board.chaseTimeOut
                 ) {
-                    ghost.mode = 'scatter'
+                    ghost.mode = "scatter"
                     ghost.beginTimeMode = Math.floor(Date.now() / 1000)
                     ghost.endTimeMode = Math.floor(Date.now() / 1000)
                     ghost.phaseChange = true
                 } else {
                     ghost.endTimeMode = Math.floor(Date.now() / 1000)
                 }
-            } else if (ghost.mode === 'scatter') {
+            } else if (ghost.mode === "scatter") {
                 if (
                     ghost.endTimeMode - ghost.beginTimeMode >
                     board.scatterTimeOut
                 ) {
-                    ghost.mode = 'chase'
+                    ghost.mode = "chase"
                     ghost.beginTimeMode = Math.floor(Date.now() / 1000)
                     ghost.endTimeMode = Math.floor(Date.now() / 1000)
                     ghost.phaseChange = true
@@ -435,22 +439,22 @@ function loop() {
     board.time += 1
     draw()
     updatePlayer()
-    const isCoin = (object: any) => object.type !== 'coin'
+    const isCoin = (object: any) => object.type !== "coin"
     if (!board.boardMatrix.flat().some(isCoin)) {
         // Here we enter the state where the level is completed and the animation will be played and a new level will be loaded.
         if (board.flicker === 0) {
             setTimeout(() => {
-                console.log('Timeout')
+                console.log("Timeout")
             }, 1500)
         }
         board.boardMatrix.map((boardRow) =>
             boardRow.map((boardTile) =>
-                boardTile.hasOwnProperty('color') && boardTile.color === 'blue'
-                    ? (boardTile.color = 'white')
-                    : boardTile.hasOwnProperty('color') &&
-                      boardTile.color === 'white'
-                    ? (boardTile.color = 'blue')
-                    : console.log('Nothing')
+                boardTile.hasOwnProperty("color") && boardTile.color === "blue"
+                    ? (boardTile.color = "white")
+                    : boardTile.hasOwnProperty("color") &&
+                      boardTile.color === "white"
+                    ? (boardTile.color = "blue")
+                    : console.log("Nothing")
             )
         )
         if (board.flicker <= 7) {
@@ -501,6 +505,24 @@ function loop() {
         window.requestAnimationFrame(loop)
     }
 }
-
 init()
-loop()
+
+function preDraw() {
+    c?.clearRect(0, 0, canvas.width, canvas.height)
+    c!.fillStyle = "black"
+    c?.fillRect(0, 0, canvas.width, canvas.height)
+
+    drawBoard()
+
+    window.requestAnimationFrame(preDraw)
+}
+const requestIdPreDraw = window.requestAnimationFrame(preDraw)
+
+StartModelEl.addEventListener("click", () => {
+    init()
+    loop()
+    algorithmDropdown!.style.display = "inline-block"
+    showAlgorithmPathDiv!.style.display = "inline-block"
+    StartModelEl.style.display = "none"
+    cancelAnimationFrame(requestIdPreDraw)
+})

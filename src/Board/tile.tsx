@@ -24,7 +24,7 @@ class Tile {
         this.lighter = true
         this.darker = false
         this.lightness = 50
-        this.color = ''
+        this.color = ""
     }
 
     updateLightness() {

@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <script type="module" crossorigin src="/PacmanAlgo/assets/index-B6GubZ5k.js"></script>
-    <link rel="stylesheet" crossorigin href="/PacmanAlgo/assets/index-07JKiFOi.css">
+    <script type="module" crossorigin src="/PacmanAlgo/assets/index-D-WlyZOh.js"></script>
+    <link rel="stylesheet" crossorigin href="/PacmanAlgo/assets/index-BOwbwoc1.css">
   </head>
   <body style="margin: 0">
 
@@ -19,8 +19,35 @@
       <input type="checkbox" id="showAlgorithmPath" name="showAlgorithmPath" />
       <label for="showAlgorithmPath">Show path of the algorithm</label>
     </div>
-
-      <canvas id="GameCanvas" background-color="black">
-      </canvas>
+    <canvas id="GameCanvas" background-color="black">
+    </canvas>
+    <div id="StartModelEl" style="
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 16px;
+        text-align: center;
+        background-color: #242424; 
+        color: white;
+        max-width: 500px; 
+        width: 100%; 
+        border-radius: 25px;
+      "
+    >
+      <h1 id="GameOverScoreEL" style="font-size: 48px; margin-bottom: 0; margin-top: 8px;">Pacman</h1>
+      <button id="StartButtonEL"
+          style="
+              margin-top: 12px;
+              background-color: gray;
+              border: none;
+              color: white;
+              padding: 8px 16px;
+              border-radius: 25px;
+              cursor: pointer;">
+              Start game
+      </button>
+    </div>
   </body>
 </html>
