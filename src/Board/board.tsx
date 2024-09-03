@@ -25,6 +25,7 @@ class Board {
     setInky: boolean
     flicker: number
     gameOverScreen: boolean
+    ghostToShowAlgo: "Blinky" | "Pinky" | "Inky" | "Clyde"
 
     constructor(
         chaseTimeOut: number,
@@ -50,6 +51,7 @@ class Board {
         this.setInky = false
         this.flicker = 0
         this.gameOverScreen = false
+        this.ghostToShowAlgo = "Pinky"
     }
 
     calculateMiddlePosTile() {

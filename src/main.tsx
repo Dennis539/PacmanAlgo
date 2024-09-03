@@ -9,6 +9,7 @@ import Button from "./Button/Button.tsx"
 
 let canvas = document.querySelector("canvas")!
 const algorithmDropdown = document.getElementById("algorithmDropdown")
+const algorithmWhichGhost = document.getElementById("algorithmWhichGhost")
 const showAlgorithmPathDiv = document.getElementById("showAlgorithmPathDiv")
 let StartModelEl = document.getElementById("StartModelEl")!
 
@@ -22,13 +23,21 @@ function updateAlgorithm(evt: any) {
     }
 }
 
-function updateShowAlgorithm() {
+function updateShowAlgorithm(evt: any) {
     for (let ghost of ghostActive) {
-        ghost.showAlgorithm = !ghost.showAlgorithm
+        ghost.showAlgorithm = evt.target.checked
     }
+    algorithmWhichGhost!.style.display = evt.target.checked
+        ? "inline-block"
+        : "none"
+}
+
+function updateShowGhostAlgo(evt: any) {
+    board.ghostToShowAlgo = evt.target.value
 }
 algorithmDropdown!.addEventListener("change", updateAlgorithm)
 showAlgorithmPathDiv!.addEventListener("change", updateShowAlgorithm)
+algorithmWhichGhost!.addEventListener("change", updateShowGhostAlgo)
 
 var keys: any = {}
 window.addEventListener("keydown", function (e) {
@@ -50,7 +59,10 @@ function createGameOverButtons() {
         document.location.reload()
     }
     restartButton.onClick = () => {
-        init()
+        let durationChase: number = 20
+        let durationScatter: number = 7
+        let durationFrightened: number = 10
+        init(durationChase, durationScatter, durationFrightened)
         canvas.removeEventListener("click", eventListenerGameOverButtons)
     }
     buttons.push(restartButton)
@@ -66,15 +78,22 @@ let Pinky: Ambusher
 let Inky: Whimsical
 let clyde: Clyde
 let ghostActive: Array<BaseGhost>
-let durationChase: number
-let durationScatter: number
-let durationFrightened: number
+let durationChase: number = 20
+let durationScatter: number = 7
+let durationFrightened: number = 10
 let GameOverButtons = createGameOverButtons()
 
-function init() {
-    durationChase = 20
-    durationScatter = 7
-    durationFrightened = 10
+function init(
+    durationChase: number,
+    durationScatter: number,
+    durationFrightened: number
+) {
+    if (durationScatter <= 0) {
+        durationScatter = 0
+    }
+    if (durationFrightened <= 0) {
+        durationFrightened = 0
+    }
     player = new Player(0, 0)
     board = new Board(durationChase, durationScatter, durationFrightened)
     Blinky = new Chaser(board)
@@ -249,7 +268,7 @@ const eventListenerGameOverButtons = (event: MouseEvent) => {
 }
 
 function drawGameOverScreen(GameOverButtons: Array<Button>, board: Board) {
-    c!.fillStyle = "#808080"
+    c!.fillStyle = "#242424"
     c!.beginPath()
     c?.roundRect(
         canvas.width / 3,
@@ -259,7 +278,7 @@ function drawGameOverScreen(GameOverButtons: Array<Button>, board: Board) {
         50
     )
     c!.fill()
-    c!.font = "20px Courier New"
+    c!.font = "25px arial"
     c!.textAlign = "center"
     c!.strokeStyle = "white"
 
@@ -366,7 +385,7 @@ function drawGhosts() {
         c?.fill()
         if (ghost.hasEntered) {
             ghost.move(board, player, ghost.name, ghost.mode, Inky, Blinky)
-            if (ghost.showAlgorithm && ghost.name === "Pinky") {
+            if (ghost.showAlgorithm && ghost.name === board.ghostToShowAlgo) {
                 ghost.showAlgorithmStep.map((tile) =>
                     c!.fillRect(tile.xPos + 5, tile.yPos + 5, 10, 10)
                 )
@@ -444,6 +463,7 @@ function loop() {
     draw()
     updatePlayer()
     const isCoin = (object: any) => object.type !== "coin"
+    // Checks whether there are still coins on the board
     if (!board.boardMatrix.flat().some(isCoin)) {
         // Here we enter the state where the level is completed and the animation will be played and a new level will be loaded.
         if (board.flicker === 0) {
@@ -467,7 +487,8 @@ function loop() {
                 window.requestAnimationFrame(loop)
             }, 500)
         } else {
-            // start new game
+            // start new level
+            init(durationChase + 3, durationScatter - 3, durationFrightened - 3)
         }
     } else {
         if (!board.lifeLost) {
@@ -509,7 +530,7 @@ function loop() {
         window.requestAnimationFrame(loop)
     }
 }
-init()
+init(durationChase, durationScatter, durationFrightened)
 
 function preDraw() {
     c?.clearRect(0, 0, canvas.width, canvas.height)
@@ -523,7 +544,6 @@ function preDraw() {
 const requestIdPreDraw = window.requestAnimationFrame(preDraw)
 
 StartModelEl.addEventListener("click", () => {
-    init()
     loop()
     algorithmDropdown!.style.display = "inline-block"
     showAlgorithmPathDiv!.style.display = "inline-block"

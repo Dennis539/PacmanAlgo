@@ -38,7 +38,12 @@ class Button implements Clickable {
     draw(c: CanvasRenderingContext2D): void {
         // draw the button body
         c.fillStyle = this.fillColor
-        c.fillRect(this.x, this.y, this.width, this.height)
+
+        c!.beginPath()
+
+        c.roundRect(this.x, this.y, this.width, this.height, 20)
+        c!.fill()
+
         // draw the button text
         c.fillStyle = this.textColor
         c.textAlign = "center"

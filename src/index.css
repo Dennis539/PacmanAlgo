@@ -42,11 +42,16 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+#showAlgorithmPath {
+  cursor: pointer;
+}
+
 #showAlgorithmPathDiv {
   display: none;
   position: absolute;
   left: 400px;
-  top: 50px
+  top: 50px;
+
 }
 
 #algorithmDropdown {
@@ -64,6 +69,7 @@ button:focus-visible {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
   left: 210px;
   top: 50px;
+  
 }
 
 #algorithmDropdown:before, .algorithmDropdown:after {
@@ -104,9 +110,76 @@ button:focus-visible {
   border: 0;
   border-radius: 0;
   -webkit-appearance: none;
+  cursor: pointer;
 }
 
 #algorithmDropdownSelect:focus {
+  z-index: 3;
+  width: 100%;
+  color: #394349;
+  outline: 2px solid #49aff2;
+  outline: 2px solid -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
+#algorithmWhichGhost {
+  display: none;
+  position: absolute;
+  overflow: hidden;
+  height: 28px;
+  width: 150px;
+  background: #f2f2f2;
+  border: 1px solid;
+  border-color: white #f7f7f7 whitesmoke;
+  border-radius: 3px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+  left: 710px;
+  top: 50px;
+}
+
+#algorithmWhichGhost:before, .algorithmWhichGhost:after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: 9px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 4px dashed;
+  border-color: #888888 transparent;
+  pointer-events: none;
+}
+
+#algorithmWhichGhost:before {
+  border-bottom-style: solid;
+  border-top: none;
+}
+
+#algorithmWhichGhost:after {
+  margin-top: 10px;
+  border-top-style: solid;
+  border-bottom: none;
+}
+
+#algorithmWhichGhostSelect {
+  position: relative;
+  width: 130%;
+  margin: 0;
+  padding: 6px 8px 6px 10px;
+  height: 28px;
+  line-height: 14px;
+  font-size: 12px;
+  color: #62717a;
+  text-shadow: 0 1px white;
+  background: rgba(0, 0, 0, 0) !important; /* "transparent" doesn't work with Opera */
+  border: 0;
+  border-radius: 0;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+#algorithmWhichGhostSelect:focus {
   z-index: 3;
   width: 100%;
   color: #394349;
