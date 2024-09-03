@@ -51,7 +51,6 @@ function createGameOverButtons() {
     }
     restartButton.onClick = () => {
         init()
-        // loop()
         canvas.removeEventListener("click", eventListenerGameOverButtons)
     }
     buttons.push(restartButton)
