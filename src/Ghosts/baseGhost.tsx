@@ -374,6 +374,7 @@ class BaseGhost {
                     cameFrom.set(neighbor, current)
                     openSet.push([distScore + 1, neighbor])
                     // as the paths have no specific weights, the score is incremented by 1 each time
+                    this.showAlgorithmStep.push(neighbor)
                 }
             }
         }
@@ -445,6 +446,7 @@ class BaseGhost {
                         neighbor
                     ])
                     cameFrom.set(neighbor, current)
+                    this.showAlgorithmStep.push(neighbor)
                 }
             }
         }

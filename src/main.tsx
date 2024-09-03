@@ -50,7 +50,9 @@ function createGameOverButtons() {
         document.location.reload()
     }
     restartButton.onClick = () => {
-        // document.location.reload()
+        init()
+        // loop()
+        canvas.removeEventListener("click", eventListenerGameOverButtons)
     }
     buttons.push(restartButton)
     buttons.push(endGameButton)
@@ -238,6 +240,15 @@ function drawBoard() {
     }
 }
 
+const eventListenerGameOverButtons = (event: MouseEvent) => {
+    let x = event.pageX - (canvas.clientLeft + canvas.offsetLeft)
+    let y = event.pageY - (canvas.clientTop + canvas.offsetTop)
+
+    GameOverButtons.forEach((b) => {
+        if (b.inBounds(x, y) && !!b.onClick) b.onClick()
+    })
+}
+
 function drawGameOverScreen(GameOverButtons: Array<Button>, board: Board) {
     c!.fillStyle = "#808080"
     c!.beginPath()
@@ -252,16 +263,10 @@ function drawGameOverScreen(GameOverButtons: Array<Button>, board: Board) {
     c!.font = "20px Courier New"
     c!.textAlign = "center"
     c!.strokeStyle = "white"
+
     c!.strokeText("Oh he dead", canvas.width / 2, canvas.height / 2 - 80)
     if (!board.gameOverScreen) {
-        canvas.addEventListener("click", (event: MouseEvent) => {
-            let x = event.pageX - (canvas.clientLeft + canvas.offsetLeft)
-            let y = event.pageY - (canvas.clientTop + canvas.offsetTop)
-
-            GameOverButtons.forEach((b) => {
-                if (b.inBounds(x, y) && !!b.onClick) b.onClick()
-            })
-        })
+        canvas.addEventListener("click", eventListenerGameOverButtons)
         board.gameOverScreen = true
     }
 
@@ -364,16 +369,16 @@ function drawGhosts() {
             ghost.move(board, player, ghost.name, ghost.mode, Inky, Blinky)
             if (ghost.showAlgorithm && ghost.name === "Pinky") {
                 ghost.showAlgorithmStep.map((tile) =>
-                    c!.fillRect(tile.xMiddle, tile.yMiddle, 10, 10)
+                    c!.fillRect(tile.xPos + 5, tile.yPos + 5, 10, 10)
                 )
                 c!.fillStyle = "green"
-                let ghostEndX = ghost.endTile.xMiddle
-                let ghostEndY = ghost.endTile.yMiddle
-                c!.fillRect(ghostEndX, ghostEndY, 10, 10)
+                let ghostEndX = ghost.endTile.xPos
+                let ghostEndY = ghost.endTile.yPos
+                c!.fillRect(ghostEndX + 5, ghostEndY + 5, 10, 10)
                 c!.fillStyle = "red"
 
                 ghost.path.map((tile) =>
-                    c!.fillRect(tile.xMiddle, tile.yMiddle, 10, 10)
+                    c!.fillRect(tile.xPos + 5, tile.yPos + 5, 10, 10)
                 )
             }
         }
