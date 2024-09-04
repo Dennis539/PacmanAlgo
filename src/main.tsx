@@ -403,14 +403,18 @@ function drawGhosts() {
     }
 }
 
-function draw() {
+function draw(coinExist: boolean, board: Board) {
     c?.clearRect(0, 0, canvas.width, canvas.height)
     c!.fillStyle = "black"
     c?.fillRect(0, 0, canvas.width, canvas.height)
     drawBoard()
-    drawPlayer()
-    if (!board.lifeLost) {
-        drawGhosts()
+    if (coinExist) {
+        if (board.flicker <= 1) {
+            drawPlayer()
+        }
+        if (!board.lifeLost) {
+            drawGhosts()
+        }
     }
 }
 
@@ -460,37 +464,49 @@ function updateGhostMode() {
 
 function loop() {
     board.time += 1
-    draw()
-    updatePlayer()
     const isCoin = (object: any) => object.type === "Coin"
+    let coinsExist = board.boardMatrix.flat().some(isCoin)
+    draw(coinsExist, board)
+    updatePlayer()
+
     // Checks whether there are still coins on the board
-    // console.log(board.boardMatrix.flat().map((tile) => tile.type))
-    if (!board.boardMatrix.flat().some(isCoin)) {
+    if (!coinsExist) {
         // Here we enter the state where the level is completed and the animation will be played and a new level will be loaded.
-        console.log("Kees has no coins")
+
         if (board.flicker === 0) {
-            setTimeout(() => {
-                console.log("Timeout")
-            }, 1500)
-        }
-        board.boardMatrix.map((boardRow) =>
-            boardRow.map((boardTile) =>
-                boardTile.hasOwnProperty("color") && boardTile.color === "blue"
-                    ? (boardTile.color = "white")
-                    : boardTile.hasOwnProperty("color") &&
-                      boardTile.color === "white"
-                    ? (boardTile.color = "blue")
-                    : console.log("Nothing")
-            )
-        )
-        if (board.flicker <= 7) {
             board.flicker += 1
             setTimeout(() => {
                 window.requestAnimationFrame(loop)
-            }, 500)
+            }, 1500)
         } else {
-            // start new level
-            init(durationChase + 3, durationScatter - 3, durationFrightened - 3)
+            board.boardMatrix.map((boardRow) =>
+                boardRow.map((boardTile) =>
+                    boardTile.hasOwnProperty("color") &&
+                    boardTile.color === "blue"
+                        ? (boardTile.color = "white")
+                        : boardTile.hasOwnProperty("color") &&
+                          boardTile.color === "white"
+                        ? (boardTile.color = "blue")
+                        : console.log("Nothing")
+                )
+            )
+            if (board.flicker <= 7) {
+                board.flicker += 1
+                setTimeout(() => {
+                    window.requestAnimationFrame(loop)
+                    console.log("Flicker Kees")
+                }, 250)
+            } else {
+                // start new level
+                init(
+                    durationChase + 3,
+                    durationScatter - 3,
+                    durationFrightened - 3
+                )
+                setTimeout(() => {
+                    window.requestAnimationFrame(loop)
+                }, 1000)
+            }
         }
     } else {
         if (!board.lifeLost) {
