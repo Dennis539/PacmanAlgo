@@ -94,7 +94,7 @@ function init(
     if (durationFrightened <= 0) {
         durationFrightened = 0
     }
-    player = new Player(0, 0)
+    player = new Player(3, 0)
     board = new Board(durationChase, durationScatter, durationFrightened)
     Blinky = new Chaser(board)
     Pinky = new Ambusher(board)
@@ -462,10 +462,12 @@ function loop() {
     board.time += 1
     draw()
     updatePlayer()
-    const isCoin = (object: any) => object.type !== "coin"
+    const isCoin = (object: any) => object.type === "Coin"
     // Checks whether there are still coins on the board
+    // console.log(board.boardMatrix.flat().map((tile) => tile.type))
     if (!board.boardMatrix.flat().some(isCoin)) {
         // Here we enter the state where the level is completed and the animation will be played and a new level will be loaded.
+        console.log("Kees has no coins")
         if (board.flicker === 0) {
             setTimeout(() => {
                 console.log("Timeout")
