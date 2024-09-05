@@ -494,7 +494,6 @@ function loop() {
                 board.flicker += 1
                 setTimeout(() => {
                     window.requestAnimationFrame(loop)
-                    console.log("Flicker Kees")
                 }, 250)
             } else {
                 // start new level
