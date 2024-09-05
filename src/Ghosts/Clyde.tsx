@@ -22,7 +22,6 @@ class Clyde extends BaseGhost {
             if (!this.hasEntered && this.yPos !== 350) {
                 this.yPos += 1
             } else if (!this.hasEntered && this.xPos !== 490) {
-                console.log("Kees here")
                 this.xPos -= 1
             }
         } else {

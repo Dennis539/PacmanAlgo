@@ -133,7 +133,6 @@ function resetBoard() {
         if (ghost.name !== "Blinky") {
             ghost.hasEntered = false
         }
-        console.log(ghost)
     }
     board.time = 1
 }

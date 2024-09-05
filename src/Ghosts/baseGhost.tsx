@@ -193,7 +193,6 @@ class BaseGhost {
         let yEndCoord = (this.endTile.yMiddle - 210) / 20
         let xEndCoord = (this.endTile.xMiddle - 210) / 20
         if ([yCoord, xCoord].toString() === [yEndCoord, xEndCoord].toString()) {
-            console.log("found Kees")
             return [board.boardMatrix[yCoord][xCoord]]
         }
         let xRange = [...Array(board.boardMatrix[0].length).keys()]
@@ -340,7 +339,6 @@ class BaseGhost {
             let distScore = currentArray[0]
 
             if (current === end) {
-                console.log("Kees is there")
                 while (Array.from(cameFrom.keys()).includes(current)) {
                     current = cameFrom.get(current)
                     curArr.push(current)
@@ -411,7 +409,6 @@ class BaseGhost {
 
             let current = currentArray![1]
             if (current === end) {
-                console.log("Kees is there")
                 while (Array.from(cameFrom.keys()).includes(current)) {
                     current = cameFrom.get(current)
                     curArr.push(current)
@@ -500,7 +497,6 @@ class BaseGhost {
                 return b[0] - a[0]
             })
             let current = sortedArray.pop()![2]
-            console.log(sortedArray)
             openSetHash.delete(current)
 
             if (current === end) {
@@ -628,10 +624,8 @@ class BaseGhost {
                 )
             } else if (this.algorithm === "dfs") {
                 this._dfsAlgorithm(board, ghostName, ghostMode)
-                console.log("Executed")
             } else if (this.algorithm === "bfs") {
                 this._bfs(beginTile, this.endTile, board, ghostName, ghostMode)
-                console.log("Executed BFS")
             } else if (this.algorithm === "Dijkstra") {
                 this._DijkstrasAlgorithm(
                     board,
